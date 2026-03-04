@@ -37,7 +37,7 @@ enum ApplicationStatus {
   REJECTED
 }
 
-model User {
+model user {
   id String @id @default(uuid())
   email String @unique
   name String
@@ -46,11 +46,11 @@ model User {
   updatedAt DateTime @updatedAt
   role Role @default(CONSULTANT)
 
-  consultant Consultant?
-  company Company?
+  consultant consultant?
+  company company?
 }
 
-model Consultant {
+model consultant {
   id String @id @default(uuid())
   last_name String
   first_name String
@@ -61,15 +61,15 @@ model Consultant {
   is_verified Boolean @default(false)
   
   id_user String @unique
-  user User @relation(fields: [id_user], references: [id])
+  user user @relation(fields: [id_user], references: [id])
 
-  certifications Certification[]
-  applications Application[]
-  legal Legal?
-  missions Mission[]
+  certifications certification[]
+  applications application[]
+  legal legal?
+  missions mission[]
 }
 
-model Certification {
+model certification {
   id String @id @default(uuid())
   certification_name String
   certification_end_date DateTime
@@ -78,10 +78,10 @@ model Certification {
   evidence_url String?
 
   id_consultant String
-  consultant Consultant @relation(fields: [id_consultant], references: [id])
+  consultant consultant @relation(fields: [id_consultant], references: [id])
 }
 
-model Company {
+model company {
   id String @id @default(uuid())
   company_name String
   industry_sector Json?
@@ -90,14 +90,14 @@ model Company {
   logo_url String?
 
   id_user String @unique
-  user User @relation(fields: [id_user], references: [id])
+  user user @relation(fields: [id_user], references: [id])
 
-  offers Offer[]
-  legal Legal?
-  missions Mission[]
+  offers offer[]
+  legal legal?
+  missions mission[]
 }
 
-model Offer {
+model offer {
   id String @id @default(uuid())
   title String
   description String
@@ -106,24 +106,24 @@ model Offer {
   status OfferStatus @default(OPEN)
 
   id_company String
-  company Company @relation(fields: [id_company], references: [id])
+  company company @relation(fields: [id_company], references: [id])
 
-  applications Application[]
+  applications application[]
 }
 
-model Application {
+model application {
   id String @id @default(uuid())
   content String
   status ApplicationStatus @default(PENDING)
 
   id_offer String
-  offer Offer @relation(fields: [id_offer], references: [id])
+  offer offer @relation(fields: [id_offer], references: [id])
 
   id_consultant String
-  consultant Consultant @relation(fields: [id_consultant], references: [id])
+  consultant consultant @relation(fields: [id_consultant], references: [id])
 }
 
-model Legal {
+model legal {
   id String @id @default(uuid())
   registration_number String @unique
   iban String @unique
@@ -131,13 +131,13 @@ model Legal {
   address String
 
   id_company String? @unique
-  company Company? @relation(fields: [id_company], references: [id])
+  company company? @relation(fields: [id_company], references: [id])
 
   id_consultant String? @unique
-  consultant Consultant? @relation(fields: [id_consultant], references: [id])
+  consultant consultant? @relation(fields: [id_consultant], references: [id])
 }
 
-model Mission {
+model mission {
   id String @id @default(uuid())
   start_date DateTime
   end_date DateTime
@@ -147,8 +147,8 @@ model Mission {
   status MissionStatus @default(ONGOING)
 
   id_company String
-  company Company @relation(fields: [id_company], references: [id])
+  company company @relation(fields: [id_company], references: [id])
 
   id_consultant String
-  consultant Consultant @relation(fields: [id_consultant], references: [id])
+  consultant consultant @relation(fields: [id_consultant], references: [id])
 }
