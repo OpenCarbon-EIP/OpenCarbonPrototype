@@ -1,48 +1,39 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '@prisma/prisma.service';
 import { CreateUserDto } from '@dtos/user.dto';
 import type { user } from 'src/generated/prisma/client';
 import type { SafeUser } from 'src/types/user.types';
+
+const SAFE_USER_OMIT = {
+  password: true,
+  createdAt: true,
+  updatedAt: true,
+} as const;
 
 @Injectable()
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
   async getUsers(): Promise<SafeUser[]> {
-    const users = await this.prisma.user.findMany();
-
-    return users.map((u) => ({
-      id: u.id,
-      email: u.email,
-      name: u.name,
-      role: u.role,
-    }));
+    return await this.prisma.user.findMany({
+      omit: SAFE_USER_OMIT,
+    });
   }
 
   async getUserById(id: string): Promise<SafeUser | null> {
     if (!id) {
-      throw new Error('User ID is required');
+      throw new BadRequestException('User ID is required');
     }
 
-    const user = await this.prisma.user.findUnique({
-      where: { id: id },
+    return await this.prisma.user.findUnique({
+      where: { id },
+      omit: SAFE_USER_OMIT,
     });
-
-    if (!user) {
-      return null;
-    }
-
-    return {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role,
-    };
   }
 
   async getUserByEmail(email: string): Promise<user | null> {
     return await this.prisma.user.findUnique({
-      where: { email: email },
+      where: { email },
     });
   }
 
@@ -50,7 +41,7 @@ export class UsersService {
     const { email, name, password } = createUserDto;
 
     if (!email || !name || !password) {
-      throw new Error('Missing required fields');
+      throw new BadRequestException('Email, name, and password are required');
     }
 
     return await this.prisma.user.create({

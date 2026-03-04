@@ -20,7 +20,9 @@ export class AuthService {
   async register(registerDto: RegisterDto): Promise<AuthResponse> {
     const { email, password, name } = registerDto;
 
-    const existingUsers = await this.usersService.getUserByEmail(email);
+    const emailTrim = email.trim().toLowerCase();
+
+    const existingUsers = await this.usersService.getUserByEmail(emailTrim);
 
     if (existingUsers) {
       throw new ConflictException('Email already in use');
@@ -30,7 +32,7 @@ export class AuthService {
     const hashedPassword: string = await hash(password, saltRounds);
 
     const user = await this.usersService.createUser({
-      email,
+      email: emailTrim,
       password: hashedPassword,
       name,
     });
@@ -52,7 +54,9 @@ export class AuthService {
   async login(loginDto: LoginDto): Promise<AuthResponse> {
     const { email, password } = loginDto;
 
-    const user = await this.usersService.getUserByEmail(email);
+    const emailTrim = email.trim().toLowerCase();
+
+    const user = await this.usersService.getUserByEmail(emailTrim);
 
     if (!user || !user.password) {
       throw new UnauthorizedException('Invalid credentials');
