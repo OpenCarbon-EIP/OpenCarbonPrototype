@@ -31,11 +31,19 @@ export class AuthService {
     const saltRounds = 10;
     const hashedPassword: string = await hash(password, saltRounds);
 
-    const user = await this.usersService.createUser({
-      email: emailTrim,
-      password: hashedPassword,
-      name,
-    });
+    let user;
+    try {
+      user = await this.usersService.createUser({
+        email: emailTrim,
+        password: hashedPassword,
+        name,
+      });
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new ConflictException('Email already in use');
+      }
+      throw error;
+    }
 
     const payload: JwtPayload = { sub: user.id, email: user.email };
     const access_token = this.jwtService.sign(payload);

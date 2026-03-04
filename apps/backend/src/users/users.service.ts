@@ -14,12 +14,6 @@ const SAFE_USER_OMIT = {
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getUsers(): Promise<SafeUser[]> {
-    return await this.prisma.user.findMany({
-      omit: SAFE_USER_OMIT,
-    });
-  }
-
   async getUserById(id: string): Promise<SafeUser | null> {
     if (!id) {
       throw new BadRequestException('User ID is required');
@@ -37,7 +31,7 @@ export class UsersService {
     });
   }
 
-  async createUser(createUserDto: CreateUserDto): Promise<user> {
+  async createUser(createUserDto: CreateUserDto): Promise<SafeUser> {
     const { email, name, password } = createUserDto;
 
     if (!email || !name || !password) {
