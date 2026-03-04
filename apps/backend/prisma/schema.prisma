@@ -20,12 +20,135 @@ enum Role {
   ADMIN
 }
 
-model user {
+enum OfferStatus {
+  OPEN
+  CLOSED
+}
+
+enum MissionStatus {
+  ONGOING
+  COMPLETED
+  CANCELLED
+}
+
+enum ApplicationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model User {
   id String @id @default(uuid())
   email String @unique
-  name String?
+  name String
   password String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   role Role @default(CONSULTANT)
+
+  consultant Consultant?
+  company Company?
+}
+
+model Consultant {
+  id String @id @default(uuid())
+  last_name String
+  first_name String
+  professional_title String
+  description String?
+  photo_url String?
+  rating_score Int @default(0)
+  is_verified Boolean @default(false)
+  
+  id_user String @unique
+  user User @relation(fields: [id_user], references: [id])
+
+  certifications Certification[]
+  applications Application[]
+  legal Legal?
+  missions Mission[]
+}
+
+model Certification {
+  id String @id @default(uuid())
+  certification_name String
+  certification_end_date DateTime
+  issuing_organization String
+  issue_date DateTime
+  evidence_url String?
+
+  id_consultant String
+  consultant Consultant @relation(fields: [id_consultant], references: [id])
+}
+
+model Company {
+  id String @id @default(uuid())
+  company_name String
+  industry_sector Json?
+  company_size Int?
+  description String?
+  logo_url String?
+
+  id_user String @unique
+  user User @relation(fields: [id_user], references: [id])
+
+  offers Offer[]
+  legal Legal?
+  missions Mission[]
+}
+
+model Offer {
+  id String @id @default(uuid())
+  title String
+  description String
+  budget Int
+  deadline DateTime
+  status OfferStatus @default(OPEN)
+
+  id_company String
+  company Company @relation(fields: [id_company], references: [id])
+
+  applications Application[]
+}
+
+model Application {
+  id String @id @default(uuid())
+  content String
+  status ApplicationStatus @default(PENDING)
+
+  id_offer String
+  offer Offer @relation(fields: [id_offer], references: [id])
+
+  id_consultant String
+  consultant Consultant @relation(fields: [id_consultant], references: [id])
+}
+
+model Legal {
+  id String @id @default(uuid())
+  registration_number String @unique
+  iban String @unique
+  status String
+  address String
+
+  id_company String? @unique
+  company Company? @relation(fields: [id_company], references: [id])
+
+  id_consultant String? @unique
+  consultant Consultant? @relation(fields: [id_consultant], references: [id])
+}
+
+model Mission {
+  id String @id @default(uuid())
+  start_date DateTime
+  end_date DateTime
+  estimated_end_date DateTime
+  progress Int @default(0)
+  payment_status String
+  status MissionStatus @default(ONGOING)
+
+  id_company String
+  company Company @relation(fields: [id_company], references: [id])
+
+  id_consultant String
+  consultant Consultant @relation(fields: [id_consultant], references: [id])
 }
