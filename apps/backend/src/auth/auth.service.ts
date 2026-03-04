@@ -39,6 +39,7 @@ export class AuthService {
         name,
       });
     } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (error.code === 'P2002') {
         throw new ConflictException('Email already in use');
       }
