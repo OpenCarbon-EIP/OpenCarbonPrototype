@@ -1,75 +1,20 @@
-/*
-  Warnings:
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('CONSULTANT', 'COMPANY', 'ADMIN');
 
-  - You are about to drop the `Application` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Certification` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Company` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Consultant` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Legal` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Mission` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Offer` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
+-- CreateEnum
+CREATE TYPE "OfferStatus" AS ENUM ('OPEN', 'CLOSED');
 
-*/
--- DropForeignKey
-ALTER TABLE "Application" DROP CONSTRAINT "Application_id_consultant_fkey";
+-- CreateEnum
+CREATE TYPE "MissionStatus" AS ENUM ('ONGOING', 'COMPLETED', 'CANCELLED');
 
--- DropForeignKey
-ALTER TABLE "Application" DROP CONSTRAINT "Application_id_offer_fkey";
-
--- DropForeignKey
-ALTER TABLE "Certification" DROP CONSTRAINT "Certification_id_consultant_fkey";
-
--- DropForeignKey
-ALTER TABLE "Company" DROP CONSTRAINT "Company_id_user_fkey";
-
--- DropForeignKey
-ALTER TABLE "Consultant" DROP CONSTRAINT "Consultant_id_user_fkey";
-
--- DropForeignKey
-ALTER TABLE "Legal" DROP CONSTRAINT "Legal_id_company_fkey";
-
--- DropForeignKey
-ALTER TABLE "Legal" DROP CONSTRAINT "Legal_id_consultant_fkey";
-
--- DropForeignKey
-ALTER TABLE "Mission" DROP CONSTRAINT "Mission_id_company_fkey";
-
--- DropForeignKey
-ALTER TABLE "Mission" DROP CONSTRAINT "Mission_id_consultant_fkey";
-
--- DropForeignKey
-ALTER TABLE "Offer" DROP CONSTRAINT "Offer_id_company_fkey";
-
--- DropTable
-DROP TABLE "Application";
-
--- DropTable
-DROP TABLE "Certification";
-
--- DropTable
-DROP TABLE "Company";
-
--- DropTable
-DROP TABLE "Consultant";
-
--- DropTable
-DROP TABLE "Legal";
-
--- DropTable
-DROP TABLE "Mission";
-
--- DropTable
-DROP TABLE "Offer";
-
--- DropTable
-DROP TABLE "User";
+-- CreateEnum
+CREATE TYPE "ApplicationStatus" AS ENUM ('PENDING', 'ACCEPTED', 'REJECTED');
 
 -- CreateTable
 CREATE TABLE "user" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
+    "name" TEXT,
     "password" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
