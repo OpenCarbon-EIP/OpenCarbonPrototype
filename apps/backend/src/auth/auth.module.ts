@@ -7,11 +7,15 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { UsersModule } from '../users/users.module';
 import { PassportModule } from '@nestjs/passport';
+import { ConsultantModule } from 'src/consultant/consultant.module';
+import { CompanyModule } from 'src/company/company.module';
 
 @Module({
   imports: [
     forwardRef(() => UsersModule),
     PassportModule,
+    ConsultantModule,
+    CompanyModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

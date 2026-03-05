@@ -32,7 +32,7 @@ export class UsersService {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<SafeUser> {
-    const { email, name, password } = createUserDto;
+    const { email, name, password, role } = createUserDto;
 
     if (!email || !name || !password) {
       throw new BadRequestException('Email, name, and password are required');
@@ -43,6 +43,7 @@ export class UsersService {
         email,
         name,
         password,
+        ...(role && { role }),
       },
     });
   }
