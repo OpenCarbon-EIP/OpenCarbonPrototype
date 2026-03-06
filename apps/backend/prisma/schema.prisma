@@ -59,7 +59,7 @@ model consultant {
   photo_url String?
   rating_score Int @default(0)
   is_verified Boolean @default(false)
-  
+
   id_user String @unique
   user user @relation(fields: [id_user], references: [id])
 
@@ -104,6 +104,7 @@ model offer {
   budget Int
   deadline DateTime
   status OfferStatus @default(OPEN)
+  location String
 
   id_company String
   company company @relation(fields: [id_company], references: [id])

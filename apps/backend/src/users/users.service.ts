@@ -4,7 +4,7 @@ import { CreateUserDto } from '@dtos/user.dto';
 import type { user } from 'src/generated/prisma/client';
 import type { SafeUser } from 'src/types/user.types';
 
-const SAFE_USER_OMIT = {
+export const SAFE_USER_OMIT = {
   password: true,
   createdAt: true,
   updatedAt: true,
@@ -32,7 +32,7 @@ export class UsersService {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<SafeUser> {
-    const { email, name, password } = createUserDto;
+    const { email, name, password, role } = createUserDto;
 
     if (!email || !name || !password) {
       throw new BadRequestException('Email, name, and password are required');
@@ -43,6 +43,7 @@ export class UsersService {
         email,
         name,
         password,
+        ...(role && { role }),
       },
     });
   }
