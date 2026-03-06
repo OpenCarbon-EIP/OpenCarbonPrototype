@@ -112,10 +112,6 @@ export class OfferService {
 
     const offer = await this.getOfferById(id);
 
-    if (!offer) {
-      throw new NotFoundException('Offer not found');
-    }
-
     if (offer.company.id_user !== userId) {
       throw new ForbiddenException('User not authorized to update this offer');
     }
