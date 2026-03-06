@@ -3,16 +3,16 @@ import 'package:flutter_poc/core/colors/app_colors.dart';
 import 'package:flutter_poc/core/svg/app_svg.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class AppNavbar extends StatefulWidget {
-  const AppNavbar({super.key});
+class AppNavbar extends StatelessWidget {
+  final int selectedIndex;
+  final Function(int) onItemSelected;
 
-  @override
-  State<AppNavbar> createState() => _AppNavbarState();
-}
+  const AppNavbar({
+    super.key,
+    required this.selectedIndex,
+    required this.onItemSelected,
+  });
 
-class _AppNavbarState extends State<AppNavbar> {
-  int isSelected = 0;
-  
   Alignment _getAlignmentForIndex(int index) {
     switch (index) {
       case 0:
@@ -47,9 +47,8 @@ class _AppNavbarState extends State<AppNavbar> {
             children: [
               AnimatedAlign(
                 duration: const Duration(milliseconds: 300),
-                curve:
-                    Curves.easeOutCubic,
-                alignment: _getAlignmentForIndex(isSelected),
+                curve: Curves.easeOutCubic,
+                alignment: _getAlignmentForIndex(selectedIndex),
                 child: Container(
                   width: 85,
                   height: 65,
@@ -59,33 +58,32 @@ class _AppNavbarState extends State<AppNavbar> {
                   ),
                 ),
               ),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildNavItem(
-                    isSelected == 0
+                    selectedIndex == 0
                         ? AppSvg.svgHomeFilled
                         : AppSvg.svgHomeStroke,
-                    index: 0,
+                    0,
                   ),
                   _buildNavItem(
-                    isSelected == 1
+                    selectedIndex == 1
+                        ? AppSvg.svgBriefcaseFilled
+                        : AppSvg.svgBriefcaseStroke,
+                    1,
+                  ),
+                  _buildNavItem(
+                    selectedIndex == 2
                         ? AppSvg.svgMessageFilled
                         : AppSvg.svgMessageStroke,
-                    index: 1,
+                    2,
                   ),
                   _buildNavItem(
-                    isSelected == 2
-                        ? AppSvg.svgSettingFilled
-                        : AppSvg.svgSettingStroke,
-                    index: 2,
-                  ),
-                  _buildNavItem(
-                    isSelected == 3
+                    selectedIndex == 3
                         ? AppSvg.svgProfileFilled
                         : AppSvg.svgProfileStroke,
-                    index: 3,
+                    3,
                   ),
                 ],
               ),
@@ -96,26 +94,34 @@ class _AppNavbarState extends State<AppNavbar> {
     );
   }
 
-  Widget _buildNavItem(String svgData, {required int index}) {
-    final bool isCurrentSelected = isSelected == index;
+  Widget _buildNavItem(String svgData, int index) {
+    final bool isCurrentSelected = selectedIndex == index;
 
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          isSelected = index;
-        });
-      },
+      onTap: () =>
+          onItemSelected(index),
       child: Container(
         width: 85,
         height: 65,
         color: Colors.transparent,
         child: Center(
-          child: SvgPicture.string(
-            svgData,
-            colorFilter: ColorFilter.mode(
-              isCurrentSelected ? AppColors.textLight : AppColors.primaryLight,
-              BlendMode.srcIn,
+          child: TweenAnimationBuilder<Color?>(
+            tween: ColorTween(
+              begin: AppColors.textLight,
+              end: isCurrentSelected
+                  ? AppColors.textLight
+                  : AppColors.primaryLight,
             ),
+            duration: const Duration(milliseconds: 300),
+            builder: (context, color, _) {
+              return SvgPicture.string(
+                svgData,
+                colorFilter: ColorFilter.mode(
+                  color ?? AppColors.primaryLight,
+                  BlendMode.srcIn,
+                ),
+              );
+            },
           ),
         ),
       ),
