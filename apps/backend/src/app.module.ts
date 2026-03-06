@@ -5,6 +5,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { ConsultantModule } from './consultant/consultant.module';
 import { CompanyModule } from './company/company.module';
+import { OfferModule } from './offer/offer.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { CompanyModule } from './company/company.module';
     UsersModule,
     AuthModule,
     ConsultantModule,
+    OfferModule,
     CompanyModule,
   ],
 })

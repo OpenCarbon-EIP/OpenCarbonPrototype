@@ -12,6 +12,7 @@ import type { JwtPayload, SafeUser } from 'src/types/user.types';
 import { AuthResponse } from 'src/types/auth.types';
 import { ConsultantService } from 'src/consultant/consultant.service';
 import { CompanyService } from 'src/company/company.service';
+import { Role } from 'src/generated/prisma/client';
 
 @Injectable()
 export class AuthService {
@@ -52,7 +53,7 @@ export class AuthService {
       throw error;
     }
 
-    if (role === 'CONSULTANT') {
+    if (role === Role.CONSULTANT) {
       const { last_name, first_name, professional_title, description } =
         registerDto;
 
@@ -69,7 +70,7 @@ export class AuthService {
         description,
         id_user: user.id,
       });
-    } else if (role === 'COMPANY') {
+    } else if (role === Role.COMPANY) {
       const { company_name, company_size, description } = registerDto;
 
       if (!company_name) {
