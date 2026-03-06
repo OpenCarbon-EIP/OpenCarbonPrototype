@@ -5,7 +5,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class AppNavbar extends StatelessWidget {
   final int selectedIndex;
-  final Function(int) onItemSelected;
+  final void Function(int) onItemSelected;
 
   const AppNavbar({
     super.key,

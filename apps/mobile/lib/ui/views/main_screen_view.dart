@@ -15,7 +15,6 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
 
-  // Liste des vues de l'application
   final List<Widget> _views = [
     const Dashboard(),
     const OffersView(),

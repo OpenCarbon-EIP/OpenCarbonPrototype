@@ -7,7 +7,7 @@ class CustomCard extends StatelessWidget {
   final String title;
   final String date;
   final String description;
-  final Function(int) onCardSelected;
+  final ValueChanged<int> onCardSelected;
 
   const CustomCard({
     super.key,

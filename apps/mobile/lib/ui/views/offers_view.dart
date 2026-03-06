@@ -17,7 +17,7 @@ class OffersData {
   final String description;
 }
 
-List<OffersData> offers = List.generate(
+final List<OffersData> offers = List.generate(
   5,
   (index) => OffersData(
     title: 'Offre $index',
@@ -34,7 +34,7 @@ class OffersView extends StatefulWidget {
 }
 
 class _OffersViewState extends State<OffersView> {
-  final int _itemCount = offers.length;
+  int get _itemCount => offers.length;
 
   @override
   Widget build(BuildContext context) {
@@ -42,19 +42,20 @@ class _OffersViewState extends State<OffersView> {
       appBar: AppBar(
         backgroundColor: AppColors.backgroundLight,
         elevation: 0,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Opportunités', style: AppTypography.subheadingLarge),
-            SmallButtonWithIcon(
+        centerTitle: false,
+        title: Text('Opportunités', style: AppTypography.subheadingLarge),
+        actions: [
+          Container(
+            padding: const EdgeInsets.only(right: 16.0),
+            child: SmallButtonWithIcon(
               text: 'Filtrer',
               svgIcon: AppSvg.svgFilter,
               onPressed: () {
                 print('Filtrer button pressed');
               },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       backgroundColor: AppColors.backgroundLight,
       body: Column(
@@ -89,15 +90,14 @@ class _OffersViewState extends State<OffersView> {
                                   children: [
                                     Text(
                                       'Détails de l\'offre $selectedIndex',
-                                      style: AppTypography.caption
-                                          .copyWith(
-                                            color: AppColors.primaryLight,
-                                          ),
+                                      style: AppTypography.caption.copyWith(
+                                        color: AppColors.primaryLight,
+                                      ),
                                     ),
                                     Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
-                                          spacing: 13,
+                                      spacing: 13,
                                       children: [
                                         Text(
                                           offers[selectedIndex].title,
@@ -123,10 +123,15 @@ class _OffersViewState extends State<OffersView> {
                                       ],
                                     ),
                                     const Spacer(),
-                                    SmallButton(text: 'Postuler', onPressed: () {
-                                      print('Postuler button pressed for offer $selectedIndex');
-                                    }),
-                                    
+                                    SmallButton(
+                                      text: 'Postuler',
+                                      onPressed: () {
+                                        print(
+                                          'Postuler button pressed for offer $selectedIndex',
+                                        );
+                                      },
+                                    ),
+
                                     const SizedBox(height: 20),
                                   ],
                                 ),
