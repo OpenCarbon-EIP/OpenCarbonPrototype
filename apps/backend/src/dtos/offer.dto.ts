@@ -1,6 +1,7 @@
 import { Transform } from 'class-transformer';
 import {
   IsDate,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -54,5 +55,6 @@ export class UpdateOfferDto {
   deadline?: Date;
 
   @IsOptional()
+  @IsEnum(OfferStatus)
   status?: OfferStatus;
 }

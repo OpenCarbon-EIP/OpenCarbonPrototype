@@ -117,9 +117,7 @@ export class OfferService {
     }
 
     if (offer.company.id_user !== userId) {
-      throw new UnauthorizedException(
-        'User not authorized to update this offer',
-      );
+      throw new ForbiddenException('User not authorized to update this offer');
     }
 
     return this.prismaService.offer.update({
