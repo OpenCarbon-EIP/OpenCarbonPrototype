@@ -23,8 +23,8 @@ class CustomCard extends StatelessWidget {
     return GestureDetector(
       onTap: () => onCardSelected(index),
       child: Container(
-        width: 360,
-        height: 160,
+        width: double.infinity,
+        constraints: const BoxConstraints(minHeight: 160),
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
           color: AppColors.backgroundLight,

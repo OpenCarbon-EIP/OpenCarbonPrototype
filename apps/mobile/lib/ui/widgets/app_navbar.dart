@@ -98,30 +98,18 @@ class AppNavbar extends StatelessWidget {
     final bool isCurrentSelected = selectedIndex == index;
 
     return GestureDetector(
-      onTap: () =>
-          onItemSelected(index),
+      onTap: () => onItemSelected(index),
       child: Container(
         width: 85,
         height: 65,
         color: Colors.transparent,
         child: Center(
-          child: TweenAnimationBuilder<Color?>(
-            tween: ColorTween(
-              begin: AppColors.textLight,
-              end: isCurrentSelected
-                  ? AppColors.textLight
-                  : AppColors.primaryLight,
+          child: SvgPicture.string(
+            svgData,
+            colorFilter: ColorFilter.mode(
+              isCurrentSelected ? AppColors.textLight : AppColors.primaryLight,
+              BlendMode.srcIn,
             ),
-            duration: const Duration(milliseconds: 300),
-            builder: (context, color, _) {
-              return SvgPicture.string(
-                svgData,
-                colorFilter: ColorFilter.mode(
-                  color ?? AppColors.primaryLight,
-                  BlendMode.srcIn,
-                ),
-              );
-            },
           ),
         ),
       ),

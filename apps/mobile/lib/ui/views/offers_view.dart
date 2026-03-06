@@ -34,7 +34,7 @@ class OffersView extends StatefulWidget {
 }
 
 class _OffersViewState extends State<OffersView> {
-  final int _itemCount = 5;
+  final int _itemCount = offers.length;
 
   @override
   Widget build(BuildContext context) {
@@ -74,10 +74,9 @@ class _OffersViewState extends State<OffersView> {
                       ),
                       child: CustomCard(
                         index: index,
-                        title: 'Offre $index',
-                        date: '2024-06-01',
-                        description:
-                            'This is a description for offer $index.',
+                        title: offers[index].title,
+                        date: offers[index].date,
+                        description: offers[index].description,
                         onCardSelected: (selectedIndex) {
                           showModalBottomSheet(
                             context: context,

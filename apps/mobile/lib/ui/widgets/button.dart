@@ -56,6 +56,7 @@ class SmallButtonWithIcon extends StatelessWidget {
         ),
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
           SvgPicture.string(
             svgIcon,
