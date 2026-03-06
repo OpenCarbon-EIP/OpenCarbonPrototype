@@ -42,19 +42,20 @@ class _OffersViewState extends State<OffersView> {
       appBar: AppBar(
         backgroundColor: AppColors.backgroundLight,
         elevation: 0,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Opportunités', style: AppTypography.subheadingLarge),
-            SmallButtonWithIcon(
-              text: 'Filtrer',
-              svgIcon: AppSvg.svgFilter,
-              onPressed: () {
-                print('Filtrer button pressed');
-              },
-            ),
-          ],
+        centerTitle: false,
+        title: Text(
+          'Opportunités',
+          style: AppTypography.subheadingLarge,
         ),
+        actions: [
+          SmallButtonWithIcon(
+            text: 'Filtrer',
+            svgIcon: AppSvg.svgFilter,
+            onPressed: () {
+              print('Filtrer button pressed');
+            },
+          ),
+        ],
       ),
       backgroundColor: AppColors.backgroundLight,
       body: Column(
