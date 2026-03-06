@@ -1,5 +1,11 @@
 import { Transform } from 'class-transformer';
-import { IsDate, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsDate,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 import { OfferStatus } from 'src/generated/prisma/client';
 
 export class CreateOfferDto {
@@ -27,20 +33,26 @@ export class CreateOfferDto {
 
 export class UpdateOfferDto {
   @IsString()
+  @IsOptional()
   title?: string;
 
   @IsString()
+  @IsOptional()
   description?: string;
 
   @IsString()
+  @IsOptional()
   location?: string;
 
   @IsNumber()
+  @IsOptional()
   budget?: number;
 
   @IsDate()
+  @IsOptional()
   @Transform(({ value }) => new Date(value as string))
   deadline?: Date;
 
+  @IsOptional()
   status?: OfferStatus;
 }

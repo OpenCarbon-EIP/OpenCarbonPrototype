@@ -87,10 +87,6 @@ export class OfferController {
 
     const offer = await this.offerService.getOfferById(id);
 
-    if (!offer) {
-      throw new UnauthorizedException('Offer not found');
-    }
-
     return {
       success: true,
       data: offer,
@@ -104,7 +100,7 @@ export class OfferController {
     @CurrentUser() user: Express.User,
     @Param('id') id: string,
     @Body() body: UpdateOfferDto,
-  ) {
+  ): Promise<ApiResponse<offer>> {
     if (!user) {
       throw new UnauthorizedException('User not authenticated');
     }
@@ -123,7 +119,7 @@ export class OfferController {
   async deleteOffer(
     @CurrentUser() user: Express.User,
     @Param('id') id: string,
-  ) {
+  ): Promise<ApiResponse<offer[]>> {
     if (!user) {
       throw new UnauthorizedException('User not authenticated');
     }

@@ -1,5 +1,10 @@
 import { CreateOfferDto, UpdateOfferDto } from '@dtos/offer.dto';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from '@prisma/prisma.service';
 import { SAFE_USER_OMIT, UsersService } from 'src/users/users.service';
 import { Role } from 'src/generated/prisma/client';
@@ -15,11 +20,11 @@ export class OfferService {
     const user = await this.usersService.getUserById(userId);
 
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw new NotFoundException('User not found');
     }
 
     if (user.role !== Role.COMPANY) {
-      throw new UnauthorizedException('Only consultants can create offers');
+      throw new ForbiddenException('Only company can create offers');
     }
 
     const company = await this.prismaService.company.findUnique({
@@ -27,7 +32,7 @@ export class OfferService {
     });
 
     if (!company) {
-      throw new UnauthorizedException('Company not found for the user');
+      throw new NotFoundException('Company not found for the user');
     }
 
     const offer = await this.prismaService.offer.create({
@@ -64,7 +69,7 @@ export class OfferService {
     });
 
     if (!company) {
-      throw new UnauthorizedException('Company not found for the user');
+      throw new NotFoundException('Company not found for the user');
     }
 
     return this.prismaService.offer.findMany({
@@ -82,7 +87,7 @@ export class OfferService {
   }
 
   async getOfferById(id: string) {
-    return this.prismaService.offer.findUnique({
+    const offer = await this.prismaService.offer.findUnique({
       where: { id: id },
       include: {
         company: {
@@ -94,6 +99,12 @@ export class OfferService {
         },
       },
     });
+
+    if (!offer) {
+      throw new NotFoundException('Offer not found');
+    }
+
+    return offer;
   }
 
   async updateOffer(userId: string, id: string, body: UpdateOfferDto) {
@@ -102,7 +113,7 @@ export class OfferService {
     const offer = await this.getOfferById(id);
 
     if (!offer) {
-      throw new UnauthorizedException('Offer not found');
+      throw new NotFoundException('Offer not found');
     }
 
     if (offer.company.id_user !== userId) {

@@ -1,5 +1,6 @@
 import {
   IsEmail,
+  IsEnum,
   IsInt,
   IsNotEmpty,
   IsOptional,
@@ -7,7 +8,8 @@ import {
   IsStrongPassword,
   ValidateIf,
 } from 'class-validator';
-import { SafeUser } from 'src/types/user.types';
+import { Role } from 'src/generated/prisma/client';
+import { RegistrationRole } from './user.dto';
 
 export class RegisterDto {
   @IsEmail()
@@ -24,7 +26,10 @@ export class RegisterDto {
   name: string;
 
   @IsNotEmpty()
-  role: SafeUser['role'];
+  @IsEnum(RegistrationRole, {
+    message: `role must be one of: ${Object.values(RegistrationRole).join(', ')}`,
+  })
+  role: Role;
 
   @IsString()
   @IsOptional()
@@ -32,29 +37,29 @@ export class RegisterDto {
 
   // Consultant
 
-  @ValidateIf((o: SafeUser) => o.role === 'CONSULTANT')
+  @ValidateIf((o: RegisterDto) => o.role === 'CONSULTANT')
   @IsString()
   @IsNotEmpty()
   last_name?: string;
 
-  @ValidateIf((o: SafeUser) => o.role === 'CONSULTANT')
+  @ValidateIf((o: RegisterDto) => o.role === 'CONSULTANT')
   @IsString()
   @IsNotEmpty()
   first_name?: string;
 
-  @ValidateIf((o: SafeUser) => o.role === 'CONSULTANT')
+  @ValidateIf((o: RegisterDto) => o.role === 'CONSULTANT')
   @IsString()
   @IsNotEmpty()
   professional_title?: string;
 
-  // --- Company
+  // Company
 
-  @ValidateIf((o: SafeUser) => o.role === 'COMPANY')
+  @ValidateIf((o: RegisterDto) => o.role === 'COMPANY')
   @IsString()
   @IsNotEmpty()
   company_name?: string;
 
-  @ValidateIf((o: SafeUser) => o.role === 'COMPANY')
+  @ValidateIf((o: RegisterDto) => o.role === 'COMPANY')
   @IsInt()
   @IsOptional()
   company_size?: number;

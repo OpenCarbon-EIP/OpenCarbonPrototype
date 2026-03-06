@@ -1,11 +1,17 @@
 import {
   IsEmail,
+  IsEnum,
   IsNotEmpty,
   IsOptional,
   IsString,
   MinLength,
 } from 'class-validator';
-import { SafeUser } from 'src/types/user.types';
+import { Role } from 'src/generated/prisma/client';
+
+export enum RegistrationRole {
+  CONSULTANT = 'CONSULTANT',
+  COMPANY = 'COMPANY',
+}
 
 export class CreateUserDto {
   @IsEmail()
@@ -21,5 +27,8 @@ export class CreateUserDto {
   password: string;
 
   @IsOptional()
-  role?: SafeUser['role'];
+  @IsEnum(RegistrationRole, {
+    message: `role must be one of: ${Object.values(RegistrationRole).join(', ')}`,
+  })
+  role?: Role;
 }
