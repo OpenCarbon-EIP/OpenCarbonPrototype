@@ -9,6 +9,14 @@ import '../data/repositories/login_repository.dart';
 import '../data/services/login_auth_service.dart';
 import '../viewmodels/login_viewmodel.dart';
 
+/*
+*  login_view.dart
+*
+*  This file implements the LoginView class, which is the main UI component for the login feature. 
+*  It uses the Provider package to manage state and dependencies, 
+*  and it interacts with the LoginViewModel to perform the login operation 
+*  and display loading states and error messages to the user.
+*/
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
 

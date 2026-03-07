@@ -1,5 +1,11 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+/*
+*  login_auth_service.dart
+*
+*  This file implements the LoginAuthService class, which is responsible for managing authentication tokens.
+*  It uses the flutter_secure_storage package to securely store, retrieve, and delete the authentication token on the device.
+*/
 class LoginAuthService {
   LoginAuthService(this._storage);
 

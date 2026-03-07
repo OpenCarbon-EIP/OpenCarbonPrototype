@@ -1,3 +1,8 @@
+/*
+*  login_response_model.dart
+*
+*  This file defines the data models for handling the login response from the API.
+*/
 class LoginResponseModel {
   final bool success;
   final LoginResponseData? data;

@@ -1,11 +1,17 @@
 import 'package:flutter_poc/features/login/data/services/login_auth_service.dart';
-
 import '../services/login_api_service.dart';
 
 abstract class LoginRepository {
   Future<void> login(String email, String password);
 }
 
+/*
+*  login_repository.dart
+*
+*  This file implements the LoginRepository interface, 
+* which handles the login logic by interacting with the LoginApiService 
+* to perform the login request and the LoginAuthService to manage authentication tokens.
+*/
 class LoginRepositoryImpl implements LoginRepository {
   LoginRepositoryImpl(this._api, this._authService);
 

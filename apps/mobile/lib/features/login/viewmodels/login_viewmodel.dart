@@ -1,6 +1,12 @@
 import 'package:flutter/foundation.dart';
 import '../data/repositories/login_repository.dart';
 
+/*
+*  login_viewmodel.dart
+*
+*  This file implements the LoginViewModel class, which serves as the presentation layer for the login feature. 
+*  It interacts with the LoginUseCase to perform the login operation and manages the loading state and error messages for the UI.
+*/
 class LoginViewModel extends ChangeNotifier {
   LoginViewModel(this._repository);
 
