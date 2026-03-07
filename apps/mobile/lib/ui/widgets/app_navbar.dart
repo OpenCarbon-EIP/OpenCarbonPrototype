@@ -11,7 +11,10 @@ class AppNavbar extends StatelessWidget {
     super.key,
     required this.selectedIndex,
     required this.onItemSelected,
-  });
+  }) : assert(
+         selectedIndex >= 0 && selectedIndex < 4,
+         'selectedIndex must be between 0 and 3',
+       );
 
   Alignment _getAlignmentForIndex(int index) {
     switch (index) {

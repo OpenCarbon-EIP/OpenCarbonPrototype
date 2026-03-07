@@ -81,59 +81,73 @@ class _OffersViewState extends State<OffersView> {
                         onCardSelected: (selectedIndex) {
                           showModalBottomSheet(
                             context: context,
+                            isScrollControlled: true,
                             builder: (BuildContext context) {
-                              return Container(
-                                height: 600,
-                                width: double.infinity,
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      'Détails de l\'offre $selectedIndex',
-                                      style: AppTypography.caption.copyWith(
-                                        color: AppColors.primaryLight,
-                                      ),
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      spacing: 13,
+                              return SafeArea(
+                                child: SizedBox(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.85,
+                                  width: double.infinity,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(16.0),
+                                    child: Column(
                                       children: [
                                         Text(
-                                          offers[selectedIndex].title,
-                                          style: AppTypography.headingMedium
-                                              .copyWith(
-                                                color: AppColors.primaryLight,
-                                              ),
+                                          'Détails de l\'offre $selectedIndex',
+                                          style: AppTypography.caption.copyWith(
+                                            color: AppColors.primaryLight,
+                                          ),
                                         ),
-                                        Text(
-                                          'Date: ${offers[selectedIndex].date}',
-                                          style: AppTypography.bodyMedium
-                                              .copyWith(
-                                                color: AppColors.primaryLight,
-                                              ),
+                                        Expanded(
+                                          child: SingleChildScrollView(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              spacing: 13,
+                                              children: [
+                                                Text(
+                                                  offers[selectedIndex].title,
+                                                  style: AppTypography
+                                                      .headingMedium
+                                                      .copyWith(
+                                                        color: AppColors
+                                                            .primaryLight,
+                                                      ),
+                                                ),
+                                                Text(
+                                                  'Date: ${offers[selectedIndex].date}',
+                                                  style: AppTypography
+                                                      .bodyMedium
+                                                      .copyWith(
+                                                        color: AppColors
+                                                            .primaryLight,
+                                                      ),
+                                                ),
+                                                Text(
+                                                  'Description: ${offers[selectedIndex].description}',
+                                                  style: AppTypography
+                                                      .bodyMedium
+                                                      .copyWith(
+                                                        color: AppColors
+                                                            .primaryLight,
+                                                      ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
                                         ),
-                                        Text(
-                                          'Description: ${offers[selectedIndex].description}',
-                                          style: AppTypography.bodyMedium
-                                              .copyWith(
-                                                color: AppColors.primaryLight,
-                                              ),
+                                        SmallButton(
+                                          text: 'Postuler',
+                                          onPressed: () {
+                                            print(
+                                              'Postuler button pressed for offer $selectedIndex',
+                                            );
+                                          },
                                         ),
+                                        const SizedBox(height: 20),
                                       ],
                                     ),
-                                    const Spacer(),
-                                    SmallButton(
-                                      text: 'Postuler',
-                                      onPressed: () {
-                                        print(
-                                          'Postuler button pressed for offer $selectedIndex',
-                                        );
-                                      },
-                                    ),
-
-                                    const SizedBox(height: 20),
-                                  ],
+                                  ),
                                 ),
                               );
                             },
