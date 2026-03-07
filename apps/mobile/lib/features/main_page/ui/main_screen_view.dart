@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_poc/ui/views/dashboard.dart';
-import 'package:flutter_poc/ui/views/messages_view.dart';
-import 'package:flutter_poc/ui/views/offers_view.dart';
+import 'package:flutter_poc/features/dashboard/ui/dashboard.dart';
+import 'package:flutter_poc/features/messages/ui/messages_view.dart';
+import 'package:flutter_poc/features/offers/ui/offers_view.dart';
 import 'package:flutter_poc/ui/widgets/app_navbar.dart';
 import 'package:flutter_poc/core/colors/app_colors.dart';
 

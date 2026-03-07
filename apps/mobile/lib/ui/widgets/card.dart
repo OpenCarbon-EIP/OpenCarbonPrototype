@@ -5,7 +5,7 @@ import 'package:flutter_poc/core/typo/app_typography.dart';
 class CustomCard extends StatelessWidget {
   final int index;
   final String title;
-  final String date;
+  final String deadline;
   final String description;
   final ValueChanged<int> onCardSelected;
 
@@ -13,7 +13,7 @@ class CustomCard extends StatelessWidget {
     super.key,
     required this.index,
     required this.title,
-    required this.date,
+    required this.deadline,
     required this.description,
     required this.onCardSelected,
   });
@@ -43,7 +43,7 @@ class CustomCard extends StatelessWidget {
                   children: [
                     Text(title, style: AppTypography.bodyMedium),
                     Text(
-                      date,
+                      deadline,
                       style: AppTypography.bodySmall.copyWith(
                         color: AppColors.textDark,
                       ),
