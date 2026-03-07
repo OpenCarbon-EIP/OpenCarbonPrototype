@@ -87,11 +87,13 @@ class _OffersViewBody extends StatelessWidget {
                         ),
                         child: CustomCard(
                           index: index,
-                          title: offer.title,
-                          deadline: offer.deadline,
-                          description: offer.description,
+                          title: offer.data?.title ?? 'Titre non disponible',
+                          deadline: offer.data?.deadline ?? 'Deadline non disponible',
+                          description: offer.data?.description ?? 'Description non disponible',
                           onCardSelected: (selectedIndex) {
                             final selectedOffer = offers[selectedIndex];
+                            if (selectedOffer.data == null) return;
+
                             showModalBottomSheet(
                               context: context,
                               isScrollControlled: true,
@@ -117,19 +119,19 @@ class _OffersViewBody extends StatelessWidget {
                                                 spacing: 13,
                                                 children: [
                                                   Text(
-                                                    selectedOffer.title,
+                                                    selectedOffer.data?.title ?? 'Titre non disponible',
                                                     style: AppTypography.headingMedium.copyWith(
                                                       color: AppColors.primaryLight,
                                                     ),
                                                   ),
                                                   Text(
-                                                    'Deadline: ${selectedOffer.deadline}',
+                                                    'Deadline: ${selectedOffer.data?.deadline ?? 'Deadline non disponible'}',
                                                     style: AppTypography.bodyMedium.copyWith(
                                                       color: AppColors.primaryLight,
                                                     ),
                                                   ),
                                                   Text(
-                                                    'Description: ${selectedOffer.description}',
+                                                    'Description: ${selectedOffer.data?.description ?? 'Description non disponible'}',
                                                     style: AppTypography.bodyMedium.copyWith(
                                                       color: AppColors.primaryLight,
                                                     ),
@@ -141,7 +143,7 @@ class _OffersViewBody extends StatelessWidget {
                                           SmallButton(
                                             text: 'Postuler',
                                             onPressed: () {
-                                              // Tu pourras appeler une méthode du VM pour postuler
+                                              // TODO: Implémenter la logique de postulation (demander aux mecs du back de le faire)
                                             },
                                           ),
                                           const SizedBox(height: 20),
