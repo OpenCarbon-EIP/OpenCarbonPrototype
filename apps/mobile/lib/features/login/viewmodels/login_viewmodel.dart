@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import '../data/repositories/login_repository.dart';
+import 'package:flutter_poc/features/login/data/repositories/login_repository.dart';
 
 /*
 *  login_viewmodel.dart
@@ -24,7 +24,7 @@ class LoginViewModel extends ChangeNotifier {
     notifyListeners();
     try {
       await _repository.login(email, password);
-    } catch (e) {
+    } on Exception catch (_) {
       _error = 'Une erreur est survenue.';
     } finally {
       _isLoading = false;

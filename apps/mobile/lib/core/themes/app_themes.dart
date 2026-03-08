@@ -5,35 +5,31 @@ import 'package:flutter_poc/core/sizes/app_sizes.dart';
 class AppTheme {
   AppTheme._();
 
-  static ThemeData get lightTheme {
-    return ThemeData(
-      scaffoldBackgroundColor: AppColors.backgroundLight,
-      colorScheme: const ColorScheme.light(
-        primary: AppColors.primaryLight,
-        secondary: AppColors.secondaryLight,
+  static ThemeData get lightTheme => ThemeData(
+    scaffoldBackgroundColor: AppColors.backgroundLight,
+    colorScheme: const ColorScheme.light(
+      primary: AppColors.primaryLight,
+      secondary: AppColors.secondaryLight,
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.primaryLight,
+        padding: AppSizes.paddingMedium,
       ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primaryLight,
-          padding: AppSizes.paddingMedium,
-        ),
-      ),
-    );
-  }
+    ),
+  );
 
-  static ThemeData get darkTheme {
-    return ThemeData(
-      scaffoldBackgroundColor: AppColors.backgroundDark,
-      colorScheme: const ColorScheme.dark(
-        primary: AppColors.primaryDark,
-        secondary: AppColors.secondaryDark,
+  static ThemeData get darkTheme => ThemeData(
+    scaffoldBackgroundColor: AppColors.backgroundDark,
+    colorScheme: const ColorScheme.dark(
+      primary: AppColors.primaryDark,
+      secondary: AppColors.secondaryDark,
+    ),
+    elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.primaryDark,
+        padding: AppSizes.paddingMedium,
       ),
-      elevatedButtonTheme: ElevatedButtonThemeData(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primaryDark,
-          padding: AppSizes.paddingMedium,
-        ),
-      ),
-    );
-  }
+    ),
+  );
 }

@@ -4,12 +4,8 @@ class MessagesView extends StatelessWidget {
   const MessagesView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Messages'),
-      ),
-      body: Container()
-    );
-  }
+  Widget build(BuildContext context) => Scaffold(
+    appBar: AppBar(title: const Text('Messages')),
+    body: Container(),
+  );
 }

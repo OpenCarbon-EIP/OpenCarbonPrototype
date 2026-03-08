@@ -1,6 +1,6 @@
-import 'package:http/http.dart' as http;
-import '../models/offer_model.dart';
 import 'dart:convert';
+import 'package:flutter_poc/features/offers/data/models/offer_model.dart';
+import 'package:http/http.dart' as http;
 
 class OfferApiService {
   OfferApiService(this._httpClient);
@@ -16,6 +16,6 @@ class OfferApiService {
     }
 
     final data = json.decode(response.body) as List;
-    return data.map((json) => OfferModel.fromJson(json)).toList();
+    return data.map((json) => OfferModel.fromJson(json as Map<String, dynamic>)).toList();
   }
 }

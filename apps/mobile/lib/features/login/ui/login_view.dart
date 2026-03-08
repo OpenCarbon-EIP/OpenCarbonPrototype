@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_poc/features/login/data/repositories/login_repository.dart';
+import 'package:flutter_poc/features/login/data/services/login_api_service.dart';
+import 'package:flutter_poc/features/login/data/services/login_auth_service.dart';
+import 'package:flutter_poc/features/login/viewmodels/login_viewmodel.dart';
 import 'package:flutter_poc/ui/widgets/button.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
-
-import '../data/services/login_api_service.dart';
-import '../data/repositories/login_repository.dart';
-import '../data/services/login_auth_service.dart';
-import '../viewmodels/login_viewmodel.dart';
+import 'package:provider/provider.dart';
 
 /*
 *  login_view.dart
@@ -21,23 +20,21 @@ class LoginView extends StatelessWidget {
   const LoginView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) {
-        final httpClient = http.Client();
-        const iosOptions = IOSOptions(
-          accessibility: KeychainAccessibility.first_unlock,
-        );
-        final auth = FlutterSecureStorage(iOptions: iosOptions);
-        final service = LoginApiService(httpClient);
-        final authService = LoginAuthService(auth);
-        final repository = LoginRepositoryImpl(service, authService);
-        final vm = LoginViewModel(repository);
-        return vm;
-      },
-      child: _LoginViewBody(),
-    );
-  }
+  Widget build(BuildContext context) => ChangeNotifierProvider(
+    create: (_) {
+      final httpClient = http.Client();
+      const iosOptions = IOSOptions(
+        accessibility: KeychainAccessibility.first_unlock,
+      );
+      const auth = FlutterSecureStorage(iOptions: iosOptions);
+      final service = LoginApiService(httpClient);
+      final authService = LoginAuthService(auth);
+      final repository = LoginRepositoryImpl(service, authService);
+      final vm = LoginViewModel(repository);
+      return vm;
+    },
+    child: const _LoginViewBody(),
+  );
 }
 
 class _LoginViewBody extends StatefulWidget {

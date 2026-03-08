@@ -1,6 +1,6 @@
 import 'dart:convert';
+import 'package:flutter_poc/features/login/data/models/login_response_model.dart';
 import 'package:http/http.dart' as http;
-import '../models/login_response_model.dart';
 
 /*
 *  login_api_service.dart
@@ -26,6 +26,6 @@ class LoginApiService {
       throw Exception(response.statusCode);
     }
     final data = json.decode(response.body);
-    return LoginResponseModel.fromJson(data);
+    return LoginResponseModel.fromJson(data as Map<String, dynamic>);
   }
 }

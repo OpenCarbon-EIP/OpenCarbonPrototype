@@ -1,4 +1,4 @@
-import '../../data/repositories/login_repository.dart';
+import 'package:flutter_poc/features/login/data/repositories/login_repository.dart';
 
 /*
 *  login_usecase.dart
@@ -7,14 +7,14 @@ import '../../data/repositories/login_repository.dart';
 *  It interacts with the LoginRepository to perform the login operation and handles any exceptions that may occur during the process.
 */
 class LoginUseCase {
-  final LoginRepository _repository;
-
   LoginUseCase(this._repository);
+
+  final LoginRepository _repository;
 
   Future<void> call(String email, String password) async {
     try {
       return await _repository.login(email, password);
-    } catch (e) {
+    } on Exception catch (_) {
       throw Exception('Failed to login');
     }
   }

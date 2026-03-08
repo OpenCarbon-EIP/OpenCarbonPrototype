@@ -1,7 +1,7 @@
 // lib/viewmodels/offers_viewmodel.dart
 import 'package:flutter/foundation.dart';
-import '../data/models/offer_model.dart';
-import '../data/repositories/offer_repository.dart';
+import 'package:flutter_poc/features/offers/data/models/offer_model.dart';
+import 'package:flutter_poc/features/offers/data/repositories/offer_repository.dart';
 
 class OffersViewModel extends ChangeNotifier {
   OffersViewModel(this._repository);
@@ -23,7 +23,7 @@ class OffersViewModel extends ChangeNotifier {
 
     try {
       _offers = await _repository.getOffers();
-    } catch (e) {
+    } on Exception catch (_) {
       _error = 'Une erreur est survenue';
     } finally {
       _isLoading = false;

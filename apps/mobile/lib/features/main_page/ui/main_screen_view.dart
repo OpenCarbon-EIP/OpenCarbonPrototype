@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_poc/core/colors/app_colors.dart';
 import 'package:flutter_poc/features/dashboard/ui/dashboard.dart';
 import 'package:flutter_poc/features/messages/ui/messages_view.dart';
 import 'package:flutter_poc/features/offers/ui/offers_view.dart';
 import 'package:flutter_poc/ui/widgets/app_navbar.dart';
-import 'package:flutter_poc/core/colors/app_colors.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -19,23 +19,21 @@ class _MainScreenState extends State<MainScreen> {
     const Dashboard(),
     const OffersView(),
     const MessagesView(),
-    const Center(child: Text("Profile")),
+    const Center(child: Text('Profile')),
   ];
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      extendBody: true,
-      backgroundColor: AppColors.backgroundLight,
-      body: _views[_currentIndex], 
-      bottomNavigationBar: AppNavbar(
-        selectedIndex: _currentIndex,
-        onItemSelected: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-      ),
-    );
-  }
+  Widget build(BuildContext context) => Scaffold(
+    extendBody: true,
+    backgroundColor: AppColors.backgroundLight,
+    body: _views[_currentIndex],
+    bottomNavigationBar: AppNavbar(
+      selectedIndex: _currentIndex,
+      onItemSelected: (index) {
+        setState(() {
+          _currentIndex = index;
+        });
+      },
+    ),
+  );
 }

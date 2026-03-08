@@ -1,5 +1,5 @@
-import '../models/offer_model.dart';
-import '../services/offer_api_service.dart';
+import 'package:flutter_poc/features/offers/data/models/offer_model.dart';
+import 'package:flutter_poc/features/offers/data/services/offer_api_service.dart';
 
 abstract class OfferRepository {
   Future<List<OfferModel>> getOffers();
@@ -14,7 +14,7 @@ class OfferRepositoryImpl implements OfferRepository {
   Future<List<OfferModel>> getOffers() {
     try {
       return _api.getOffers();
-    } catch (e) {
+    } on Exception catch (_) {
       throw Exception('Failed to load offers');
     }
   }

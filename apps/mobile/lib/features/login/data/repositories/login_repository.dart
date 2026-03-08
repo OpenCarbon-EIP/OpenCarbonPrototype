@@ -1,5 +1,5 @@
+import 'package:flutter_poc/features/login/data/services/login_api_service.dart';
 import 'package:flutter_poc/features/login/data/services/login_auth_service.dart';
-import '../services/login_api_service.dart';
 
 abstract class LoginRepository {
   Future<void> login(String email, String password);
@@ -27,7 +27,7 @@ class LoginRepositoryImpl implements LoginRepository {
         throw Exception('No access token received');
       }
       await _authService.saveToken(accessToken);
-    } catch (e) {
+    } on Exception catch (_) {
       throw Exception('Failed to login');
     }
   }

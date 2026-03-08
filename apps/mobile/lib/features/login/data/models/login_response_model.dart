@@ -4,12 +4,6 @@
 *  This file defines the data models for handling the login response from the API.
 */
 class LoginResponseModel {
-  final bool success;
-  final LoginResponseData? data;
-  final String message;
-  final String? error;
-  final int? statusCode;
-
   LoginResponseModel({
     required this.success,
     this.data,
@@ -18,42 +12,38 @@ class LoginResponseModel {
     this.statusCode,
   });
 
-  factory LoginResponseModel.fromJson(Map<String, dynamic> json) {
-    return LoginResponseModel(
-      success: json['success'] as bool,
-      data: json['data'] != null
-          ? LoginResponseData.fromJson(json['data'])
-          : null,
-      message: json['message'] as String,
-      error: json['error'] as String?,
-      statusCode: json['statusCode'] as int?,
-    );
-  }
+  factory LoginResponseModel.fromJson(Map<String, dynamic> json) =>
+      LoginResponseModel(
+        success: json['success'] as bool,
+        data: json['data'] != null
+            ? LoginResponseData.fromJson(json['data'] as Map<String, dynamic>)
+            : null,
+        message: json['message'] as String,
+        error: json['error'] as String?,
+        statusCode: json['statusCode'] as int?,
+      );
+
+  final bool success;
+  final LoginResponseData? data;
+  final String message;
+  final String? error;
+  final int? statusCode;
 }
 
 class LoginResponseData {
+  LoginResponseData({required this.accessToken, required this.user});
+
+  factory LoginResponseData.fromJson(Map<String, dynamic> json) =>
+      LoginResponseData(
+        accessToken: json['access_token'] as String,
+        user: LoginUser.fromJson(json['user'] as Map<String, dynamic>),
+      );
+
   final String accessToken;
   final LoginUser user;
-
-  LoginResponseData({
-    required this.accessToken,
-    required this.user,
-  });
-
-  factory LoginResponseData.fromJson(Map<String, dynamic> json) {
-    return LoginResponseData(
-      accessToken: json['access_token'],
-      user: LoginUser.fromJson(json['user']),
-    );
-  }
 }
 
 class LoginUser {
-  final String id;
-  final String email;
-  final String role;
-  final String name;
-
   LoginUser({
     required this.id,
     required this.email,
@@ -61,12 +51,16 @@ class LoginUser {
     required this.name,
   });
 
-  factory LoginUser.fromJson(Map<String, dynamic> json) {
-    return LoginUser(
-      id: json['id'],
-      email: json['email'],
-      role: json['role'],
-      name: json['name'],
-    );
-  }
+  factory LoginUser.fromJson(Map<String, dynamic> json) => LoginUser(
+    id: json['id'] as String,
+    email: json['email'] as String,
+    role: json['role'] as String,
+    name: json['name'] as String,
+  );
+
+  final String id;
+  final String email;
+  final String role;
+  final String name;
+
 }
