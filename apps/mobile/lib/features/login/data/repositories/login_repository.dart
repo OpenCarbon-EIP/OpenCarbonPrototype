@@ -1,3 +1,4 @@
+import 'package:flutter_poc/core/errors/app_errors.dart';
 import 'package:flutter_poc/features/login/data/services/login_api_service.dart';
 import 'package:flutter_poc/features/login/data/services/login_auth_service.dart';
 
@@ -24,11 +25,13 @@ class LoginRepositoryImpl implements LoginRepository {
       final response = await _api.login(email, password);
       final accessToken = response.data?.accessToken;
       if (accessToken == null) {
-        throw Exception('No access token received');
+        throw AuthFailure("Le jeton de connexion n'a pas été bien envoyé. Réessayer.");
       }
       await _authService.saveToken(accessToken);
-    } on Exception catch (_) {
-      throw Exception('Failed to login');
+    } on AuthFailure catch (_) {
+      rethrow;
+    } on Exception catch (e) {
+      throw Exception('Failed to login: ${e.toString()}');
     }
   }
 }
