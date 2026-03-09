@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_poc/core/errors/app_errors.dart';
 import 'package:flutter_poc/features/offers/data/models/offer_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -7,15 +8,27 @@ class OfferApiService {
 
   final http.Client _httpClient;
 
-  Future<List<OfferModel>> getOffers() async {
+  Future<OfferModel> getOffers(String token) async {
     final uri = Uri.http('localhost:3000', '/offers/list');
-    final response = await _httpClient.get(uri);
+    final response = await _httpClient.get(
+      uri,
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+    );
 
     if (response.statusCode != 200) {
-      throw Exception('Failed to load offers');
+      switch (response.statusCode) {
+        case 401:
+          throw AuthFailure("Vous n'êtes pas autorisé(e) à voir les offres.");
+        default:
+          throw Exception('Erreur pendant le chargement des opportunités');
+      }
     }
 
-    final data = json.decode(response.body) as List;
-    return data.map((json) => OfferModel.fromJson(json as Map<String, dynamic>)).toList();
+    final decoded = json.decode(response.body) as Map<String, dynamic>;
+
+    return OfferModel.fromJson(decoded);
   }
 }
