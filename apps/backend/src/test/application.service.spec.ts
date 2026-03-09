@@ -2,12 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ApplicationService } from '../application/application.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
+import { ConsultantService } from '../consultant/consultant.service';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('ApplicationService', () => {
   let service: ApplicationService;
   let prismaService: PrismaService;
   let usersService: UsersService;
+  let consultantService: ConsultantService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -30,12 +32,19 @@ describe('ApplicationService', () => {
             getUserById: jest.fn(),
           },
         },
+        {
+          provide: ConsultantService,
+          useValue: {
+            getConsultantByUserId: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<ApplicationService>(ApplicationService);
     prismaService = module.get<PrismaService>(PrismaService);
     usersService = module.get<UsersService>(UsersService);
+    consultantService = module.get<ConsultantService>(ConsultantService);
   });
 
   describe('createApplication', () => {
@@ -45,38 +54,48 @@ describe('ApplicationService', () => {
         content: 'I am interested in this job.',
       };
 
-      const userId = 'consul-123';
+      const userId = 'user-123';
 
       const mockUser = {
         id: userId,
         email: 'consultant@example.com',
-        name: 'Consultant Name',
         role: 'CONSULTANT',
+      };
+
+      const mockConsultant = {
+        id: 'consul-123',
+        first_name: 'John',
+        last_name: 'Doe',
+        professional_title: 'Carbon Auditor',
+        id_user: userId,
       };
 
       const mockApp = {
         id: 'app-uuid',
-        id_consultant: userId,
+        id_consultant: 'consul-123',
         id_offer: 'offre-456',
         content: 'I am interested in this job.',
         status: 'pending',
       };
 
+      const createSpy = jest.spyOn(prismaService.application, 'create');
+
       jest
         .spyOn(usersService, 'getUserById')
         .mockResolvedValue(mockUser as any);
       jest
-        .spyOn(prismaService.application, 'create')
-        .mockResolvedValue(mockApp as any);
+        .spyOn(consultantService, 'getConsultantByUserId')
+        .mockResolvedValue(mockConsultant as any);
+
+      createSpy.mockResolvedValue(mockApp as any);
 
       const result = await service.createApplication(createDto, userId);
 
       expect(result).toEqual(mockApp);
 
-      const createSpy = jest.spyOn(prismaService.application, 'create');
       expect(createSpy).toHaveBeenCalledWith({
         data: {
-          id_consultant: userId,
+          id_consultant: 'consul-123',
           id_offer: 'offre-456',
           content: 'I am interested in this job.',
         },
@@ -133,6 +152,28 @@ describe('ApplicationService', () => {
           'consul-123',
         ),
       ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw NotFoundException if consultant profile not found', async () => {
+      const mockUser = {
+        id: 'user-123',
+        email: 'consultant@example.com',
+        role: 'CONSULTANT',
+      };
+
+      jest
+        .spyOn(usersService, 'getUserById')
+        .mockResolvedValue(mockUser as any);
+      jest
+        .spyOn(consultantService, 'getConsultantByUserId')
+        .mockResolvedValue(null);
+
+      await expect(
+        service.createApplication(
+          { id_offer: 'offre-456', content: 'I am interested in this job.' },
+          'user-123',
+        ),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
