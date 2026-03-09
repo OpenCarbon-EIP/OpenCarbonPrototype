@@ -45,9 +45,7 @@ class OfferRepositoryImpl implements OfferRepository {
                           'Industrie non spécifiée',
                       companySize: offer.company!.companySize,
                       description: offer.company!.description,
-                      logoUrl:
-                          offer.company!.logoUrl ??
-                          "Aucune photo de l'entreprise",
+                      logoUrl: offer.company!.logoUrl,
                       idUser: offer.company!.idUser,
                       user: offer.company!.user != null
                           ? UserEntity(
@@ -62,6 +60,8 @@ class OfferRepositoryImpl implements OfferRepository {
             ),
           )
           .toList();
+    } on AuthFailure catch (_) {
+      rethrow;
     } on Exception catch (e) {
       throw Exception('Failed to load offers: ${e.toString()}');
     }

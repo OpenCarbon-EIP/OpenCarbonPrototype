@@ -77,14 +77,9 @@ class _OffersViewBody extends StatelessWidget {
                     if (index == offers.length) {
                       return const SizedBox(height: 110);
                     }
-
                     final offer = offers[index];
-
                     return Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 8.0,
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       child: CustomCard(
                         index: index,
                         title: offer.title,
@@ -97,8 +92,7 @@ class _OffersViewBody extends StatelessWidget {
                             isScrollControlled: true,
                             builder: (context) => SafeArea(
                               child: SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.85,
+                                height: MediaQuery.of(context).size.height * 0.85,
                                 width: double.infinity,
                                 child: Padding(
                                   padding: const EdgeInsets.all(16.0),
@@ -107,43 +101,54 @@ class _OffersViewBody extends StatelessWidget {
                                       Expanded(
                                         child: SingleChildScrollView(
                                           child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             spacing: 13,
                                             children: [
                                               Text(
                                                 selectedOffer.title,
-                                                style: AppTypography
-                                                    .headingMedium
-                                                    .copyWith(
-                                                      color: AppColors
-                                                          .primaryLight,
-                                                    ),
-                                              ),
-                                              Text(
-                                                selectedOffer.company?.companyName ?? "Nom de l'entreprise non spécifié",
-                                                style: AppTypography
-                                                    .headingMedium
-                                                    .copyWith(
-                                                  color: AppColors
-                                                      .primaryLight,
+                                                style: AppTypography.headingLarge.copyWith(
+                                                  color: AppColors.primaryLight,
                                                 ),
                                               ),
+                                              const SizedBox(height: 16),
+
+                                              Row(
+                                                spacing: 16,
+                                                children: [
+                                                  Text(
+                                                    selectedOffer.company?.companyName ??
+                                                        "Nom de l'entreprise non spécifié",
+                                                    style: AppTypography.headingMedium.copyWith(
+                                                      color: AppColors.primaryLight,
+                                                    ),
+                                                  ),
+                                                  selectedOffer.company?.logoUrl == null
+                                                      ? CircleAvatar(
+                                                          radius: 15,
+                                                          backgroundColor: AppColors.primaryLight,
+                                                          child: Text(
+                                                            selectedOffer.company?.companyName.substring(0, 2) ?? 'Nom',
+                                                            style: AppTypography.bodySmall.copyWith(
+                                                              color: AppColors.textLight,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        )
+                                                      : CircleAvatar(
+                                                          radius: 15,
+                                                          backgroundColor: AppColors.primaryLight,
+                                                          child: Image.network(selectedOffer.company!.logoUrl!),
+                                                        ),
+                                                ],
+                                              ),
+
                                               Text(
                                                 'Date limite: ${selectedOffer.deadline}',
-                                                style: AppTypography.bodyMedium
-                                                    .copyWith(
-                                                      color: AppColors
-                                                          .primaryLight,
-                                                    ),
+                                                style: AppTypography.bodyMedium.copyWith(color: AppColors.primaryLight),
                                               ),
                                               Text(
                                                 'Description: ${selectedOffer.description}',
-                                                style: AppTypography.bodyMedium
-                                                    .copyWith(
-                                                      color: AppColors
-                                                          .primaryLight,
-                                                    ),
+                                                style: AppTypography.bodyMedium.copyWith(color: AppColors.primaryLight),
                                               ),
                                             ],
                                           ),

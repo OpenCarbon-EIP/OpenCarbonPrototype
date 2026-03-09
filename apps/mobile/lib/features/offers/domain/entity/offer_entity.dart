@@ -26,20 +26,20 @@ class CompanyEntity {
   CompanyEntity({
     required this.id,
     required this.companyName,
-    required this.industrySector,
+    this.industrySector,
     required this.companySize,
     required this.description,
-    required this.logoUrl,
+    this.logoUrl,
     required this.idUser,
     this.user,
   });
 
   final String id;
   final String companyName;
-  final String industrySector;
+  final String? industrySector;
   final int companySize;
   final String description;
-  final String logoUrl;
+  final String? logoUrl;
   final String idUser;
   final UserEntity? user;
 }
