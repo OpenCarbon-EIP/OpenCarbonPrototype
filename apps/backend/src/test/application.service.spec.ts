@@ -3,7 +3,11 @@ import { ApplicationService } from '../application/application.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
 import { ConsultantService } from '../consultant/consultant.service';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 
 describe('ApplicationService', () => {
   let service: ApplicationService;
@@ -151,7 +155,7 @@ describe('ApplicationService', () => {
           { id_offer: 'offre-456', content: 'I am interested in this job.' },
           'consul-123',
         ),
-      ).rejects.toThrow(BadRequestException);
+      ).rejects.toThrow(UnauthorizedException);
     });
 
     it('should throw NotFoundException if consultant profile not found', async () => {
