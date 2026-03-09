@@ -43,7 +43,7 @@ describe('ApplicationService', () => {
       const createDto = {
         id_offer: 'offre-456',
         content: 'I am interested in this job.',
-      }
+      };
 
       const userId = 'consul-123';
 
@@ -60,18 +60,21 @@ describe('ApplicationService', () => {
         id_offer: 'offre-456',
         content: 'I am interested in this job.',
         status: 'pending',
-      }
+      };
 
-      jest.spyOn(usersService, 'getUserById')
+      jest
+        .spyOn(usersService, 'getUserById')
         .mockResolvedValue(mockUser as any);
-      jest.spyOn(prismaService.application, 'create')
+      jest
+        .spyOn(prismaService.application, 'create')
         .mockResolvedValue(mockApp as any);
 
       const result = await service.createApplication(createDto, userId);
 
       expect(result).toEqual(mockApp);
 
-      expect(prismaService.application.create).toHaveBeenCalledWith({
+      const createSpy = jest.spyOn(prismaService.application, 'create');
+      expect(createSpy).toHaveBeenCalledWith({
         data: {
           id_consultant: userId,
           id_offer: 'offre-456',
@@ -83,7 +86,7 @@ describe('ApplicationService', () => {
     it('should throw BadRequestException if creation fails', async () => {
       const invalidDto = {
         id_offer: 'offre-456',
-      }
+      };
 
       const mockUser = {
         id: 'consul-123',
@@ -92,20 +95,23 @@ describe('ApplicationService', () => {
         role: 'CONSULTANT',
       };
 
-      jest.spyOn(usersService, 'getUserById')
+      jest
+        .spyOn(usersService, 'getUserById')
         .mockResolvedValue(mockUser as any);
 
       await expect(
-        service.createApplication(invalidDto as any, 'consul-123')
+        service.createApplication(invalidDto as any, 'consul-123'),
       ).rejects.toThrow(BadRequestException);
     });
 
     it('should throw BadRequestException if user is not found', async () => {
-      jest.spyOn(usersService, 'getUserById')
-        .mockResolvedValue(null);
+      jest.spyOn(usersService, 'getUserById').mockResolvedValue(null);
 
       await expect(
-        service.createApplication({ id_offer: 'offre-456', content: 'I am interested in this job.' }, 'consul-123')
+        service.createApplication(
+          { id_offer: 'offre-456', content: 'I am interested in this job.' },
+          'consul-123',
+        ),
       ).rejects.toThrow(BadRequestException);
     });
 
@@ -117,14 +123,18 @@ describe('ApplicationService', () => {
         role: 'CLIENT',
       };
 
-      jest.spyOn(usersService, 'getUserById')
+      jest
+        .spyOn(usersService, 'getUserById')
         .mockResolvedValue(mockUser as any);
 
       await expect(
-        service.createApplication({ id_offer: 'offre-456', content: 'I am interested in this job.' }, 'consul-123')
+        service.createApplication(
+          { id_offer: 'offre-456', content: 'I am interested in this job.' },
+          'consul-123',
+        ),
       ).rejects.toThrow(BadRequestException);
     });
-});
+  });
 
   describe('getApplicationById', () => {
     it('should return an application when it exists', async () => {
@@ -134,60 +144,66 @@ describe('ApplicationService', () => {
         id_offer: 'offre-456',
         content: 'I am interested in this job.',
         status: 'PENDING',
-      }
+      };
 
-      jest.spyOn(prismaService.application, 'findUnique')
+      jest
+        .spyOn(prismaService.application, 'findUnique')
         .mockResolvedValue(mockApp as any);
 
       const result = await service.getApplicationById('app-123');
 
       expect(result).toEqual(mockApp);
-      expect(prismaService.application.findUnique).toHaveBeenCalledWith({
+
+      const findUniqueSpy = jest.spyOn(prismaService.application, 'findUnique');
+      expect(findUniqueSpy).toHaveBeenCalledWith({
         where: { id: 'app-123' },
       });
     });
 
     it('should throw BadRequestException if id is not provided', async () => {
-      await expect(
-        service.getApplicationById('')
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.getApplicationById('')).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
   describe('getAllApplicationsByUserId', () => {
     it('should return all applications for a user', async () => {
       const mockApps = [
-        { 
+        {
           id: 'app-1',
           id_consultant: 'consul-123',
           id_offer: 'offre-456',
           content: 'App 1',
-          status: 'PENDING'
+          status: 'PENDING',
         },
         {
           id: 'app-2',
           id_consultant: 'consul-123',
           id_offer: 'offre-789',
           content: 'App 2',
-          status: 'PENDING'
+          status: 'PENDING',
         },
       ];
 
-      jest.spyOn(prismaService.application, 'findMany')
+      jest
+        .spyOn(prismaService.application, 'findMany')
         .mockResolvedValue(mockApps as any);
 
       const result = await service.getAllApplicationsByUserId('consul-123');
 
       expect(result).toEqual(mockApps);
-      expect(prismaService.application.findMany).toHaveBeenCalledWith({
+
+      const findManySpy = jest.spyOn(prismaService.application, 'findMany');
+      expect(findManySpy).toHaveBeenCalledWith({
         where: { id_consultant: 'consul-123' },
       });
     });
 
     it('should throw BadRequestException if userId is not provided', async () => {
-      await expect(
-        service.getAllApplicationsByUserId('')
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.getAllApplicationsByUserId('')).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -199,23 +215,26 @@ describe('ApplicationService', () => {
         id_offer: 'offre-456',
         content: 'I am interested in this job.',
         status: 'PENDING',
-      }
+      };
 
-      jest.spyOn(prismaService.application, 'delete')
+      jest
+        .spyOn(prismaService.application, 'delete')
         .mockResolvedValue(mockApp as any);
 
       const result = await service.deleteApplication('app-123');
 
       expect(result).toEqual(mockApp);
-      expect(prismaService.application.delete).toHaveBeenCalledWith({
+
+      const deleteSpy = jest.spyOn(prismaService.application, 'delete');
+      expect(deleteSpy).toHaveBeenCalledWith({
         where: { id: 'app-123' },
       });
     });
 
     it('should throw BadRequestException if id is not provided', async () => {
-      await expect(
-        service.deleteApplication('')
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.deleteApplication('')).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
-})
+});

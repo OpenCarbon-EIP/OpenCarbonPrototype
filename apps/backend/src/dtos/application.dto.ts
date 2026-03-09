@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, IsUUID, MinLength } from 'class-validator';
+import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
 
 export class CreateApplicationDto {
   @IsUUID()
@@ -9,4 +9,3 @@ export class CreateApplicationDto {
   @IsNotEmpty()
   content: string;
 }
-

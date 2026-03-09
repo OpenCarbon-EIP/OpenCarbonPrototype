@@ -6,7 +6,10 @@ import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class ApplicationService {
-  constructor(private readonly prisma: PrismaService, private readonly userService: UsersService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly userService: UsersService,
+  ) {}
 
   async getAllApplicationsByUserId(userId: string): Promise<application[]> {
     if (!userId) {
@@ -57,6 +60,7 @@ export class ApplicationService {
         },
       });
     } catch (error) {
+      console.error(error);
       throw new BadRequestException('Failed to create application');
     }
   }
@@ -71,6 +75,7 @@ export class ApplicationService {
         where: { id },
       });
     } catch (error) {
+      console.error(error);
       throw new BadRequestException('Failed to delete application');
     }
   }

@@ -42,10 +42,13 @@ describe('ApplicationController', () => {
         status: 'pending',
       };
 
-      jest.spyOn(service, 'createApplication')
+      jest
+        .spyOn(service, 'createApplication')
         .mockResolvedValue(mockApp as any);
 
-      const result = await controller.createApplication(createDto, { id: 'consul-123' } as Express.User);
+      const result = await controller.createApplication(createDto, {
+        id: 'consul-123',
+      } as Express.User);
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockApp);
@@ -59,7 +62,7 @@ describe('ApplicationController', () => {
       };
 
       await expect(
-        controller.createApplication(createDto, undefined as any)
+        controller.createApplication(createDto, undefined as any),
       ).rejects.toThrow('User not authenticated');
     });
   });
@@ -74,10 +77,13 @@ describe('ApplicationController', () => {
         status: 'PENDING',
       };
 
-      jest.spyOn(service, 'getApplicationById')
+      jest
+        .spyOn(service, 'getApplicationById')
         .mockResolvedValue(mockApp as any);
 
-      const result = await controller.getApplicationById('app-uuid', { id: 'consul-123' } as Express.User);
+      const result = await controller.getApplicationById('app-uuid', {
+        id: 'consul-123',
+      } as Express.User);
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockApp);
@@ -88,7 +94,9 @@ describe('ApplicationController', () => {
       jest.spyOn(service, 'getApplicationById').mockResolvedValue(null);
 
       await expect(
-        controller.getApplicationById('nonexistent-id', { id: 'consul-123' } as Express.User)
+        controller.getApplicationById('nonexistent-id', {
+          id: 'consul-123',
+        } as Express.User),
       ).rejects.toThrow(NotFoundException);
     });
 
@@ -101,17 +109,22 @@ describe('ApplicationController', () => {
         status: 'PENDING',
       };
 
-      jest.spyOn(service, 'getApplicationById')
+      jest
+        .spyOn(service, 'getApplicationById')
         .mockResolvedValue(mockApp as any);
 
       await expect(
-        controller.getApplicationById('app-uuid', { id: 'other-user' } as Express.User)
-      ).rejects.toThrow('You do not have permission to access this application');
+        controller.getApplicationById('app-uuid', {
+          id: 'other-user',
+        } as Express.User),
+      ).rejects.toThrow(
+        'You do not have permission to access this application',
+      );
     });
 
     it('should throw ForbiddenException when user is not authenticated', async () => {
       await expect(
-        controller.getApplicationById('app-uuid', undefined as any)
+        controller.getApplicationById('app-uuid', undefined as any),
       ).rejects.toThrow('User not authenticated');
     });
   });
@@ -135,10 +148,13 @@ describe('ApplicationController', () => {
         },
       ];
 
-      jest.spyOn(service, 'getAllApplicationsByUserId')
+      jest
+        .spyOn(service, 'getAllApplicationsByUserId')
         .mockResolvedValue(mockApps as any);
 
-      const result = await controller.getAllApplicationsByUserId({ id: 'consul-123' } as Express.User);
+      const result = await controller.getAllApplicationsByUserId({
+        id: 'consul-123',
+      } as Express.User);
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockApps);
@@ -148,7 +164,9 @@ describe('ApplicationController', () => {
     it('should return empty array when no applications found', async () => {
       jest.spyOn(service, 'getAllApplicationsByUserId').mockResolvedValue([]);
 
-      const result = await controller.getAllApplicationsByUserId({ id: 'consul-123' } as Express.User);
+      const result = await controller.getAllApplicationsByUserId({
+        id: 'consul-123',
+      } as Express.User);
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual([]);
@@ -157,7 +175,7 @@ describe('ApplicationController', () => {
 
     it('should throw ForbiddenException when user is not authenticated', async () => {
       await expect(
-        controller.getAllApplicationsByUserId(undefined as any)
+        controller.getAllApplicationsByUserId(undefined as any),
       ).rejects.toThrow('User not authenticated');
     });
   });
@@ -172,10 +190,13 @@ describe('ApplicationController', () => {
         status: 'pending',
       };
 
-      jest.spyOn(service, 'deleteApplication')
+      jest
+        .spyOn(service, 'deleteApplication')
         .mockResolvedValue(mockApp as any);
 
-      const result = await controller.deleteApplication('app-uuid', { id: 'consul-123' } as Express.User);
+      const result = await controller.deleteApplication('app-uuid', {
+        id: 'consul-123',
+      } as Express.User);
 
       expect(result.success).toBe(true);
       expect(result.data).toEqual(mockApp);
@@ -186,7 +207,9 @@ describe('ApplicationController', () => {
       jest.spyOn(service, 'deleteApplication').mockResolvedValue(null);
 
       await expect(
-        controller.deleteApplication('nonexistent-id', { id: 'consul-123' } as Express.User)
+        controller.deleteApplication('nonexistent-id', {
+          id: 'consul-123',
+        } as Express.User),
       ).rejects.toThrow(NotFoundException);
     });
 
@@ -199,19 +222,23 @@ describe('ApplicationController', () => {
         status: 'pending',
       };
 
-      jest.spyOn(service, 'deleteApplication')
+      jest
+        .spyOn(service, 'deleteApplication')
         .mockResolvedValue(mockApp as any);
 
       await expect(
-        controller.deleteApplication('app-uuid', { id: 'other-user' } as Express.User)
-      ).rejects.toThrow('You do not have permission to delete this application');
+        controller.deleteApplication('app-uuid', {
+          id: 'other-user',
+        } as Express.User),
+      ).rejects.toThrow(
+        'You do not have permission to delete this application',
+      );
     });
 
     it('should throw ForbiddenException when user is not authenticated', async () => {
       await expect(
-        controller.deleteApplication('app-uuid', undefined as any)
+        controller.deleteApplication('app-uuid', undefined as any),
       ).rejects.toThrow('User not authenticated');
     });
   });
 });
-
