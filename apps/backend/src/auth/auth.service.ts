@@ -23,7 +23,7 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto): Promise<AuthResponse> {
-    const { email, password, name, role } = registerDto;
+    const { email, password, role } = registerDto;
 
     const emailTrim = email.trim().toLowerCase();
 
@@ -59,7 +59,6 @@ export class AuthService {
         const createdUser = await tx.user.create({
           data: {
             email: emailTrim,
-            name,
             password: hashedPassword,
             ...(role && { role }),
           },
@@ -110,7 +109,6 @@ export class AuthService {
       user: {
         id: user.id,
         email: user.email,
-        name: user.name,
         role: user.role,
       },
     };
@@ -141,7 +139,6 @@ export class AuthService {
       user: {
         id: user.id,
         email: user.email,
-        name: user.name,
         role: user.role,
       },
     };

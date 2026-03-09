@@ -1,11 +1,13 @@
-import type { user } from 'src/generated/prisma/client';
+import type { company, consultant, user } from 'src/generated/prisma/client';
 
-export type SafeUser = Omit<user, 'password' | 'createdAt' | 'updatedAt'>;
+export type SafeUser = Omit<user, 'password' | 'createdAt' | 'updatedAt'> & {
+  consultant?: consultant | null;
+  company?: company | null;
+};
 
 export type AuthenticatedUser = {
   id: string;
   email: string;
-  name: string;
 };
 
 export interface JwtPayload {

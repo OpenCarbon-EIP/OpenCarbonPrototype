@@ -27,11 +27,6 @@ export class RegisterDto {
   @IsStrongPassword()
   password: string;
 
-  @ApiProperty({ example: 'John Doe' })
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-
   @ApiProperty({
     enum: RegistrationRole,
     example: 'CONSULTANT',
