@@ -29,4 +29,4 @@ macos/Pods/
 
 # Divers
 *.log
-.DS_Store (si vous êtes sur Mac)
+.DS_Store
