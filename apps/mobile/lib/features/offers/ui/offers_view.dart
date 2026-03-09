@@ -16,17 +16,20 @@ class OffersView extends StatelessWidget {
   const OffersView({super.key});
 
   @override
-  Widget build(BuildContext context) => ChangeNotifierProvider(
-    create: (_) {
-      final httpClient = http.Client();
-      final service = OfferApiService(httpClient);
-      final authService = OfferAuthService(const FlutterSecureStorage());
-      final repository = OfferRepositoryImpl(service, authService);
-      final vm = OffersViewModel(repository);
-      vm.loadOffers();
-      return vm;
-    },
-    child: const _OffersViewBody(),
+  Widget build(BuildContext context) => Provider<http.Client>(
+    create: (_) => http.Client(),
+    dispose: (_, client) => client.close(),
+    child: ChangeNotifierProvider(
+      create: (context) {
+        final service = OfferApiService(context.read<http.Client>());
+        final authService = OfferAuthService(const FlutterSecureStorage());
+        final repository = OfferRepositoryImpl(service, authService);
+        final vm = OffersViewModel(repository);
+        vm.loadOffers();
+        return vm;
+      },
+      child: const _OffersViewBody(),
+    ),
   );
 }
 
@@ -116,6 +119,15 @@ class _OffersViewBody extends StatelessWidget {
                                                       color: AppColors
                                                           .primaryLight,
                                                     ),
+                                              ),
+                                              Text(
+                                                selectedOffer.company?.companyName ?? "Nom de l'entreprise non spécifié",
+                                                style: AppTypography
+                                                    .headingMedium
+                                                    .copyWith(
+                                                  color: AppColors
+                                                      .primaryLight,
+                                                ),
                                               ),
                                               Text(
                                                 'Date limite: ${selectedOffer.deadline}',

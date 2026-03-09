@@ -48,6 +48,9 @@ class OfferData {
     status: json['status'] as String,
     location: json['location'] as String,
     idCompany: json['id_company'] as String,
+    company: json['company'] != null
+         ? CompanyData.fromJson(json['company'] as Map<String, dynamic>)
+         : null,
   );
 
   final String id;
@@ -65,10 +68,10 @@ class CompanyData {
   CompanyData({
     required this.id,
     required this.companyName,
-    required this.industrySector,
+    this.industrySector,
     required this.companySize,
     required this.description,
-    required this.logoUrl,
+    this.logoUrl,
     required this.idUser,
     this.user,
   });
@@ -76,10 +79,12 @@ class CompanyData {
   factory CompanyData.fromJson(Map<String, dynamic> json) => CompanyData(
     id: json['id'] as String,
     companyName: json['company_name'] as String,
-    industrySector: json['industry_sector'] as String,
+    industrySector: json['industry_sector'] != null
+        ? json['industry_sector'] as String
+        : null,
     companySize: json['company_size'] as int,
     description: json['description'] as String,
-    logoUrl: json['logo_url'] as String,
+    logoUrl: json['logo_url'] != null ? json['logo_url'] as String : null,
     idUser: json['id_user'] as String,
     user: json['user'] != null
         ? UserData.fromJson(json['user'] as Map<String, dynamic>)
@@ -88,10 +93,10 @@ class CompanyData {
 
   final String id;
   final String companyName;
-  final String industrySector;
+  final String? industrySector;
   final int companySize;
   final String description;
-  final String logoUrl;
+  final String? logoUrl;
   final String idUser;
   final UserData? user;
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_poc/core/auth/auth_provider.dart';
 import 'package:flutter_poc/features/login/data/repositories/login_repository.dart';
 import 'package:flutter_poc/features/login/data/services/login_api_service.dart';
 import 'package:flutter_poc/features/login/data/services/login_auth_service.dart';
@@ -67,44 +68,54 @@ class _LoginViewBodyState extends State<_LoginViewBody> {
     final vm = context.watch<LoginViewModel>();
 
     return Scaffold(
-      body: Column(
-        children: [
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.4,
-            child: Container(),
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).size.height * 0.3,
-            child: Column(
-              children: [
-                const Spacer(),
-                TextField(
-                  controller: _emailController,
-                  decoration: const InputDecoration(labelText: 'Email'),
-                ),
-                TextField(
-                  controller: _passwordController,
-                  decoration: const InputDecoration(labelText: 'Mot de passe'),
-                  obscureText: true,
-                ),
-                if (vm.error != null)
-                  Text(vm.error!, style: const TextStyle(color: Colors.red)),
-                const Spacer(),
-              ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.4,
+              child: Container(),
             ),
-          ),
-
-          SafeArea(
-            child: vm.isLoading
-                ? const CircularProgressIndicator()
-                : SmallButton(
-                    text: 'Se connecter',
-                    onPressed: () {
-                      vm.login(_emailController.text, _passwordController.text);
-                    },
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.3,
+              child: Column(
+                children: [
+                  const Spacer(),
+                  TextField(
+                    controller: _emailController,
+                    decoration: const InputDecoration(labelText: 'Email'),
                   ),
-          ),
-        ],
+                  TextField(
+                    controller: _passwordController,
+                    decoration: const InputDecoration(
+                      labelText: 'Mot de passe',
+                    ),
+                    obscureText: true,
+                  ),
+                  if (vm.error != null)
+                    Text(vm.error!, style: const TextStyle(color: Colors.red)),
+                  const Spacer(),
+                ],
+              ),
+            ),
+
+            SafeArea(
+              child: vm.isLoading
+                  ? const CircularProgressIndicator()
+                  : SmallButton(
+                      text: 'Se connecter',
+                      onPressed: () async {
+                        await vm.login(
+                          _emailController.text,
+                          _passwordController.text,
+                        );
+                        if (vm.error == null && context.mounted) {
+                          await context.read<AuthProvider>().loginSuccess();
+                        }
+                      },
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }

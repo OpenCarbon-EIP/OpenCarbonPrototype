@@ -23,10 +23,12 @@ class LoginApiService {
       'password': password,
     });
 
-    if (response.statusCode != 200) {
+    if (response.statusCode != 200 && response.statusCode != 201) {
       switch (response.statusCode) {
         case 401:
           throw AuthFailure("L'email ou le mot de passe n'est pas bon");
+        default:
+          throw Exception('Erreur pendant la connexion');
       }
     }
     final data = json.decode(response.body);

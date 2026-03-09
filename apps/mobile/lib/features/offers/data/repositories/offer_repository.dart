@@ -1,3 +1,4 @@
+import 'package:flutter_poc/core/errors/app_errors.dart';
 import 'package:flutter_poc/features/offers/data/models/offer_model.dart';
 import 'package:flutter_poc/features/offers/data/services/offer_api_service.dart';
 import 'package:flutter_poc/features/offers/data/services/offer_auth_service.dart';
@@ -17,7 +18,10 @@ class OfferRepositoryImpl implements OfferRepository {
   Future<List<OfferEntity>> getOffers() async {
     try {
       final token = await _authService.getToken();
-      final OfferModel response = await _api.getOffers(token!);
+      if (token == null) {
+        throw AuthFailure("Le token n'est pas valable");
+      }
+      final OfferModel response = await _api.getOffers(token);
 
       final List<OfferData> dataList = response.data ?? [];
 
@@ -36,10 +40,14 @@ class OfferRepositoryImpl implements OfferRepository {
                   ? CompanyEntity(
                       id: offer.company!.id,
                       companyName: offer.company!.companyName,
-                      industrySector: offer.company!.industrySector,
+                      industrySector:
+                          offer.company!.industrySector ??
+                          'Industrie non spécifiée',
                       companySize: offer.company!.companySize,
                       description: offer.company!.description,
-                      logoUrl: offer.company!.logoUrl,
+                      logoUrl:
+                          offer.company!.logoUrl ??
+                          "Aucune photo de l'entreprise",
                       idUser: offer.company!.idUser,
                       user: offer.company!.user != null
                           ? UserEntity(
