@@ -9,6 +9,13 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiTags,
+  ApiOperation,
+  ApiResponse as SwaggerResponse,
+  ApiParam,
+} from '@nestjs/swagger';
 import { OfferService } from './offer.service';
 import { CurrentUser } from 'src/decorators/current-user';
 import { CreateOfferDto, UpdateOfferDto } from '@dtos/offer.dto';
@@ -16,12 +23,21 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ApiResponse } from 'src/types/global';
 import { offer } from 'src/generated/prisma/client';
 
+@ApiTags('Offers')
+@ApiBearerAuth('JWT')
+@UseGuards(JwtAuthGuard)
 @Controller('offers')
 export class OfferController {
   constructor(private readonly offerService: OfferService) {}
 
   @Post('create')
-  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Create a new offer (company only)' })
+  @SwaggerResponse({ status: 201, description: 'Offer created successfully' })
+  @SwaggerResponse({ status: 401, description: 'Unauthorized' })
+  @SwaggerResponse({
+    status: 403,
+    description: 'Only companies can create offers',
+  })
   async createOffer(
     @CurrentUser() user: Express.User,
     @Body() body: CreateOfferDto,
@@ -40,7 +56,9 @@ export class OfferController {
   }
 
   @Get('list')
-  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'List all offers' })
+  @SwaggerResponse({ status: 200, description: 'Offers retrieved' })
+  @SwaggerResponse({ status: 401, description: 'Unauthorized' })
   async listOffers(
     @CurrentUser() user: Express.User,
   ): Promise<ApiResponse<offer[]>> {
@@ -58,7 +76,10 @@ export class OfferController {
   }
 
   @Get('my-offers')
-  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'List offers created by the authenticated company' })
+  @SwaggerResponse({ status: 200, description: 'Offers retrieved' })
+  @SwaggerResponse({ status: 401, description: 'Unauthorized' })
+  @SwaggerResponse({ status: 404, description: 'Company not found for user' })
   async listMyOffers(
     @CurrentUser() user: Express.User,
   ): Promise<ApiResponse<offer[]>> {
@@ -76,7 +97,11 @@ export class OfferController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Get a specific offer by ID' })
+  @ApiParam({ name: 'id', description: 'Offer UUID' })
+  @SwaggerResponse({ status: 200, description: 'Offer retrieved' })
+  @SwaggerResponse({ status: 401, description: 'Unauthorized' })
+  @SwaggerResponse({ status: 404, description: 'Offer not found' })
   async getOfferById(
     @CurrentUser() user: Express.User,
     @Param('id') id: string,
@@ -95,7 +120,12 @@ export class OfferController {
   }
 
   @Put(':id/update')
-  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Update an offer (owner only)' })
+  @ApiParam({ name: 'id', description: 'Offer UUID' })
+  @SwaggerResponse({ status: 200, description: 'Offer updated' })
+  @SwaggerResponse({ status: 401, description: 'Unauthorized' })
+  @SwaggerResponse({ status: 403, description: 'Not the offer owner' })
+  @SwaggerResponse({ status: 404, description: 'Offer not found' })
   async updateOffer(
     @CurrentUser() user: Express.User,
     @Param('id') id: string,
@@ -115,7 +145,12 @@ export class OfferController {
   }
 
   @Delete(':id/delete')
-  @UseGuards(JwtAuthGuard)
+  @ApiOperation({ summary: 'Delete an offer (owner only)' })
+  @ApiParam({ name: 'id', description: 'Offer UUID' })
+  @SwaggerResponse({ status: 200, description: 'Offer deleted' })
+  @SwaggerResponse({ status: 401, description: 'Unauthorized' })
+  @SwaggerResponse({ status: 403, description: 'Not the offer owner' })
+  @SwaggerResponse({ status: 404, description: 'Offer not found' })
   async deleteOffer(
     @CurrentUser() user: Express.User,
     @Param('id') id: string,
