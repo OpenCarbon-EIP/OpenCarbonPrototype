@@ -1,3 +1,4 @@
+import 'package:flutter_poc/core/errors/app_errors.dart';
 import 'package:flutter_poc/features/login/data/repositories/login_repository.dart';
 
 /*
@@ -14,6 +15,8 @@ class LoginUseCase {
   Future<void> call(String email, String password) async {
     try {
       return await _repository.login(email, password);
+    } on AuthFailure catch (_) {
+      rethrow;
     } on Exception catch (_) {
       throw Exception('Failed to login');
     }
