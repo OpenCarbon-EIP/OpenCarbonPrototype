@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_poc/core/errors/app_errors.dart';
 import 'package:flutter_poc/features/login/data/models/login_response_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -23,7 +24,10 @@ class LoginApiService {
     });
 
     if (response.statusCode != 200) {
-      throw Exception(response.statusCode);
+      switch (response.statusCode) {
+        case 401:
+          throw AuthFailure("L'email ou le mot de passe n'est pas bon");
+      }
     }
     final data = json.decode(response.body);
     return LoginResponseModel.fromJson(data as Map<String, dynamic>);
