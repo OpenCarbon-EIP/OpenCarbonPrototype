@@ -95,30 +95,24 @@ export class ApplicationController {
   async deleteApplication(
     @Param('id') id: string,
     @CurrentUser() user: Express.User,
-  ): Promise<ApiResponse<application | null>> {
+  ): Promise<ApiResponse<application[]>> {
     if (!user) {
       throw new ForbiddenException('User not authenticated');
     }
 
-    const application = await this.applicationService.deleteApplication(
+    const applications = await this.applicationService.deleteApplication(
       id,
       user.id,
     );
 
-    if (!application) {
+    if (!applications) {
       throw new NotFoundException('Application not found');
-    }
-
-    if (application.id_consultant !== user.id) {
-      throw new ForbiddenException(
-        'You do not have permission to delete this application',
-      );
     }
 
     return {
       success: true,
-      data: application,
-      message: 'Application deleted successfully',
+      data: applications,
+      message: 'Applications deleted successfully',
     };
   }
 }

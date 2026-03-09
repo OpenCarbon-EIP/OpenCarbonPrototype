@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ApplicationService } from '../application/application.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
-import { BadRequestException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('ApplicationService', () => {
   let service: ApplicationService;
@@ -104,7 +104,7 @@ describe('ApplicationService', () => {
       ).rejects.toThrow(BadRequestException);
     });
 
-    it('should throw BadRequestException if user is not found', async () => {
+    it('should throw NotFoundException if user is not found', async () => {
       jest.spyOn(usersService, 'getUserById').mockResolvedValue(null);
 
       await expect(
@@ -112,7 +112,7 @@ describe('ApplicationService', () => {
           { id_offer: 'offre-456', content: 'I am interested in this job.' },
           'consul-123',
         ),
-      ).rejects.toThrow(BadRequestException);
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should throw BadRequestException if user is not a consultant', async () => {
@@ -224,9 +224,12 @@ describe('ApplicationService', () => {
         .spyOn(prismaService.application, 'delete')
         .mockResolvedValue(mockApp as any);
 
-      const result = await service.deleteApplication('app-123', 'consul-123');
+      await service.deleteApplication('app-123', 'consul-123');
 
-      expect(result).toEqual(mockApp);
+      const findUniqueSpy = jest.spyOn(prismaService.application, 'findUnique');
+      expect(findUniqueSpy).toHaveBeenCalledWith({
+        where: { id: 'app-123' },
+      });
 
       const deleteSpy = jest.spyOn(prismaService.application, 'delete');
       expect(deleteSpy).toHaveBeenCalledWith({

@@ -45,7 +45,7 @@ export class ApplicationService {
     const user = await this.userService.getUserById(userId);
 
     if (!user) {
-      throw new BadRequestException('User not found');
+      throw new NotFoundException('User not found');
     }
 
     if (user.role !== 'CONSULTANT') {
@@ -70,10 +70,7 @@ export class ApplicationService {
     }
   }
 
-  async deleteApplication(
-    id: string,
-    userId: string,
-  ): Promise<application | null> {
+  async deleteApplication(id: string, userId: string): Promise<application[]> {
     if (!id) {
       throw new BadRequestException('Application ID is required');
     }
@@ -92,13 +89,10 @@ export class ApplicationService {
       );
     }
 
-    try {
-      return await this.prisma.application.delete({
-        where: { id },
-      });
-    } catch (error) {
-      console.error(error);
-      throw new BadRequestException('Failed to delete application');
-    }
+    await this.prisma.application.delete({
+      where: { id },
+    });
+
+    return this.getAllApplicationsByUserId(userId);
   }
 }

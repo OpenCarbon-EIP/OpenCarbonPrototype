@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ApplicationService } from '../application/application.service';
 import { ApplicationController } from '../application/application.controller';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, ForbiddenException } from '@nestjs/common';
 
 describe('ApplicationController', () => {
   let controller: ApplicationController;
@@ -204,7 +204,7 @@ describe('ApplicationController', () => {
     });
 
     it('should throw NotFoundException when application to delete is not found', async () => {
-      jest.spyOn(service, 'deleteApplication').mockResolvedValue(null);
+      jest.spyOn(service, 'deleteApplication').mockResolvedValue(null as any);
 
       await expect(
         controller.deleteApplication('nonexistent-id', {
@@ -214,17 +214,13 @@ describe('ApplicationController', () => {
     });
 
     it('should throw ForbiddenException when user does not own the application', async () => {
-      const mockApp = {
-        id: 'app-uuid',
-        id_consultant: 'consul-123',
-        id_offer: 'offre-456',
-        content: 'I am interested in this job.',
-        status: 'pending',
-      };
-
       jest
         .spyOn(service, 'deleteApplication')
-        .mockResolvedValue(mockApp as any);
+        .mockRejectedValue(
+          new ForbiddenException(
+            'You do not have permission to delete this application',
+          ),
+        );
 
       await expect(
         controller.deleteApplication('app-uuid', {
