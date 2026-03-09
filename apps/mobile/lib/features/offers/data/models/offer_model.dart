@@ -10,7 +10,9 @@ class OfferModel {
   factory OfferModel.fromJson(Map<String, dynamic> json) => OfferModel(
     success: json['success'] as bool,
     data: json['data'] != null
-        ? OfferData.fromJson(json['data'] as Map<String, dynamic>)
+        ? (json['data'] as List)
+              .map((i) => OfferData.fromJson(i as Map<String, dynamic>))
+              .toList()
         : null,
     message: json['message'] as String,
     error: json['error'] as String?,
@@ -18,7 +20,7 @@ class OfferModel {
   );
 
   final bool success;
-  final OfferData? data;
+  final List<OfferData>? data;
   final String message;
   final String? error;
   final int? statusCode;
