@@ -1,18 +1,18 @@
-// lib/viewmodels/offers_viewmodel.dart
 import 'package:flutter/foundation.dart';
-import 'package:flutter_poc/features/offers/data/models/offer_model.dart';
+import 'package:flutter_poc/core/errors/app_errors.dart';
 import 'package:flutter_poc/features/offers/data/repositories/offer_repository.dart';
+import 'package:flutter_poc/features/offers/domain/entity/offer_entity.dart';
 
 class OffersViewModel extends ChangeNotifier {
   OffersViewModel(this._repository);
 
   final OfferRepository _repository;
 
-  List<OfferModel> _offers = [];
+  List<OfferEntity> _offers = [];
   bool _isLoading = false;
   String? _error;
 
-  List<OfferModel> get offers => _offers;
+  List<OfferEntity> get offers => _offers;
   bool get isLoading => _isLoading;
   String? get error => _error;
 
@@ -23,6 +23,8 @@ class OffersViewModel extends ChangeNotifier {
 
     try {
       _offers = await _repository.getOffers();
+    } on AuthFailure catch (e) {
+      _error = e.toString();
     } on Exception catch (_) {
       _error = 'Une erreur est survenue';
     } finally {
