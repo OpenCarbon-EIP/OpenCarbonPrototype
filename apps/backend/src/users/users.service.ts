@@ -22,6 +22,10 @@ export class UsersService {
     return await this.prisma.user.findUnique({
       where: { id },
       omit: SAFE_USER_OMIT,
+      include: {
+        consultant: true,
+        company: true,
+      },
     });
   }
 
@@ -32,16 +36,15 @@ export class UsersService {
   }
 
   async createUser(createUserDto: CreateUserDto): Promise<SafeUser> {
-    const { email, name, password, role } = createUserDto;
+    const { email, password, role } = createUserDto;
 
-    if (!email || !name || !password) {
+    if (!email || !password) {
       throw new BadRequestException('Email, name, and password are required');
     }
 
     return await this.prisma.user.create({
       data: {
         email,
-        name,
         password,
         ...(role && { role }),
       },

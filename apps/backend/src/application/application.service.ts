@@ -8,12 +8,14 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateApplicationDto } from '@dtos/application.dto';
 import type { application } from 'src/generated/prisma/client';
 import { UsersService } from 'src/users/users.service';
+import { ConsultantService } from 'src/consultant/consultant.service';
 
 @Injectable()
 export class ApplicationService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly userService: UsersService,
+    private readonly consultantService: ConsultantService,
   ) {}
 
   async getAllApplicationsByUserId(userId: string): Promise<application[]> {
@@ -42,6 +44,10 @@ export class ApplicationService {
   ): Promise<application> {
     const { id_offer, content } = createApplicationDto;
 
+    if (!id_offer || !content) {
+      throw new BadRequestException('All fields are required');
+    }
+
     const user = await this.userService.getUserById(userId);
 
     if (!user) {
@@ -52,20 +58,25 @@ export class ApplicationService {
       throw new BadRequestException('Only consultants can create applications');
     }
 
-    if (!userId || !id_offer || !content) {
-      throw new BadRequestException('All fields are required');
+    const consultant =
+      await this.consultantService.getConsultantByUserId(userId);
+
+    if (!consultant) {
+      throw new NotFoundException('Consultant profile not found');
     }
 
     try {
       return await this.prisma.application.create({
         data: {
-          id_consultant: userId,
+          id_consultant: consultant.id,
           id_offer,
           content,
         },
       });
     } catch (error) {
-      console.error(error);
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error';
+      console.error(`Failed to create application: ${errorMessage}`);
       throw new BadRequestException('Failed to create application');
     }
   }

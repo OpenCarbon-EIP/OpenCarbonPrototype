@@ -20,11 +20,6 @@ export class CreateUserDto {
   @IsNotEmpty()
   email: string;
 
-  @ApiProperty({ example: 'John Doe' })
-  @IsString()
-  @IsNotEmpty()
-  name: string;
-
   @ApiProperty({ example: 'password', minLength: 6 })
   @IsString()
   @MinLength(6)
