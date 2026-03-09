@@ -12,7 +12,7 @@ export class CreateApplicationDto {
 
   @ApiProperty({
     example:
-      'I am interested in this carbon audit mission. I have 5 years of experience.',
+      'I am interested in this carbon audit mission. I have 6 years of experience.',
     description: 'Application message / cover letter',
   })
   @IsString()
