@@ -27,10 +27,6 @@ export class ApplicationController {
   ): Promise<ApiResponse<application[]>> {
     const applications = await this.applicationService.getAllApplicationsByUserId(user.id);
 
-    if (!applications) {
-      throw new NotFoundException('No applications found');
-    }
-
     return {
       success: true,
       data: applications,
