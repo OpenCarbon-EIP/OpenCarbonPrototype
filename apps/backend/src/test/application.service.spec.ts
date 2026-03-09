@@ -82,7 +82,7 @@ describe('ApplicationService', () => {
 
       const mockApp: Partial<application> = {
         id: 'app-uuid',
-        id_consultant: userId,
+        id_consultant: 'consultant-uuid',
         id_offer: 'offre-456',
         content: 'I am interested in this job.',
         status: 'PENDING',

@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ApplicationService } from '../application/application.service';
 import { ApplicationController } from '../application/application.controller';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
-import { application } from 'src/generated/prisma/browser';
+import type { application } from 'src/generated/prisma/browser';
 
 describe('ApplicationController', () => {
   let controller: ApplicationController;
