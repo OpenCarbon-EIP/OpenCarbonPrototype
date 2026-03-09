@@ -4,7 +4,7 @@ class AppColors {
   AppColors._();
 
   // Light theme colors
-  static const Color primaryLight = Color(0xFF182C24);
+  static const Color primaryLight = Color(0xFF2D4F44);
   static const Color secondaryLight = Color(0xFF2B181F);
   static const Color tiercaryLight = Color(0xFF7F5539);
 
