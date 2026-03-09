@@ -1,13 +1,14 @@
-// lib/ui/views/offers_view.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_poc/core/colors/app_colors.dart';
 import 'package:flutter_poc/core/svg/app_svg.dart';
 import 'package:flutter_poc/core/typo/app_typography.dart';
 import 'package:flutter_poc/features/offers/data/repositories/offer_repository.dart';
 import 'package:flutter_poc/features/offers/data/services/offer_api_service.dart';
+import 'package:flutter_poc/features/offers/data/services/offer_auth_service.dart';
 import 'package:flutter_poc/features/offers/viewmodels/offer_viewmodel.dart';
 import 'package:flutter_poc/ui/widgets/button.dart';
 import 'package:flutter_poc/ui/widgets/card.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
@@ -19,7 +20,8 @@ class OffersView extends StatelessWidget {
     create: (_) {
       final httpClient = http.Client();
       final service = OfferApiService(httpClient);
-      final repository = OfferRepositoryImpl(service);
+      final authService = OfferAuthService(const FlutterSecureStorage());
+      final repository = OfferRepositoryImpl(service, authService);
       final vm = OffersViewModel(repository);
       vm.loadOffers();
       return vm;
@@ -49,7 +51,7 @@ class _OffersViewBody extends StatelessWidget {
               text: 'Filtrer',
               svgIcon: AppSvg.svgFilter,
               onPressed: () {
-                // Utilise le ViewModel pour filtrer plus tard
+                // TODO : Utilise le ViewModel pour filtrer plus tard
               },
             ),
           ),
@@ -82,16 +84,11 @@ class _OffersViewBody extends StatelessWidget {
                       ),
                       child: CustomCard(
                         index: index,
-                        title: offer.data?.title ?? 'Titre non disponible',
-                        deadline:
-                            offer.data?.deadline ?? 'Deadline non disponible',
-                        description:
-                            offer.data?.description ??
-                            'Description non disponible',
+                        title: offer.title,
+                        deadline: offer.deadline,
+                        description: offer.description,
                         onCardSelected: (selectedIndex) {
                           final selectedOffer = offers[selectedIndex];
-                          if (selectedOffer.data == null) return;
-
                           showModalBottomSheet<Widget>(
                             context: context,
                             isScrollControlled: true,
@@ -104,12 +101,6 @@ class _OffersViewBody extends StatelessWidget {
                                   padding: const EdgeInsets.all(16.0),
                                   child: Column(
                                     children: [
-                                      Text(
-                                        'Détails de l\'offre $selectedIndex',
-                                        style: AppTypography.caption.copyWith(
-                                          color: AppColors.primaryLight,
-                                        ),
-                                      ),
                                       Expanded(
                                         child: SingleChildScrollView(
                                           child: Column(
@@ -118,8 +109,7 @@ class _OffersViewBody extends StatelessWidget {
                                             spacing: 13,
                                             children: [
                                               Text(
-                                                selectedOffer.data?.title ??
-                                                    'Titre non disponible',
+                                                selectedOffer.title,
                                                 style: AppTypography
                                                     .headingMedium
                                                     .copyWith(
@@ -128,7 +118,7 @@ class _OffersViewBody extends StatelessWidget {
                                                     ),
                                               ),
                                               Text(
-                                                'Deadline: ${selectedOffer.data?.deadline ?? 'Deadline non disponible'}',
+                                                'Date limite: ${selectedOffer.deadline}',
                                                 style: AppTypography.bodyMedium
                                                     .copyWith(
                                                       color: AppColors
@@ -136,7 +126,7 @@ class _OffersViewBody extends StatelessWidget {
                                                     ),
                                               ),
                                               Text(
-                                                'Description: ${selectedOffer.data?.description ?? 'Description non disponible'}',
+                                                'Description: ${selectedOffer.description}',
                                                 style: AppTypography.bodyMedium
                                                     .copyWith(
                                                       color: AppColors
