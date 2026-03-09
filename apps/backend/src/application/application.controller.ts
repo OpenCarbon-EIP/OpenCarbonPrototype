@@ -100,7 +100,10 @@ export class ApplicationController {
       throw new ForbiddenException('User not authenticated');
     }
 
-    const application = await this.applicationService.deleteApplication(id);
+    const application = await this.applicationService.deleteApplication(
+      id,
+      user.id,
+    );
 
     if (!application) {
       throw new NotFoundException('Application not found');

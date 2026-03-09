@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateApplicationDto } from '@dtos/application.dto';
 import type { application } from 'src/generated/prisma/client';
@@ -65,9 +70,26 @@ export class ApplicationService {
     }
   }
 
-  async deleteApplication(id: string): Promise<application | null> {
+  async deleteApplication(
+    id: string,
+    userId: string,
+  ): Promise<application | null> {
     if (!id) {
       throw new BadRequestException('Application ID is required');
+    }
+
+    const application = await this.prisma.application.findUnique({
+      where: { id },
+    });
+
+    if (!application) {
+      throw new NotFoundException('Application not found');
+    }
+
+    if (application.id_consultant !== userId) {
+      throw new ForbiddenException(
+        'You do not have permission to delete this application',
+      );
     }
 
     try {

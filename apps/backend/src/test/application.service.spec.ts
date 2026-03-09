@@ -218,10 +218,13 @@ describe('ApplicationService', () => {
       };
 
       jest
+        .spyOn(prismaService.application, 'findUnique')
+        .mockResolvedValue(mockApp as any);
+      jest
         .spyOn(prismaService.application, 'delete')
         .mockResolvedValue(mockApp as any);
 
-      const result = await service.deleteApplication('app-123');
+      const result = await service.deleteApplication('app-123', 'consul-123');
 
       expect(result).toEqual(mockApp);
 
@@ -232,8 +235,41 @@ describe('ApplicationService', () => {
     });
 
     it('should throw BadRequestException if id is not provided', async () => {
-      await expect(service.deleteApplication('')).rejects.toThrow(
+      await expect(service.deleteApplication('', 'consul-123')).rejects.toThrow(
         BadRequestException,
+      );
+    });
+
+    it('should throw not found exception if application does not exist', async () => {
+      jest
+        .spyOn(prismaService.application, 'findUnique')
+        .mockResolvedValue(null as any);
+
+      await expect(
+        service.deleteApplication('nonexistent-id', 'consul-123'),
+      ).rejects.toThrow('Application not found');
+    });
+
+    it('should throw ForbiddenException if user does not own the application', async () => {
+      const mockApp = {
+        id: 'app-123',
+        id_consultant: 'consul-123',
+        id_offer: 'offre-456',
+        content: 'I am interested in this job.',
+        status: 'PENDING',
+      };
+
+      jest
+        .spyOn(prismaService.application, 'findUnique')
+        .mockResolvedValue(mockApp as any);
+      jest
+        .spyOn(prismaService.application, 'delete')
+        .mockResolvedValue(mockApp as any);
+
+      await expect(
+        service.deleteApplication('app-123', 'other-user'),
+      ).rejects.toThrow(
+        'You do not have permission to delete this application',
       );
     });
   });
