@@ -1,12 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '@prisma/prisma.service';
 import { CreateApplicationDto } from '@dtos/application.dto';
 import type { application } from 'src/generated/prisma/client';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class ApplicationService {
-  constructor(private readonly prisma: PrismaService, private readonly userService: UsersService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly userService: UsersService,
+  ) {}
 
   async getAllApplicationsByUserId(userId: string): Promise<application[]> {
     if (!userId) {
@@ -56,7 +59,7 @@ export class ApplicationService {
           content,
         },
       });
-    } catch (error) {
+    } catch {
       throw new BadRequestException('Failed to create application');
     }
   }
@@ -70,7 +73,7 @@ export class ApplicationService {
       return await this.prisma.application.delete({
         where: { id },
       });
-    } catch (error) {
+    } catch {
       throw new BadRequestException('Failed to delete application');
     }
   }

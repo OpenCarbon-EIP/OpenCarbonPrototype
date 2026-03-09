@@ -29,7 +29,8 @@ export class ApplicationController {
       throw new ForbiddenException('User not authenticated');
     }
 
-    const applications = await this.applicationService.getAllApplicationsByUserId(user.id);
+    const applications =
+      await this.applicationService.getAllApplicationsByUserId(user.id);
 
     return {
       success: true,
@@ -49,13 +50,15 @@ export class ApplicationController {
     }
 
     const application = await this.applicationService.getApplicationById(id);
-    
+
     if (!application) {
       throw new NotFoundException('Application not found');
     }
 
     if (application.id_consultant !== user.id) {
-      throw new ForbiddenException('You do not have permission to access this application');
+      throw new ForbiddenException(
+        'You do not have permission to access this application',
+      );
     }
 
     return {
@@ -104,7 +107,9 @@ export class ApplicationController {
     }
 
     if (application.id_consultant !== user.id) {
-      throw new ForbiddenException('You do not have permission to delete this application');
+      throw new ForbiddenException(
+        'You do not have permission to delete this application',
+      );
     }
 
     return {
