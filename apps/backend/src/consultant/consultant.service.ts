@@ -25,4 +25,10 @@ export class ConsultantService {
       },
     });
   }
+
+  async getConsultantByUserId(userId: string): Promise<consultant | null> {
+    return await this.prisma.consultant.findUnique({
+      where: { id_user: userId },
+    });
+  }
 }
