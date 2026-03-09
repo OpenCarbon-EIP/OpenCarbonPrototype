@@ -1,11 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ApplicationService } from '../application/application.service';
 import { PrismaService } from '../prisma/prisma.service';
+import { UsersService } from '../users/users.service';
 import { BadRequestException } from '@nestjs/common';
 
 describe('ApplicationService', () => {
   let service: ApplicationService;
   let prismaService: PrismaService;
+  let usersService: UsersService;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -22,49 +24,107 @@ describe('ApplicationService', () => {
             },
           },
         },
+        {
+          provide: UsersService,
+          useValue: {
+            getUserById: jest.fn(),
+          },
+        },
       ],
     }).compile();
 
     service = module.get<ApplicationService>(ApplicationService);
     prismaService = module.get<PrismaService>(PrismaService);
+    usersService = module.get<UsersService>(UsersService);
   });
 
   describe('createApplication', () => {
-    it('should create a new application', async () => {
+    it('should create a new application with authenticated user id', async () => {
       const createDto = {
-        id_consultant: 'consul-123',
         id_offer: 'offre-456',
         content: 'I am interested in this job.',
       }
 
+      const userId = 'consul-123';
+
+      const mockUser = {
+        id: userId,
+        email: 'consultant@example.com',
+        name: 'Consultant Name',
+        role: 'CONSULTANT',
+      };
+
       const mockApp = {
         id: 'app-uuid',
-        ...createDto,
+        id_consultant: userId,
+        id_offer: 'offre-456',
+        content: 'I am interested in this job.',
         status: 'pending',
       }
 
+      jest.spyOn(usersService, 'getUserById')
+        .mockResolvedValue(mockUser as any);
       jest.spyOn(prismaService.application, 'create')
         .mockResolvedValue(mockApp as any);
 
-      const result = await service.createApplication(createDto);
+      const result = await service.createApplication(createDto, userId);
 
       expect(result).toEqual(mockApp);
 
       expect(prismaService.application.create).toHaveBeenCalledWith({
-        data: createDto,
+        data: {
+          id_consultant: userId,
+          id_offer: 'offre-456',
+          content: 'I am interested in this job.',
+        },
       });
     });
 
     it('should throw BadRequestException if creation fails', async () => {
       const invalidDto = {
-        id_consultant: 'consul-123',
+        id_offer: 'offre-456',
       }
 
+      const mockUser = {
+        id: 'consul-123',
+        email: 'consultant@example.com',
+        name: 'Consultant Name',
+        role: 'CONSULTANT',
+      };
+
+      jest.spyOn(usersService, 'getUserById')
+        .mockResolvedValue(mockUser as any);
+
       await expect(
-        service.createApplication(invalidDto as any)
+        service.createApplication(invalidDto as any, 'consul-123')
       ).rejects.toThrow(BadRequestException);
     });
-  })
+
+    it('should throw BadRequestException if user is not found', async () => {
+      jest.spyOn(usersService, 'getUserById')
+        .mockResolvedValue(null);
+
+      await expect(
+        service.createApplication({ id_offer: 'offre-456', content: 'I am interested in this job.' }, 'consul-123')
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('should throw BadRequestException if user is not a consultant', async () => {
+      const mockUser = {
+        id: 'consul-123',
+        email: 'notconsultant@example.com',
+        name: 'Not Consultant',
+        role: 'CLIENT',
+      };
+
+      jest.spyOn(usersService, 'getUserById')
+        .mockResolvedValue(mockUser as any);
+
+      await expect(
+        service.createApplication({ id_offer: 'offre-456', content: 'I am interested in this job.' }, 'consul-123')
+      ).rejects.toThrow(BadRequestException);
+    });
+});
 
   describe('getApplicationById', () => {
     it('should return an application when it exists', async () => {

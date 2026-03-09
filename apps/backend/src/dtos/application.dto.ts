@@ -1,11 +1,7 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, IsUUID, MinLength } from 'class-validator';
 
 export class CreateApplicationDto {
-  @IsString()
-  @IsNotEmpty()
-  id_consultant: string;
-
-  @IsString()
+  @IsUUID()
   @IsNotEmpty()
   id_offer: string;
 

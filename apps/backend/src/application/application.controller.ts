@@ -25,6 +25,10 @@ export class ApplicationController {
   async getAllApplicationsByUserId(
     @CurrentUser() user: Express.User,
   ): Promise<ApiResponse<application[]>> {
+    if (!user) {
+      throw new ForbiddenException('User not authenticated');
+    }
+
     const applications = await this.applicationService.getAllApplicationsByUserId(user.id);
 
     return {
@@ -37,12 +41,21 @@ export class ApplicationController {
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   async getApplicationById(
-    @Param('id') id: string
+    @Param('id') id: string,
+    @CurrentUser() user: Express.User,
   ): Promise<ApiResponse<application>> {
+    if (!user) {
+      throw new ForbiddenException('User not authenticated');
+    }
+
     const application = await this.applicationService.getApplicationById(id);
     
     if (!application) {
       throw new NotFoundException('Application not found');
+    }
+
+    if (application.id_consultant !== user.id) {
+      throw new ForbiddenException('You do not have permission to access this application');
     }
 
     return {
@@ -55,9 +68,17 @@ export class ApplicationController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async createApplication(
-    @Body() createApplicationDto: CreateApplicationDto
+    @Body() createApplicationDto: CreateApplicationDto,
+    @CurrentUser() user: Express.User,
   ): Promise<ApiResponse<application>> {
-    const application = await this.applicationService.createApplication(createApplicationDto);
+    if (!user) {
+      throw new ForbiddenException('User not authenticated');
+    }
+
+    const application = await this.applicationService.createApplication(
+      createApplicationDto,
+      user.id,
+    );
 
     return {
       success: true,
@@ -69,12 +90,21 @@ export class ApplicationController {
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
   async deleteApplication(
-    @Param('id') id: string
+    @Param('id') id: string,
+    @CurrentUser() user: Express.User,
   ): Promise<ApiResponse<application | null>> {
+    if (!user) {
+      throw new ForbiddenException('User not authenticated');
+    }
+
     const application = await this.applicationService.deleteApplication(id);
 
     if (!application) {
       throw new NotFoundException('Application not found');
+    }
+
+    if (application.id_consultant !== user.id) {
+      throw new ForbiddenException('You do not have permission to delete this application');
     }
 
     return {

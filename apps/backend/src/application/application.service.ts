@@ -2,10 +2,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateApplicationDto } from '@dtos/application.dto';
 import type { application } from 'src/generated/prisma/client';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class ApplicationService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, private readonly userService: UsersService) {}
 
   async getAllApplicationsByUserId(userId: string): Promise<application[]> {
     if (!userId) {
@@ -27,20 +28,37 @@ export class ApplicationService {
     });
   }
 
-  async createApplication(createApplicationDto: CreateApplicationDto): Promise<application> {
-    const { id_consultant, id_offer, content } = createApplicationDto;
+  async createApplication(
+    createApplicationDto: CreateApplicationDto,
+    userId: string,
+  ): Promise<application> {
+    const { id_offer, content } = createApplicationDto;
 
-    if (!id_consultant || !id_offer || !content) {
+    const user = await this.userService.getUserById(userId);
+
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    if (user.role !== 'CONSULTANT') {
+      throw new BadRequestException('Only consultants can create applications');
+    }
+
+    if (!userId || !id_offer || !content) {
       throw new BadRequestException('All fields are required');
     }
 
-    return await this.prisma.application.create({
-      data: {
-        id_consultant,
-        id_offer,
-        content,
-      },
-    });
+    try {
+      return await this.prisma.application.create({
+        data: {
+          id_consultant: userId,
+          id_offer,
+          content,
+        },
+      });
+    } catch (error) {
+      throw new BadRequestException('Failed to create application');
+    }
   }
 
   async deleteApplication(id: string): Promise<application | null> {
@@ -48,8 +66,12 @@ export class ApplicationService {
       throw new BadRequestException('Application ID is required');
     }
 
-    return await this.prisma.application.delete({
-      where: { id },
-    });
+    try {
+      return await this.prisma.application.delete({
+        where: { id },
+      });
+    } catch (error) {
+      throw new BadRequestException('Failed to delete application');
+    }
   }
 }
