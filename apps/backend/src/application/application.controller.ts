@@ -14,6 +14,7 @@ import { ApiResponse } from 'src/types/global';
 import type { application } from 'src/generated/prisma/client';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateApplicationDto } from '@dtos/application.dto';
+import { CurrentUser } from 'src/decorators/current-user';
 
 @Controller('applications')
 export class ApplicationController {
@@ -22,9 +23,9 @@ export class ApplicationController {
   @Get('all')
   @UseGuards(JwtAuthGuard)
   async getAllApplicationsByUserId(
-    @Param('id') userId: string
+    @CurrentUser() user: Express.User,
   ): Promise<ApiResponse<application[]>> {
-    const applications = await this.applicationService.getAllApplicationsByUserId(userId);
+    const applications = await this.applicationService.getAllApplicationsByUserId(user.id);
 
     if (!applications) {
       throw new NotFoundException('No applications found');
