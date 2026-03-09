@@ -106,21 +106,16 @@ class _OffersViewBody extends StatelessWidget {
                                             children: [
                                               Text(
                                                 selectedOffer.title,
-                                                style: AppTypography.headingLarge.copyWith(
-                                                  color: AppColors.primaryLight,
-                                                ),
+                                                style: AppTypography.headingLarge
                                               ),
-                                              const SizedBox(height: 16),
-
+                                              const Divider(),
                                               Row(
                                                 spacing: 16,
                                                 children: [
                                                   Text(
                                                     selectedOffer.company?.companyName ??
                                                         "Nom de l'entreprise non spécifié",
-                                                    style: AppTypography.headingMedium.copyWith(
-                                                      color: AppColors.primaryLight,
-                                                    ),
+                                                    style: AppTypography.headingMedium
                                                   ),
                                                   selectedOffer.company?.logoUrl == null
                                                       ? CircleAvatar(
@@ -144,11 +139,11 @@ class _OffersViewBody extends StatelessWidget {
 
                                               Text(
                                                 'Date limite: ${selectedOffer.deadline}',
-                                                style: AppTypography.bodyMedium.copyWith(color: AppColors.primaryLight),
+                                                style: AppTypography.bodyMedium,
                                               ),
                                               Text(
                                                 'Description: ${selectedOffer.description}',
-                                                style: AppTypography.bodyMedium.copyWith(color: AppColors.primaryLight),
+                                                style: AppTypography.bodyMedium,
                                               ),
                                             ],
                                           ),
