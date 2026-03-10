@@ -141,6 +141,10 @@ class _RegisterViewBodyState extends State<_RegisterViewBody> {
                       setState(() {
                         _selectedRole = v ?? '';
                         _roleController.text = _selectedRole;
+                        if (_selectedRole != 'COMPANY') {
+                          _companyNameController.clear();
+                          _companySizeController.clear();
+                        }
                       });
                     },
                   ),
