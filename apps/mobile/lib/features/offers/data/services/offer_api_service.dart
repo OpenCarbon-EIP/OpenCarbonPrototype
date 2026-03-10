@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'package:flutter_poc/core/constants/app_constants.dart';
 import 'package:flutter_poc/core/errors/app_errors.dart';
 import 'package:flutter_poc/features/offers/data/models/offer_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class OfferApiService {
   OfferApiService(this._httpClient);
@@ -30,7 +32,11 @@ class OfferApiService {
   }
 
   Future<void> apply(String token, String idOffer) async {
-    final uri = Uri.http('localhost:3000', '/applications');
+    final String? dbPath = dotenv.env[AppConstants.dbPath];
+    if (dbPath == null) {
+      throw EnvironmentFailure();
+    }
+    final uri = Uri.http(dbPath, '/applications');
     final encodedBody = json.encode({'id_offer': idOffer, 'content': 'Je suis intéressé.'});
 
     final response = await _httpClient.post(
