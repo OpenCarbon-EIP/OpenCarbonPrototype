@@ -24,7 +24,7 @@ class LoginRepositoryImpl implements LoginRepository {
     try {
       final response = await _api.login(email, password);
       final accessToken = response.data?.accessToken;
-      if (accessToken == null) {
+      if (accessToken == null || accessToken.isEmpty) {
         throw AuthFailure("Le jeton de connexion n'a pas été bien envoyé. Réessayer.");
       }
       await _authService.saveToken(accessToken);
