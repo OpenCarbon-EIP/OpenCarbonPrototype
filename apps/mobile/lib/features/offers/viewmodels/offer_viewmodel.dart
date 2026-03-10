@@ -13,7 +13,9 @@ class OffersViewModel extends ChangeNotifier {
   String? _error;
 
   List<OfferEntity> get offers => _offers;
+
   bool get isLoading => _isLoading;
+
   String? get error => _error;
 
   Future<void> loadOffers() async {
@@ -32,6 +34,7 @@ class OffersViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+
   Future<void> apply(String idOffer) async {
     _isLoading = true;
     _error = null;
@@ -46,7 +49,7 @@ class OffersViewModel extends ChangeNotifier {
     } on NotFoundFailure catch (e) {
       _error = e.toString();
     } on Exception catch (_) {
-      _error = 'Une erreur est survenue';
+      _error = 'Une erreur est survenue.';
     } finally {
       _isLoading = false;
       notifyListeners();

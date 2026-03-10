@@ -6,6 +6,7 @@ import 'package:flutter_poc/features/offers/domain/entity/offer_entity.dart';
 
 abstract class OfferRepository {
   Future<List<OfferEntity>> getOffers();
+
   Future<void> apply(String idOffer);
 }
 
@@ -41,9 +42,7 @@ class OfferRepositoryImpl implements OfferRepository {
                   ? CompanyEntity(
                       id: offer.company!.id,
                       companyName: offer.company!.companyName,
-                      industrySector:
-                          offer.company!.industrySector ??
-                          'Industrie non spécifiée',
+                      industrySector: offer.company!.industrySector ?? 'Industrie non spécifiée',
                       companySize: offer.company!.companySize,
                       description: offer.company!.description,
                       logoUrl: offer.company!.logoUrl,
@@ -74,7 +73,8 @@ class OfferRepositoryImpl implements OfferRepository {
       if (token == null) {
         throw AuthFailure("Le token n'est pas valable");
       }
-      await _api.apply(idOffer, token);
+
+      await _api.apply(token, idOffer);
     } on UnauthorizedFailure catch (_) {
       rethrow;
     } on AuthFailure catch (_) {
@@ -82,7 +82,7 @@ class OfferRepositoryImpl implements OfferRepository {
     } on NotFoundFailure catch (_) {
       rethrow;
     } on Exception catch (_) {
-      throw Exception('Une erreur a eu lieu lors de l\'application de l\'offre');
+      rethrow;
     }
   }
 }

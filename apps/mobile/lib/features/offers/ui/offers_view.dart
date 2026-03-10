@@ -149,6 +149,7 @@ class _OffersViewBody extends StatelessWidget {
                                         text: 'Postuler',
                                         onPressed: () {
                                           vm.apply(selectedOffer.id);
+                                          Navigator.pop(context);
                                         },
                                       ),
                                     ],

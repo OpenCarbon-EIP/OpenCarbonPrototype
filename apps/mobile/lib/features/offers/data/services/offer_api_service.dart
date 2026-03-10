@@ -30,10 +30,13 @@ class OfferApiService {
   }
 
   Future<void> apply(String token, String idOffer) async {
-    final uri = Uri.http('localhost:3000', '/offers/apply');
+    final uri = Uri.http('localhost:3000', '/applications');
+    final encodedBody = json.encode({'id_offer': idOffer, 'content': 'Je suis content'});
+
     final response = await _httpClient.post(
       uri,
-      headers: {'Authorization': 'Bearer $token', 'Content-Type': 'application.json'},
+      headers: {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'},
+      body: encodedBody,
     );
 
     switch (response.statusCode) {
@@ -45,6 +48,8 @@ class OfferApiService {
         throw AuthFailure();
       case 404:
         throw NotFoundFailure("Votre utilisateur ou compte consultant n'a pas été trouvé. Merci de vous reconnecter.");
+      default:
+        throw Exception('Une erreur inattendue est survenue lors de la candidature.');
     }
   }
 }
