@@ -20,3 +20,11 @@ class AuthFailure extends Failure {
 class ValidationFailure extends Failure {
   ValidationFailure([super.message = 'La validation a été refusée']);
 }
+
+class UnauthorizedFailure extends Failure {
+  UnauthorizedFailure([super.message = "Vous n'êtes pas autorisé à faire cette action"]);
+}
+
+class NotFoundFailure extends Failure {
+  NotFoundFailure([super.message = "L'élément demandé n'existe pas"]);
+}
