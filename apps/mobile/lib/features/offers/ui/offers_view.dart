@@ -114,7 +114,8 @@ class _OffersViewBody extends StatelessWidget {
                                                         "Nom de l'entreprise non spécifié",
                                                     style: AppTypography.headingMedium,
                                                   ),
-                                                  selectedOffer.company?.logoUrl == null
+                                                  selectedOffer.company?.logoUrl == null ||
+                                                          selectedOffer.company?.logoUrl?.isEmpty == true
                                                       ? CircleAvatar(
                                                           radius: 15,
                                                           backgroundColor: AppColors.primaryLight,
