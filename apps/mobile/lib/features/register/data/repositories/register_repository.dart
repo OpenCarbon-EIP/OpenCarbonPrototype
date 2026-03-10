@@ -54,7 +54,7 @@ class RegisterRepositoryImpl implements RegisterRepository {
       );
       final accessToken = response.data?.accessToken;
       if (accessToken == null || accessToken.isEmpty) {
-        throw AuthFailure("Le jeton de connexion n'a pas été bien envoyé. Réessayer.");
+        throw AuthFailure("Le jeton d'inscription n'a pas été renvoyé par le serveur. Veuillez réessayer.");
       }
       await _authService.saveToken(accessToken);
     } on AuthFailure catch (_) {
