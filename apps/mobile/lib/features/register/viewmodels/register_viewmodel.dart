@@ -49,6 +49,8 @@ class RegisterViewModel extends ChangeNotifier {
       );
     } on AuthFailure catch (e) {
       _error = e.toString();
+    } on ValidationFailure catch (e) {
+      _error = e.toString();
     } on Exception catch (e) {
       _error = e.toString();
     } finally {

@@ -50,8 +50,10 @@ class RegisterUsecase {
       );
     } on AuthFailure catch (_) {
       rethrow;
-    } on Exception catch (_) {
-      throw Exception('Failed to login');
+    } on ValidationFailure catch (_) {
+      rethrow;
+    } on Exception catch (e) {
+      rethrow;
     }
   }
 }

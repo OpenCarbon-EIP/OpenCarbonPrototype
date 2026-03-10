@@ -15,17 +15,20 @@ class LoginView extends StatelessWidget {
   final VoidCallback onSwitch;
 
   @override
-  Widget build(BuildContext context) => ChangeNotifierProvider(
-    create: (_) {
-      final httpClient = http.Client();
-      const iosOptions = IOSOptions(accessibility: KeychainAccessibility.first_unlock);
-      const auth = FlutterSecureStorage(iOptions: iosOptions);
-      final service = LoginApiService(httpClient);
-      final authService = LoginAuthService(auth);
-      final repository = LoginRepositoryImpl(service, authService);
-      return LoginViewModel(repository);
-    },
-    child: _LoginViewBody(onSwitch: onSwitch),
+  Widget build(BuildContext context) => Provider<http.Client>(
+    create: (_) => http.Client(),
+    dispose: (_, client) => client.close(),
+    child: ChangeNotifierProvider(
+      create: (context) {
+        const iosOptions = IOSOptions(accessibility: KeychainAccessibility.first_unlock);
+        const auth = FlutterSecureStorage(iOptions: iosOptions);
+        final service = LoginApiService(context.read<http.Client>());
+        final authService = LoginAuthService(auth);
+        final repository = LoginRepositoryImpl(service, authService);
+        return LoginViewModel(repository);
+      },
+      child: _LoginViewBody(onSwitch: onSwitch),
+    ),
   );
 }
 
@@ -78,8 +81,7 @@ class _LoginViewBodyState extends State<_LoginViewBody> {
                     decoration: const InputDecoration(labelText: 'Mot de passe'),
                     obscureText: true,
                   ),
-                  if (vm.error != null)
-                    Text(vm.error!, style: const TextStyle(color: Colors.red)),
+                  if (vm.error != null) Text(vm.error!, style: const TextStyle(color: Colors.red)),
                 ],
               ),
             ),
@@ -90,17 +92,17 @@ class _LoginViewBodyState extends State<_LoginViewBody> {
                   vm.isLoading
                       ? const CircularProgressIndicator()
                       : SmallButton(
-                    text: 'Se connecter',
-                    onPressed: () async {
-                      await vm.login(_emailController.text, _passwordController.text);
-                      if (vm.error == null && context.mounted) {
-                        await context.read<AuthProvider>().loginSuccess();
-                      }
-                    },
-                  ),
+                          text: 'Se connecter',
+                          onPressed: () async {
+                            await vm.login(_emailController.text, _passwordController.text);
+                            if (vm.error == null && context.mounted) {
+                              await context.read<AuthProvider>().loginSuccess();
+                            }
+                          },
+                        ),
                   const SizedBox(height: 16),
                   TextButton(
-                    onPressed: widget.onSwitch,
+                    onPressed: vm.isLoading ? null : widget.onSwitch,
                     child: const Text("Vous n'avez pas encore de compte ? Rejoignez la communauté !"),
                   ),
                 ],

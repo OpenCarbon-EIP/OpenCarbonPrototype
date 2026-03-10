@@ -59,8 +59,10 @@ class RegisterRepositoryImpl implements RegisterRepository {
       await _authService.saveToken(accessToken);
     } on AuthFailure catch (_) {
       rethrow;
-    } on Exception catch (e) {
-      throw Exception('Failed to login: ${e.toString()}');
+    } on ValidationFailure catch (_) {
+      rethrow;
+    } on Exception catch (_) {
+      rethrow;
     }
   }
 }

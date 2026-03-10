@@ -37,12 +37,16 @@ class RegisterApiService {
       'company_size': companySize,
     });
 
-    final response = await _httpClient.post(uri, headers: {'Content-Type': 'application/json'}, body: encodedBody);
+    final response = await _httpClient
+        .post(uri, headers: {'Content-Type': 'application/json'}, body: encodedBody)
+        .timeout(const Duration(seconds: 15));
 
     if (response.statusCode != 200 && response.statusCode != 201) {
       switch (response.statusCode) {
-        case 401:
-          throw AuthFailure("L'email ou le mot de passe n'est pas bon");
+        case 400:
+          throw AuthFailure('Les champs remplis ne sont pas bons.');
+        case 409:
+          throw ValidationFailure("L'adresse mail est déjà utilisée.");
         default:
           throw Exception('Erreur pendant la connexion');
       }

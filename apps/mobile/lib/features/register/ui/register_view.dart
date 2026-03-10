@@ -23,19 +23,23 @@ class RegisterView extends StatelessWidget {
   final VoidCallback onSwitch;
 
   @override
-  Widget build(BuildContext context) => ChangeNotifierProvider(
-    create: (_) {
-      final httpClient = http.Client();
-      const iosOptions = IOSOptions(accessibility: KeychainAccessibility.first_unlock);
-      const auth = FlutterSecureStorage(iOptions: iosOptions);
-      final service = RegisterApiService(httpClient);
-      final authService = RegisterAuthService(auth);
-      final repository = RegisterRepositoryImpl(service, authService);
-      final useCase = RegisterUsecase(repository);
-      final vm = RegisterViewModel(useCase);
-      return vm;
-    },
-    child: _RegisterViewBody(onSwitch: onSwitch),
+  Widget build(BuildContext context) => Provider<http.Client>(
+    create: (_) => http.Client(),
+    dispose: (_, client) => client.close(),
+    child: ChangeNotifierProvider(
+      create: (context) {
+        final httpClient = http.Client();
+        const iosOptions = IOSOptions(accessibility: KeychainAccessibility.first_unlock);
+        const auth = FlutterSecureStorage(iOptions: iosOptions);
+        final service = RegisterApiService(httpClient);
+        final authService = RegisterAuthService(auth);
+        final repository = RegisterRepositoryImpl(service, authService);
+        final useCase = RegisterUsecase(repository);
+        final vm = RegisterViewModel(useCase);
+        return vm;
+      },
+      child: _RegisterViewBody(onSwitch: onSwitch),
+    ),
   );
 }
 
@@ -58,6 +62,7 @@ class _RegisterViewBodyState extends State<_RegisterViewBody> {
   late final TextEditingController _professionalTitleController;
   late final TextEditingController _companyNameController;
   late final TextEditingController _companySizeController;
+  String _selectedRole = '';
 
   @override
   void initState() {
@@ -132,7 +137,12 @@ class _RegisterViewBodyState extends State<_RegisterViewBody> {
                       ...role.entries.map((e) => ShadOption(value: e.key, child: Text(e.value))),
                     ],
                     selectedOptionBuilder: (context, value) => Text(role[value]!),
-                    onChanged: (v) => _roleController.text = v ?? '',
+                    onChanged: (v) {
+                      setState(() {
+                        _selectedRole = v ?? '';
+                        _roleController.text = _selectedRole;
+                      });
+                    },
                   ),
                 ),
                 TextField(
@@ -144,12 +154,12 @@ class _RegisterViewBodyState extends State<_RegisterViewBody> {
                   controller: _professionalTitleController,
                   decoration: const InputDecoration(labelText: 'Titre professionnel'),
                 ),
-                if (_roleController.text == 'COMPANY')
+                if (_selectedRole == 'COMPANY')
                   TextField(
                     controller: _companyNameController,
                     decoration: const InputDecoration(labelText: 'Nom de l\'entreprise'),
                   ),
-                if (_roleController.text == 'COMPANY')
+                if (_selectedRole == 'COMPANY')
                   TextField(
                     controller: _companySizeController,
                     decoration: const InputDecoration(labelText: 'Taille de l\'entreprise'),
@@ -179,14 +189,14 @@ class _RegisterViewBodyState extends State<_RegisterViewBody> {
                               _firstNameController.text,
                               _professionalTitleController.text,
                               _companyNameController.text,
-                              int.tryParse(_companySizeController.text) ?? 0,
+                              int.tryParse(_companySizeController.text) ?? 1,
                             );
                             if (context.mounted && vm.error == null) {
                               await context.read<AuthProvider>().loginSuccess();
                             }
                           },
                         ),
-                  const SizedBox(height: 16), // Espacement
+                  const SizedBox(height: 16),
                   TextButton(
                     onPressed: widget.onSwitch,
                     child: const Text('Vous avez déjà un compte ? Connectez-vous'),
