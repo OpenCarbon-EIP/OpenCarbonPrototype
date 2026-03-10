@@ -92,7 +92,7 @@ class _OffersViewBody extends StatelessWidget {
                             isScrollControlled: true,
                             builder: (context) => SafeArea(
                               child: SizedBox(
-                                height: MediaQuery.of(context).size.height * 0.85,
+                                height: MediaQuery.of(context).size.height * 0.4,
                                 width: double.infinity,
                                 child: Padding(
                                   padding: const EdgeInsets.all(16.0),
@@ -134,7 +134,6 @@ class _OffersViewBody extends StatelessWidget {
                                                         ),
                                                 ],
                                               ),
-
                                               Text(
                                                 'Date limite: ${selectedOffer.deadline}',
                                                 style: AppTypography.bodyMedium,
@@ -149,11 +148,13 @@ class _OffersViewBody extends StatelessWidget {
                                       ),
                                       SmallButton(
                                         text: 'Postuler',
-                                        onPressed: () {
-                                          // TODO: Implémenter la logique de postulation (demander aux mecs du back de le faire)
+                                        onPressed: () async {
+                                          await vm.apply(selectedOffer.id);
+                                          if (context.mounted && vm.error == null) {
+                                            Navigator.pop(context);
+                                          }
                                         },
                                       ),
-                                      const SizedBox(height: 20),
                                     ],
                                   ),
                                 ),

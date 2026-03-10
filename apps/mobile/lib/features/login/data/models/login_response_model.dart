@@ -48,19 +48,16 @@ class LoginUser {
     required this.id,
     required this.email,
     required this.role,
-    required this.name,
   });
 
   factory LoginUser.fromJson(Map<String, dynamic> json) => LoginUser(
     id: json['id'] as String,
     email: json['email'] as String,
     role: json['role'] as String,
-    name: json['name'] as String,
   );
 
   final String id;
   final String email;
   final String role;
-  final String name;
 
 }
