@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 Future<void> main() async {
+  bool isEnvLoaded = true;
   WidgetsFlutterBinding.ensureInitialized();
   const iosOptions = IOSOptions(accessibility: KeychainAccessibility.first_unlock);
   const storage = FlutterSecureStorage(iOptions: iosOptions);
@@ -16,9 +17,14 @@ Future<void> main() async {
   try {
     await dotenv.load();
   } on Exception catch (e) {
+    isEnvLoaded = false;
     debugPrint('Warning: .env file not loaded: $e');
   }
-  runApp(ChangeNotifierProvider(create: (_) => AuthProvider(storage), child: const MainApp()));
+  if (isEnvLoaded == true) {
+    runApp(const Center(child: (Text('Warning: .env file not loaded'))));
+  } else {
+    runApp(ChangeNotifierProvider(create: (_) => AuthProvider(storage), child: const MainApp()));
+  }
 }
 
 class MainApp extends StatelessWidget {
