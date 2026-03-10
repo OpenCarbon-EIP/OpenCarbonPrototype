@@ -11,7 +11,11 @@ class OfferApiService {
   final http.Client _httpClient;
 
   Future<OfferModel> getOffers(String token) async {
-    final uri = Uri.http('localhost:3000', '/offers/list');
+    final String? dbPath = dotenv.env[AppConstants.dbPath];
+    if (dbPath == null) {
+      throw EnvironmentFailure();
+    }
+    final uri = Uri.http(dbPath, '/offers/list');
     final response = await _httpClient.get(
       uri,
       headers: {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'},

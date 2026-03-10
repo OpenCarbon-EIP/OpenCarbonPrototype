@@ -8,11 +8,16 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
-void main() async {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   const iosOptions = IOSOptions(accessibility: KeychainAccessibility.first_unlock);
   const storage = FlutterSecureStorage(iOptions: iosOptions);
 
-  await dotenv.load();
+  try {
+    await dotenv.load();
+  } on Exception catch (e) {
+    debugPrint('Warning: .env file not loaded: $e');
+  }
   runApp(ChangeNotifierProvider(create: (_) => AuthProvider(storage), child: const MainApp()));
 }
 
