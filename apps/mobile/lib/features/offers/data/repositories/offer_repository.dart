@@ -6,6 +6,7 @@ import 'package:flutter_poc/features/offers/domain/entity/offer_entity.dart';
 
 abstract class OfferRepository {
   Future<List<OfferEntity>> getOffers();
+  Future<void> apply(String idOffer);
 }
 
 class OfferRepositoryImpl implements OfferRepository {
@@ -52,7 +53,6 @@ class OfferRepositoryImpl implements OfferRepository {
                               id: offer.company!.user!.id,
                               email: offer.company!.user!.email,
                               role: offer.company!.user!.role,
-                              name: offer.company!.user!.name,
                             )
                           : null,
                     )
@@ -64,6 +64,25 @@ class OfferRepositoryImpl implements OfferRepository {
       rethrow;
     } on Exception catch (e) {
       throw Exception('Failed to load offers: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<void> apply(String idOffer) async {
+    try {
+      final token = await _authService.getToken();
+      if (token == null) {
+        throw AuthFailure("Le token n'est pas valable");
+      }
+      await _api.apply(idOffer, token);
+    } on UnauthorizedFailure catch (_) {
+      rethrow;
+    } on AuthFailure catch (_) {
+      rethrow;
+    } on NotFoundFailure catch (_) {
+      rethrow;
+    } on Exception catch (_) {
+      throw Exception('Une erreur a eu lieu lors de l\'application de l\'offre');
     }
   }
 }

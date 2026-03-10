@@ -92,7 +92,7 @@ class _OffersViewBody extends StatelessWidget {
                             isScrollControlled: true,
                             builder: (context) => SafeArea(
                               child: SizedBox(
-                                height: MediaQuery.of(context).size.height * 0.85,
+                                height: MediaQuery.of(context).size.height * 0.4,
                                 width: double.infinity,
                                 child: Padding(
                                   padding: const EdgeInsets.all(16.0),
@@ -104,10 +104,7 @@ class _OffersViewBody extends StatelessWidget {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             spacing: 13,
                                             children: [
-                                              Text(
-                                                selectedOffer.title,
-                                                style: AppTypography.headingLarge
-                                              ),
+                                              Text(selectedOffer.title, style: AppTypography.headingLarge),
                                               const Divider(),
                                               Row(
                                                 spacing: 16,
@@ -115,7 +112,7 @@ class _OffersViewBody extends StatelessWidget {
                                                   Text(
                                                     selectedOffer.company?.companyName ??
                                                         "Nom de l'entreprise non spécifié",
-                                                    style: AppTypography.headingMedium
+                                                    style: AppTypography.headingMedium,
                                                   ),
                                                   selectedOffer.company?.logoUrl == null
                                                       ? CircleAvatar(
@@ -136,7 +133,6 @@ class _OffersViewBody extends StatelessWidget {
                                                         ),
                                                 ],
                                               ),
-
                                               Text(
                                                 'Date limite: ${selectedOffer.deadline}',
                                                 style: AppTypography.bodyMedium,
@@ -152,10 +148,9 @@ class _OffersViewBody extends StatelessWidget {
                                       SmallButton(
                                         text: 'Postuler',
                                         onPressed: () {
-                                          // TODO: Implémenter la logique de postulation (demander aux mecs du back de le faire)
+                                          vm.apply(selectedOffer.id);
                                         },
                                       ),
-                                      const SizedBox(height: 20),
                                     ],
                                   ),
                                 ),

@@ -12,10 +12,7 @@ class OfferApiService {
     final uri = Uri.http('localhost:3000', '/offers/list');
     final response = await _httpClient.get(
       uri,
-      headers: {
-        'Authorization': 'Bearer $token',
-        'Content-Type': 'application/json',
-      },
+      headers: {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'},
     );
 
     if (response.statusCode != 200) {
@@ -30,5 +27,24 @@ class OfferApiService {
     final decoded = json.decode(response.body) as Map<String, dynamic>;
 
     return OfferModel.fromJson(decoded);
+  }
+
+  Future<void> apply(String token, String idOffer) async {
+    final uri = Uri.http('localhost:3000', '/offers/apply');
+    final response = await _httpClient.post(
+      uri,
+      headers: {'Authorization': 'Bearer $token', 'Content-Type': 'application.json'},
+    );
+
+    switch (response.statusCode) {
+      case 201:
+        return;
+      case 401:
+        throw UnauthorizedFailure();
+      case 403:
+        throw AuthFailure();
+      case 404:
+        throw NotFoundFailure("Votre utilisateur ou compte consultant n'a pas été trouvé. Merci de vous reconnecter.");
+    }
   }
 }

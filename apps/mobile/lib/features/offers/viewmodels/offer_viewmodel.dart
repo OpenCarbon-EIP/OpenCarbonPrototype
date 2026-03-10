@@ -32,4 +32,24 @@ class OffersViewModel extends ChangeNotifier {
       notifyListeners();
     }
   }
+  Future<void> apply(String idOffer) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _repository.apply(idOffer);
+    } on UnauthorizedFailure catch (e) {
+      _error = e.toString();
+    } on AuthFailure catch (e) {
+      _error = e.toString();
+    } on NotFoundFailure catch (e) {
+      _error = e.toString();
+    } on Exception catch (_) {
+      _error = 'Une erreur est survenue';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }
