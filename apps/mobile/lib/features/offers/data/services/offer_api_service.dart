@@ -31,7 +31,7 @@ class OfferApiService {
 
   Future<void> apply(String token, String idOffer) async {
     final uri = Uri.http('localhost:3000', '/applications');
-    final encodedBody = json.encode({'id_offer': idOffer, 'content': 'Je suis content'});
+    final encodedBody = json.encode({'id_offer': idOffer, 'content': 'Je suis intéressé.'});
 
     final response = await _httpClient.post(
       uri,

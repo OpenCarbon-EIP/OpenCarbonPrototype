@@ -148,9 +148,11 @@ class _OffersViewBody extends StatelessWidget {
                                       ),
                                       SmallButton(
                                         text: 'Postuler',
-                                        onPressed: () {
-                                          vm.apply(selectedOffer.id);
-                                          Navigator.pop(context);
+                                        onPressed: () async {
+                                          await vm.apply(selectedOffer.id);
+                                          if (context.mounted && vm.error == null) {
+                                            Navigator.pop(context);
+                                          }
                                         },
                                       ),
                                     ],
