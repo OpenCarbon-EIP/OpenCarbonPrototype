@@ -104,10 +104,7 @@ class _OffersViewBody extends StatelessWidget {
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             spacing: 13,
                                             children: [
-                                              Text(
-                                                selectedOffer.title,
-                                                style: AppTypography.headingLarge
-                                              ),
+                                              Text(selectedOffer.title, style: AppTypography.headingLarge),
                                               const Divider(),
                                               Row(
                                                 spacing: 16,
@@ -115,9 +112,10 @@ class _OffersViewBody extends StatelessWidget {
                                                   Text(
                                                     selectedOffer.company?.companyName ??
                                                         "Nom de l'entreprise non spécifié",
-                                                    style: AppTypography.headingMedium
+                                                    style: AppTypography.headingMedium,
                                                   ),
-                                                  selectedOffer.company?.logoUrl == null
+                                                  selectedOffer.company?.logoUrl == null ||
+                                                          selectedOffer.company?.logoUrl?.isEmpty == true
                                                       ? CircleAvatar(
                                                           radius: 15,
                                                           backgroundColor: AppColors.primaryLight,
