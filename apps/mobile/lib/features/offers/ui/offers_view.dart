@@ -105,11 +105,31 @@ class _OffersViewBody extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    Text('Secteurs :', style: AppTypography.label),
-                                    Text('Entreprises :', style: AppTypography.label),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      spacing: 8,
+                                      children: [
+                                        Text('Secteurs :', style: AppTypography.label),
+                                        Text('WIDGET DROPDOWN', style: AppTypography.label)
+                                      ]
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      spacing: 8,
+                                      children: [
+                                        Text('Entreprises :', style: AppTypography.label),
+                                        Text('WIDGET DROPDOWN', style: AppTypography.label)
+                                      ]
+                                    ),
                                   ],
                                 ),
                               ),
+                            ),
+                            SmallButton(
+                              text: 'Appliquer',
+                              onPressed: () async {
+                                  Navigator.pop(context);
+                              },
                             ),
                           ],
                         ),
