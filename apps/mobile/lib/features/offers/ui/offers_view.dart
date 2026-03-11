@@ -54,7 +54,43 @@ class _OffersViewBody extends StatelessWidget {
               text: 'Filtrer',
               svgIcon: AppSvg.svgFilter,
               onPressed: () {
-                // TODO : Utilise le ViewModel pour filtrer plus tard
+                showModalBottomSheet<Widget>(
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (context) => SafeArea(
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.4,
+                      width: double.infinity,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  spacing: 13,
+                                  children: [
+                                    Text('FILTRES', style: AppTypography.headingMedium),
+                                    const Divider(),
+                                    Row(
+                                      spacing: 16,
+                                      children: [
+                                        Text('Recherche', style: AppTypography.subheadingMedium),
+                                      ],
+                                    ),
+                                    Text('test1', style: AppTypography.headingLarge),
+                                    Text('test1', style: AppTypography.headingLarge),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
               },
             ),
           ),
