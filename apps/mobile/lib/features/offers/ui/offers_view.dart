@@ -76,11 +76,11 @@ class _OffersViewBody extends StatelessWidget {
                                     Row(
                                       spacing: 16,
                                       children: [
-                                        Text('Recherche', style: AppTypography.subheadingMedium),
+                                        Text('Recherche :', style: AppTypography.subheadingMedium),
                                       ],
                                     ),
-                                    Text('test1', style: AppTypography.headingLarge),
-                                    Text('test1', style: AppTypography.headingLarge),
+                                    Text('Secteurs :', style: AppTypography.subheadingMedium),
+                                    Text('Entreprises :', style: AppTypography.subheadingMedium),
                                   ],
                                 ),
                               ),
