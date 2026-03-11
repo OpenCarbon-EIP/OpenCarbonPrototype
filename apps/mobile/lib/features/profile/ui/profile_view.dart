@@ -69,7 +69,7 @@ class _ProfileViewBodyState extends State<_ProfileViewBody> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute<void>(builder: (context) => const SettingView(profile: profile)));
+                    Navigator.push(context, MaterialPageRoute<void>(builder: (context) => SettingView(profile: profile)));
                   },
                   child: Container(
                     padding: const EdgeInsets.all(8),
