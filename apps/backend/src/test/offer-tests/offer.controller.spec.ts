@@ -55,12 +55,6 @@ describe('OfferController', () => {
     it('should throw error if user is not authenticated', async () => {
       const createDto = createMockOffer();
 
-      jest
-        .spyOn(offerService, 'createOffer')
-        .mockRejectedValueOnce(
-          new BadRequestException('User not authenticated'),
-        );
-
       await expect(
         controller.createOffer(null as any, createDto),
       ).rejects.toThrow(UnauthorizedException);
