@@ -59,7 +59,7 @@ class _OffersViewBody extends StatelessWidget {
                   isScrollControlled: true,
                   builder: (context) => SafeArea(
                     child: SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.4,
+                      height: MediaQuery.of(context).size.height * 0.7,
                       width: double.infinity,
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
@@ -73,14 +73,40 @@ class _OffersViewBody extends StatelessWidget {
                                   children: [
                                     Text('FILTRES', style: AppTypography.headingMedium),
                                     const Divider(),
-                                    Row(
-                                      spacing: 16,
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      spacing: 8,
                                       children: [
-                                        Text('Recherche :', style: AppTypography.subheadingMedium),
+                                        Text('Recherche :', style: AppTypography.label),
+                                        TextField(
+                                          decoration: InputDecoration(
+                                            hintText: 'Rechercher...',
+                                            hintStyle: AppTypography.bodyMedium.copyWith(
+                                              color: const Color.fromARGB(255, 157, 157, 157),
+                                            ),
+                                            contentPadding: const EdgeInsets.symmetric(
+                                              horizontal: 12,
+                                              vertical: 10,
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(8),
+                                              borderSide: const BorderSide(
+                                                color: Color.fromARGB(255, 200, 200, 200),
+                                              ),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(8),
+                                              borderSide: const BorderSide(
+                                                color: Color.fromARGB(255, 100, 100, 100),
+                                                width: 1.5,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                       ],
                                     ),
-                                    Text('Secteurs :', style: AppTypography.subheadingMedium),
-                                    Text('Entreprises :', style: AppTypography.subheadingMedium),
+                                    Text('Secteurs :', style: AppTypography.label),
+                                    Text('Entreprises :', style: AppTypography.label),
                                   ],
                                 ),
                               ),
