@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_poc/core/constants/app_constants.dart';
 import 'package:flutter_poc/core/errors/app_errors.dart';
 import 'package:flutter_poc/features/register/data/models/register_response_model.dart';
 import 'package:http/http.dart' as http;
@@ -24,7 +26,11 @@ class RegisterApiService {
     String companyName,
     int companySize,
   ) async {
-    final uri = Uri.http('localhost:3000', '/auth/register');
+    final String? pathToDB = dotenv.env[AppConstants.dbPath];
+    if (pathToDB == null ) {
+      throw EnvironmentFailure();
+    }
+    final uri = Uri.http(pathToDB, '/auth/register');
     final encodedBody = jsonEncode({
       'email': email,
       'password': password,

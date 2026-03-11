@@ -28,3 +28,7 @@ class UnauthorizedFailure extends Failure {
 class NotFoundFailure extends Failure {
   NotFoundFailure([super.message = "L'élément demandé n'existe pas"]);
 }
+
+class EnvironmentFailure extends Failure {
+  EnvironmentFailure([super.message = "Une variable d'environnement n'est pas définie."]);
+}
