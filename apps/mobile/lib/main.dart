@@ -20,7 +20,7 @@ Future<void> main() async {
     isEnvLoaded = false;
     debugPrint('Warning: .env file not loaded: $e');
   }
-  if (isEnvLoaded == true) {
+  if (isEnvLoaded == false) {
     runApp(const Center(child: (Text('Warning: .env file not loaded'))));
   } else {
     runApp(ChangeNotifierProvider(create: (_) => AuthProvider(storage), child: const MainApp()));

@@ -1,0 +1,56 @@
+import 'package:flutter_poc/features/profile/domain/entity/profile_entity.dart';
+import 'package:flutter_poc/core/errors/app_errors.dart';
+import 'package:flutter_poc/features/profile/data/models/profile_model.dart';
+import 'package:flutter_poc/features/profile/data/services/profile_api_service.dart';
+import 'package:flutter_poc/features/profile/data/services/profile_auth_service.dart';
+
+abstract class ProfileRepository {
+  Future<Profile> getProfile();
+}
+
+class ProfileRepositoryImpl implements ProfileRepository {
+  ProfileRepositoryImpl(this._api, this._authService);
+
+  final ProfileApiService _api;
+  final ProfileAuthService _authService;
+
+  @override
+  Future<Profile> getProfile() async {
+    try {
+      final token = await _authService.getToken();
+      if (token == null) {
+        throw AuthFailure("Le token n'est pas valable");
+      }
+      final ProfileModel response = await _api.getProfile(token);
+      final ProfileDataModel? profileData = response.data;
+      if (profileData == null) {
+        throw UnauthorizedFailure();
+      }
+
+      return Profile(
+        id: profileData.id,
+        email: profileData.email,
+        role: profileData.role,
+        consultantData: (
+          profileData.consultantData != null
+          ? ConsultantData(firstName: profileData.consultantData!.firstName,
+            lastName: profileData.consultantData!.lastName,
+            professionalTitle: profileData.consultantData!.professionalTitle,
+            description: profileData.consultantData!.description,
+            photoUrl: profileData.consultantData!.photoUrl,
+            ratingScore: profileData.consultantData!.ratingScore,
+            isVerified: profileData.consultantData!.isVerified,
+          )
+          : null
+        ),
+        companyData: profileData.companyData != null
+            ? CompanyData(name: profileData.companyData!.name)
+            : null,
+      );
+    } on UnauthorizedFailure catch (_) {
+      rethrow;
+    } on Exception catch (_) {
+      rethrow;
+    }
+  }
+}
