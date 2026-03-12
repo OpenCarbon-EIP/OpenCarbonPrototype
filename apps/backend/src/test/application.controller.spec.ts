@@ -63,7 +63,10 @@ describe('ApplicationController', () => {
       };
 
       await expect(
-        controller.createApplication(createDto, undefined),
+        controller.createApplication(
+          createDto,
+          undefined as unknown as Express.User,
+        ),
       ).rejects.toThrow('User not authenticated');
     });
   });
@@ -125,7 +128,10 @@ describe('ApplicationController', () => {
 
     it('should throw ForbiddenException when user is not authenticated', async () => {
       await expect(
-        controller.getApplicationById('app-uuid', undefined),
+        controller.getApplicationById(
+          'app-uuid',
+          undefined as unknown as Express.User,
+        ),
       ).rejects.toThrow('User not authenticated');
     });
   });
@@ -176,7 +182,9 @@ describe('ApplicationController', () => {
 
     it('should throw ForbiddenException when user is not authenticated', async () => {
       await expect(
-        controller.getAllApplicationsByUserId(undefined),
+        controller.getAllApplicationsByUserId(
+          undefined as unknown as Express.User,
+        ),
       ).rejects.toThrow('User not authenticated');
     });
   });
@@ -205,7 +213,9 @@ describe('ApplicationController', () => {
     });
 
     it('should throw NotFoundException when application to delete is not found', async () => {
-      jest.spyOn(service, 'deleteApplication').mockResolvedValue(null);
+      jest
+        .spyOn(service, 'deleteApplication')
+        .mockResolvedValue(null as unknown as application[]);
 
       await expect(
         controller.deleteApplication('nonexistent-id', {
@@ -234,7 +244,10 @@ describe('ApplicationController', () => {
 
     it('should throw ForbiddenException when user is not authenticated', async () => {
       await expect(
-        controller.deleteApplication('app-uuid', undefined),
+        controller.deleteApplication(
+          'app-uuid',
+          undefined as unknown as Express.User,
+        ),
       ).rejects.toThrow('User not authenticated');
     });
   });

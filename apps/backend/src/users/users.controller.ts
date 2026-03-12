@@ -18,6 +18,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../decorators/current-user';
 import { ApiResponse } from 'src/types/global';
 import { SafeUser } from 'src/types/user.types';
+import { Body, Put } from '@nestjs/common';
+import { UpdateUserDto } from '@dtos/user.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -75,6 +77,36 @@ export class UsersController {
       success: true,
       data: found,
       message: 'User retrieved successfully',
+    };
+  }
+
+  @Put(':id/update')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT')
+  @ApiOperation({ summary: 'Update user profile (own profile only)' })
+  @ApiParam({ name: 'id', description: 'User UUID' })
+  @SwaggerResponse({ status: 200, description: 'User updated' })
+  @SwaggerResponse({ status: 401, description: 'Unauthorized' })
+  @SwaggerResponse({
+    status: 403,
+    description: 'Cannot update another user profile',
+  })
+  @SwaggerResponse({ status: 404, description: 'User not found' })
+  async updateUserProfile(
+    @Param('id') id: string,
+    @CurrentUser() user: Express.User,
+    @Body() body: UpdateUserDto,
+  ): Promise<ApiResponse<SafeUser>> {
+    if (user.id !== id) {
+      throw new ForbiddenException('You can only update your own profile');
+    }
+
+    const updatedUser = await this.usersService.updateUser(id, body);
+
+    return {
+      success: true,
+      data: updatedUser,
+      message: 'User profile updated successfully',
     };
   }
 }

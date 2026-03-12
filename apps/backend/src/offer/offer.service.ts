@@ -8,6 +8,7 @@ import {
 import { PrismaService } from '@prisma/prisma.service';
 import { SAFE_USER_OMIT, UsersService } from 'src/users/users.service';
 import { Role } from 'src/generated/prisma/client';
+import { OfferWithRelations } from 'src/types/offer.types';
 
 @Injectable()
 export class OfferService {
@@ -86,7 +87,7 @@ export class OfferService {
     });
   }
 
-  async getOfferById(id: string) {
+  async getOfferById(id: string): Promise<OfferWithRelations> {
     const offer = await this.prismaService.offer.findUnique({
       where: { id: id },
       include: {
@@ -131,10 +132,6 @@ export class OfferService {
 
   async deleteOffer(userId: string, id: string) {
     const offer = await this.getOfferById(id);
-
-    if (!offer) {
-      throw new UnauthorizedException('Offer not found');
-    }
 
     if (offer.company.id_user !== userId) {
       throw new UnauthorizedException(

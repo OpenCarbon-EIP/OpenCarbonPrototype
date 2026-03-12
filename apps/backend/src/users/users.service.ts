@@ -1,8 +1,14 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto } from '@dtos/user.dto';
+import { CreateUserDto, UpdateUserDto } from '@dtos/user.dto';
 import type { user } from 'src/generated/prisma/client';
 import type { SafeUser } from 'src/types/user.types';
+import { ConsultantService } from 'src/consultant/consultant.service';
+import { hash } from 'bcrypt';
 
 export const SAFE_USER_OMIT = {
   password: true,
@@ -12,7 +18,10 @@ export const SAFE_USER_OMIT = {
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly consultantService: ConsultantService,
+  ) {}
 
   async getUserById(id: string): Promise<SafeUser | null> {
     if (!id) {
@@ -47,6 +56,53 @@ export class UsersService {
         email,
         password,
         ...(role && { role }),
+      },
+    });
+  }
+
+  async updateUser(id: string, updateData: UpdateUserDto): Promise<SafeUser> {
+    const { email, password, first_name, last_name, photo_url, description } =
+      updateData;
+
+    const user = await this.consultantService.getConsultantByUserId(id);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const updateUserData: Partial<user> = {};
+
+    if (email) {
+      const existingUser = await this.getUserByEmail(email);
+
+      if (existingUser && existingUser.id !== id) {
+        throw new BadRequestException('Email already in use');
+      }
+      updateUserData.email = email;
+    }
+
+    if (password) {
+      const saltRounds = 10;
+      updateUserData.password = await hash(password, saltRounds);
+    }
+
+    return await this.prisma.user.update({
+      where: { id },
+      data: {
+        ...updateUserData,
+        consultant: {
+          update: {
+            first_name,
+            last_name,
+            photo_url,
+            description,
+          },
+        },
+      },
+      omit: SAFE_USER_OMIT,
+      include: {
+        consultant: true,
+        company: true,
       },
     });
   }
