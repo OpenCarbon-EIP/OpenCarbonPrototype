@@ -1,4 +1,9 @@
-import { company, offer } from 'src/generated/prisma/client';
+import {
+  application,
+  company,
+  consultant,
+  offer,
+} from 'src/generated/prisma/client';
 import { OfferWithRelations } from 'src/types/offer.types';
 import { SafeUser } from 'src/types/user.types';
 
@@ -58,6 +63,21 @@ export const createMockCompany = (overrides?: Partial<company>): company => ({
   ...overrides,
 });
 
+export const createMockConsultant = (
+  overrides?: Partial<consultant>,
+): consultant => ({
+  id: 'consultant-uuid',
+  id_user: 'user-123',
+  last_name: 'Doe',
+  first_name: 'John',
+  professional_title: 'Software Engineer',
+  description: 'Experienced consultant',
+  photo_url: null,
+  rating_score: 4.5,
+  is_verified: true,
+  ...overrides,
+});
+
 export const createMockUserCompany = (
   overrides?: Partial<SafeUser>,
 ): SafeUser => ({
@@ -103,4 +123,33 @@ export const createMockOfferList = (
     );
   }
   return offers;
+};
+
+export const createMockApplication = (
+  overrides?: Partial<application>,
+): application => ({
+  id: 'application-123',
+  id_offer: 'offer-123',
+  id_consultant: 'consul-123',
+  status: 'PENDING',
+  content: 'I am interested in this offer.',
+  ...overrides,
+});
+
+export const createMockApplicationList = (
+  count: number,
+  overrides?: Partial<application>,
+): application[] => {
+  const applications: application[] = [];
+  for (let i = 0; i < count; i++) {
+    applications.push(
+      createMockApplication({
+        id: `application-${i + 1}`,
+        id_offer: `offer-${Math.ceil((i + 1) / 2)}`,
+        id_consultant: `consul-${i + 1}`,
+        ...overrides,
+      }),
+    );
+  }
+  return applications;
 };
