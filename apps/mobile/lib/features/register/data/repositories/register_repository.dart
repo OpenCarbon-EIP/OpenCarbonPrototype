@@ -57,6 +57,7 @@ class RegisterRepositoryImpl implements RegisterRepository {
         throw AuthFailure("Le jeton de connexion n'a pas été bien envoyé. Réessayer.");
       }
       await _authService.saveToken(accessToken);
+      await _authService.saveRole(role);
     } on AuthFailure catch (_) {
       rethrow;
     } on ValidationFailure catch (_) {

@@ -9,12 +9,19 @@ class AuthProvider extends ChangeNotifier {
   final FlutterSecureStorage _storage;
   bool _isAuthenticated = false;
   bool _isInitialized = false;
+  String? _role;
 
   bool get isAuthenticated => _isAuthenticated;
   bool get isInitialized => _isInitialized;
+  String? get role => _role;
+
+  bool get isConsultant => _role == 'CONSULTANT';
+  bool get isCompany => _role == 'COMPANY';
 
   Future<void> _checkToken() async {
     final token = await _storage.read(key: 'auth_token');
+    _role = await _storage.read(key: 'user_role');
+
     _isAuthenticated = token != null;
     _isInitialized = true;
     notifyListeners();
@@ -26,7 +33,9 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> logout() async {
     await _storage.delete(key: 'auth_token');
+    await _storage.delete(key: 'user_role');
     _isAuthenticated = false;
+    _role = null;
     notifyListeners();
   }
 }

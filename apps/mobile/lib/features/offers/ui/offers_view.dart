@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_poc/core/auth/auth_provider.dart';
 import 'package:flutter_poc/core/colors/app_colors.dart';
 import 'package:flutter_poc/core/svg/app_svg.dart';
 import 'package:flutter_poc/core/typo/app_typography.dart';
@@ -26,8 +27,16 @@ class OffersView extends StatelessWidget {
         final authService = OfferAuthService(const FlutterSecureStorage());
         final repository = OfferRepositoryImpl(service, authService);
         final vm = OffersViewModel(repository);
-        vm.loadOffers();
-        vm.getCompanyOffers();
+
+        final authProvider = context.read<AuthProvider>();
+
+        if (authProvider.isCompany) {
+          vm.getCompanyOffers();
+          vm.loadOffers();
+        } else {
+          vm.loadOffers();
+        }
+
         return vm;
       },
       child: const _OffersViewBody(),
@@ -252,24 +261,17 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                                         "Nom de l'entreprise non spécifié",
                                                     style: AppTypography.headingMedium,
                                                   ),
-                                                  selectedOffer.company?.logoUrl == null ||
-                                                          selectedOffer.company?.logoUrl?.isEmpty == true
-                                                      ? CircleAvatar(
-                                                          radius: 15,
-                                                          backgroundColor: AppColors.primaryLight,
-                                                          child: Text(
-                                                            selectedOffer.company?.companyName.substring(0, 2) ?? 'N/A',
-                                                            style: AppTypography.bodySmall.copyWith(
-                                                              color: AppColors.textLight,
-                                                              fontWeight: FontWeight.bold,
-                                                            ),
-                                                          ),
-                                                        )
-                                                      : CircleAvatar(
-                                                          radius: 15,
-                                                          backgroundColor: AppColors.primaryLight,
-                                                          child: Image.network(selectedOffer.company!.logoUrl!),
-                                                        ),
+                                                  CircleAvatar(
+                                                    radius: 15,
+                                                    backgroundColor: AppColors.primaryLight,
+                                                    child: Text(
+                                                      selectedOffer.company?.companyName.substring(0, 2) ?? 'N/A',
+                                                      style: AppTypography.bodySmall.copyWith(
+                                                        color: AppColors.textLight,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ],
                                               ),
                                               Text(

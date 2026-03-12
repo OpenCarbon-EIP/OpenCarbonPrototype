@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_poc/core/colors/app_colors.dart';
+import 'package:flutter_poc/core/typo/app_typography.dart';
 
 class MessagesView extends StatelessWidget {
   const MessagesView({super.key});
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Messages')),
-    backgroundColor: AppColors.backgroundLight,
-    body: Container(),
+    body: Padding(
+      padding: const EdgeInsets.all(32.0),
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 24,
+          children: [
+            Text(
+              "Cette option arrive bientôt, naviguez vers la page opportunités ou profil pour commencer à découvrir l'app !",
+              style: AppTypography.subheadingMedium,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    ),
   );
 }

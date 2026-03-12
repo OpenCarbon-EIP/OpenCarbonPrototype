@@ -24,10 +24,14 @@ class LoginRepositoryImpl implements LoginRepository {
     try {
       final response = await _api.login(email, password);
       final accessToken = response.data?.accessToken;
-      if (accessToken == null) {
-        throw AuthFailure("Le jeton de connexion n'a pas été bien envoyé. Réessayer.");
+      final role = response.data?.user.role;
+
+      if (accessToken == null || role == null) {
+        throw AuthFailure("Le jeton ou le rôle n'a pas été bien envoyé. Réessayer.");
       }
+
       await _authService.saveToken(accessToken);
+      await _authService.saveRole(role);
     } on AuthFailure catch (_) {
       rethrow;
     } on Exception catch (e) {
