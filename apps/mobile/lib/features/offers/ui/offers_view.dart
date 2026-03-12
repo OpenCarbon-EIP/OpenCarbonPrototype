@@ -109,6 +109,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                         Text('Secteurs :', style: AppTypography.label),
                                         ShadSelect<String>.multipleWithSearch(
                                           placeholder: const Text('Sélectionnez des secteurs'),
+                                          searchPlaceholder: const Text('Rechercher des secteurs...'),
                                           options: sectors.map((sector) => 
                                             ShadOption(
                                               value: sector, 
