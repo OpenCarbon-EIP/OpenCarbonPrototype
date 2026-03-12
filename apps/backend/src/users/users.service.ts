@@ -8,6 +8,7 @@ import { CreateUserDto, UpdateUserDto } from '@dtos/user.dto';
 import type { user } from 'src/generated/prisma/client';
 import type { SafeUser } from 'src/types/user.types';
 import { ConsultantService } from 'src/consultant/consultant.service';
+import { hash } from 'bcrypt';
 
 export const SAFE_USER_OMIT = {
   password: true,
@@ -69,11 +70,26 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
+    const updateUserData: Partial<user> = {};
+
+    if (email) {
+      const existingUser = await this.getUserByEmail(email);
+
+      if (existingUser && existingUser.id !== id) {
+        throw new BadRequestException('Email already in use');
+      }
+      updateUserData.email = email;
+    }
+
+    if (password) {
+      const saltRounds = 10;
+      updateUserData.password = await hash(password, saltRounds);
+    }
+
     return await this.prisma.user.update({
       where: { id },
       data: {
-        email,
-        password,
+        ...updateUserData,
         consultant: {
           update: {
             first_name,
