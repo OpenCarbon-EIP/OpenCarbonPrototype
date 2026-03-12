@@ -281,7 +281,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                                 ],
                                               ),
                                               Text(
-                                                'Date limite: ${selectedOffer.deadline.toString()}',
+                                                'Date limite: ${DateFormat('dd/MM/yyyy').format(selectedOffer.deadline)}',
                                                 style: AppTypography.bodyMedium,
                                               ),
                                               Text(
