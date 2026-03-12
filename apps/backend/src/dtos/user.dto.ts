@@ -36,3 +36,36 @@ export class CreateUserDto {
   })
   role?: Role;
 }
+
+export class UpdateUserDto {
+  @ApiPropertyOptional({ example: 'user@example.com' })
+  @IsEmail()
+  @IsOptional()
+  email?: string;
+
+  @ApiPropertyOptional({ example: 'newpassword', minLength: 6 })
+  @IsString()
+  @MinLength(6)
+  @IsOptional()
+  password?: string;
+
+  @ApiPropertyOptional({ example: 'John' })
+  @IsString()
+  @IsOptional()
+  first_name?: string;
+
+  @ApiPropertyOptional({ example: 'Doe' })
+  @IsString()
+  @IsOptional()
+  last_name?: string;
+
+  @ApiPropertyOptional({ example: 'photo_url' })
+  @IsString()
+  @IsOptional()
+  photo_url?: string;
+
+  @ApiPropertyOptional({ example: 'Senior Consultant' })
+  @IsString()
+  @IsOptional()
+  description?: string;
+}
