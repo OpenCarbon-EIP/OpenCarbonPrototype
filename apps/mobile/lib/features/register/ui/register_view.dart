@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_poc/core/auth/auth_provider.dart';
+import 'package:flutter_poc/core/colors/app_colors.dart';
 import 'package:flutter_poc/core/typo/app_typography.dart';
 import 'package:flutter_poc/features/register/data/repositories/register_repository.dart';
 import 'package:flutter_poc/features/register/data/services/register_api_service.dart';
@@ -178,6 +179,7 @@ class _RegisterViewBodyState extends State<_RegisterViewBody> {
                   vm.isLoading
                       ? const CircularProgressIndicator()
                       : SmallButton(
+                          color: AppColors.primaryLight,
                           text: 'S\'inscrire',
                           onPressed: () async {
                             await vm.signup(

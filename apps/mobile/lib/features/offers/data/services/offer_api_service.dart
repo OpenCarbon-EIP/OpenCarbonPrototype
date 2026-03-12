@@ -114,4 +114,29 @@ class OfferApiService {
       }
     }
   }
+
+  Future<void> deleteOffer(String token, String idOffer) async {
+    final String? dbPath = dotenv.env[AppConstants.dbPath];
+    if (dbPath == null) {
+      throw EnvironmentFailure();
+    }
+    final uri = Uri.http(dbPath, '/offers/$idOffer/delete');
+    final response = await _httpClient.post(
+        uri,
+        headers: {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'}
+    );
+
+    if (response.statusCode != 200) {
+      switch (response.statusCode) {
+        case 401:
+          throw UnauthorizedFailure("Vous n'êtes pas autorisé(e) à créer une offre.");
+        case 403:
+          throw UnauthorizedFailure('Seulement les entreprises peuvent créer une offre.');
+        case 404:
+          throw NotFoundFailure("L'offre n'existe pas, impossible de supprimer.");
+        default:
+          throw Exception('Erreur pendant le chargement des opportunités');
+      }
+    }
+  }
 }

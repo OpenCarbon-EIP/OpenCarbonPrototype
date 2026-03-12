@@ -4,16 +4,17 @@ import 'package:flutter_poc/core/typo/app_typography.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class SmallButton extends StatelessWidget {
-  const SmallButton({super.key, required this.text, required this.onPressed});
+  const SmallButton({super.key, required this.text, required this.onPressed, required this.color});
 
   final String text;
   final VoidCallback onPressed;
+  final Color color;
 
   @override
   Widget build(BuildContext context) => TextButton(
     onPressed: onPressed,
     style: TextButton.styleFrom(
-      backgroundColor: AppColors.primaryLight,
+      backgroundColor: color,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
     ),

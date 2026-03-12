@@ -12,6 +12,8 @@ abstract class OfferRepository {
   Future<List<OfferEntity>> getCompanyOffers();
 
   Future<void> createOffer(String title, String description, String location, double budget, DateTime deadline);
+
+  Future<void> deleteOffer(String idOffer);
 }
 
 class OfferRepositoryImpl implements OfferRepository {
@@ -150,6 +152,23 @@ class OfferRepositoryImpl implements OfferRepository {
         throw AuthFailure("Le token n'est pas valable");
       }
       await _api.createOffer(token, title, description, location, budget, deadline);
+    } on AuthFailure catch (_) {
+      rethrow;
+    } on NotFoundFailure catch (_) {
+      rethrow;
+    } on Exception catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteOffer(String idOffer) async {
+    try {
+      final token = await _authService.getToken();
+      if (token == null) {
+        throw AuthFailure("Le token n'est pas valable");
+      }
+      await _api.deleteOffer(token, idOffer);
     } on AuthFailure catch (_) {
       rethrow;
     } on NotFoundFailure catch (_) {

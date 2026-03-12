@@ -32,3 +32,7 @@ class NotFoundFailure extends Failure {
 class EnvironmentFailure extends Failure {
   EnvironmentFailure([super.message = "Une variable d'environnement n'est pas définie."]);
 }
+
+class OwnershipFailure extends Failure {
+  OwnershipFailure([super.message = "Vous n'êtes pas le propriétaire de cette offre."]);
+}

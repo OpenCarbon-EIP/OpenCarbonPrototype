@@ -82,6 +82,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
   Widget build(BuildContext context) {
     final vm = context.watch<OffersViewModel>();
     final offers = _currentTab == 1 ? vm.offers : vm.companyOffers;
+    final authProvider = context.read<AuthProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -162,6 +163,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                         ),
                                         SmallButton(
                                           text: "Publier l'offre",
+                                          color: AppColors.primaryLight,
                                           onPressed: () async {
                                             await vm.createOffer(
                                               _titleController.text,
@@ -286,15 +288,30 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                           ),
                                         ),
                                       ),
+                                      authProvider.isConsultant ?
                                       SmallButton(
                                         text: 'Postuler',
+                                        color: AppColors.primaryLight,
+                                        onPressed: () async {
+                                          await vm.deleteOffer(selectedOffer.id);
+                                          if (context.mounted && vm.error == null) {
+                                            Navigator.pop(context);
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(content: Text('Offre supprimée avec succès')),
+                                            );
+                                          }
+                                        },
+                                      )
+                                      : SmallButton(
+                                        text: "Supprimer l'offre",
+                                        color: AppColors.danger,
                                         onPressed: () async {
                                           await vm.apply(selectedOffer.id);
                                           if (context.mounted && vm.error == null) {
                                             Navigator.pop(context);
                                           }
                                         },
-                                      ),
+                                      )
                                     ],
                                   ),
                                 ),

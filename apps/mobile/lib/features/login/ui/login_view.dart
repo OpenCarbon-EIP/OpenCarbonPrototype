@@ -8,6 +8,7 @@ import 'package:flutter_poc/ui/widgets/button.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:flutter_poc/core/colors/app_colors.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key, required this.onSwitch});
@@ -93,6 +94,7 @@ class _LoginViewBodyState extends State<_LoginViewBody> {
                       ? const CircularProgressIndicator()
                       : SmallButton(
                           text: 'Se connecter',
+                          color: AppColors.primaryLight,
                           onPressed: () async {
                             await vm.login(_emailController.text, _passwordController.text);
                             if (vm.error == null && context.mounted) {

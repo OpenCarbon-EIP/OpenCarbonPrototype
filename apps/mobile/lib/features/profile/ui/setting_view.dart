@@ -70,6 +70,7 @@ class SettingView extends StatelessWidget {
           Center(
             child: SmallButton(
               text: 'Se déconnecter',
+              color: AppColors.danger,
               onPressed: () {
                 Navigator.pop(context);
                 context.read<AuthProvider>().logout();
