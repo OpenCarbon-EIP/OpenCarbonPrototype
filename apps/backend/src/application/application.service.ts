@@ -3,7 +3,6 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateApplicationDto } from '@dtos/application.dto';
@@ -34,6 +33,22 @@ export class ApplicationService {
       throw new BadRequestException('Application ID is required');
     }
 
+    const consultant = await this.consultantService.getConsultantByUserId(id);
+
+    if (!consultant) {
+      throw new NotFoundException('Consultant profile not found');
+    }
+
+    const application = await this.prisma.application.findUnique({
+      where: { id },
+    });
+
+    if (application && application.id_consultant !== consultant.id) {
+      throw new ForbiddenException(
+        'You do not have permission to access this application',
+      );
+    }
+
     return await this.prisma.application.findUnique({
       where: { id },
     });
@@ -47,18 +62,6 @@ export class ApplicationService {
 
     if (!id_offer || !content) {
       throw new BadRequestException('All fields are required');
-    }
-
-    const user = await this.userService.getUserById(userId);
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    if (user.role !== 'CONSULTANT') {
-      throw new UnauthorizedException(
-        'Only consultants can create applications',
-      );
     }
 
     const consultant =
@@ -89,6 +92,13 @@ export class ApplicationService {
       throw new BadRequestException('Application ID is required');
     }
 
+    const consultant =
+      await this.consultantService.getConsultantByUserId(userId);
+
+    if (!consultant) {
+      throw new NotFoundException('Consultant profile not found');
+    }
+
     const application = await this.prisma.application.findUnique({
       where: { id },
     });
@@ -97,7 +107,7 @@ export class ApplicationService {
       throw new NotFoundException('Application not found');
     }
 
-    if (application.id_consultant !== userId) {
+    if (application.id_consultant !== consultant.id) {
       throw new ForbiddenException(
         'You do not have permission to delete this application',
       );

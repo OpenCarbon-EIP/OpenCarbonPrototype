@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '@prisma/prisma.service';
 import { SAFE_USER_OMIT, UsersService } from 'src/users/users.service';
-import { Role } from 'src/generated/prisma/client';
 
 @Injectable()
 export class OfferService {
@@ -21,10 +20,6 @@ export class OfferService {
 
     if (!user) {
       throw new NotFoundException('User not found');
-    }
-
-    if (user.role !== Role.COMPANY) {
-      throw new ForbiddenException('Only company can create offers');
     }
 
     const company = await this.prismaService.company.findUnique({

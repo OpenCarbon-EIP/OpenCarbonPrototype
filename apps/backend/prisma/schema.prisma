@@ -14,12 +14,6 @@ datasource db {
   provider = "postgresql"
 }
 
-enum Role {
-  CONSULTANT
-  COMPANY
-  ADMIN
-}
-
 enum OfferStatus {
   OPEN
   CLOSED
@@ -38,15 +32,63 @@ enum ApplicationStatus {
 }
 
 model user {
-  id String @id @default(uuid())
-  email String @unique
-  password String
+  id            String    @id @default(uuid())
+  email         String    @unique
+  emailVerified Boolean   @default(false)
+  name          String?
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  role          String    @default("CONSULTANT")
+  banned        Boolean?
+  banReason     String?
+  banExpires    DateTime?
+
+  sessions   session[]
+  accounts   account[]
+  consultant consultant?
+  company    company?
+}
+
+model session {
+  id        String   @id @default(uuid())
+  expiresAt DateTime
+  token     String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  role Role @default(CONSULTANT)
+  ipAddress String?
+  userAgent String?
+  userId    String
+  impersonatedBy String?
 
-  consultant consultant?
-  company company?
+  user user @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model account {
+  id                    String    @id @default(uuid())
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user user @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model verification {
+  id         String    @id @default(uuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
 }
 
 model consultant {
