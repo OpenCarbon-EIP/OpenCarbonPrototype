@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_poc/core/constants/app_constants.dart';
 import 'package:flutter_poc/core/errors/app_errors.dart';
 import 'package:flutter_poc/features/login/data/models/login_response_model.dart';
 import 'package:http/http.dart' as http;
@@ -17,7 +19,11 @@ class LoginApiService {
   final http.Client _httpClient;
 
   Future<LoginResponseModel> login(String email, String password) async {
-    final uri = Uri.http('localhost:3000', '/auth/login');
+    final String? pathToDB = dotenv.env[AppConstants.dbPath];
+    if (pathToDB == null) {
+      throw EnvironmentFailure();
+    }
+    final uri = Uri.http(pathToDB, '/auth/login');
     final response = await _httpClient.post(uri, body: {
       'email': email,
       'password': password,

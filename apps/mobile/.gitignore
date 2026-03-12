@@ -31,3 +31,6 @@ macos/Pods/
 # Divers
 *.log
 .DS_Store
+
+# Variables d'env
+.env
