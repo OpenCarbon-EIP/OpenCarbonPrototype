@@ -43,8 +43,8 @@ class _OffersViewBody extends StatefulWidget {
 
 class _OffersViewBodyState extends State<_OffersViewBody> {
   final TextEditingController _searchController = TextEditingController();
-  List<String> selectedSectors = [];
-  List<String> selectedCompanies = [];
+  String? selectedSector;
+  String? selectedCompany;
 
   @override
   void dispose() {
@@ -109,8 +109,8 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                         Text('Secteurs :', style: AppTypography.label),
                                         SizedBox(
                                           width: double.infinity,
-                                          child: ShadSelect<String>.multipleWithSearch(
-                                            placeholder: const Text('Sélectionnez des secteurs'),
+                                          child: ShadSelect<String>.withSearch(
+                                            placeholder: const Text('Sélectionnez un secteur'),
                                             searchPlaceholder: const Text('Rechercher des secteurs...'),
                                             options: sectors.map((sector) =>
                                               ShadOption(
@@ -118,13 +118,13 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                                 child: Text(sector)
                                                 ),
                                               ).toList(),
-                                            selectedOptionsBuilder: (context, selectedValues) =>
-                                              Text(selectedValues.join(', '),
+                                            selectedOptionBuilder: (context, value) =>
+                                              Text(value,
                                               style: AppTypography.bodyMedium
                                               ),
-                                            onSearchChanged: (values) {
+                                            onSearchChanged: (value) {
                                               setState(() {
-                                                selectedSectors = [values];
+                                                selectedSector = value;
                                               });
                                             },
                                           ),
@@ -143,8 +143,8 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                         Text('Entreprises :', style: AppTypography.label),
                                         SizedBox(
                                           width: double.infinity,
-                                          child: ShadSelect<String>.multipleWithSearch(
-                                            placeholder: const Text('Sélectionnez l\'entreprise'),
+                                          child: ShadSelect<String>.withSearch(
+                                            placeholder: const Text('Sélectionnez une entreprise'),
                                             searchPlaceholder: const Text('Rechercher des entreprises...'),
                                             options: companies.map((company) =>
                                               ShadOption(
@@ -152,13 +152,13 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                                 child: Text(company)
                                                 ),
                                               ).toList(),
-                                            selectedOptionsBuilder: (context, selectedValues) =>
-                                              Text(selectedValues.join(', '),
+                                            selectedOptionBuilder: (context, value) =>
+                                              Text(value,
                                               style: AppTypography.bodyMedium
                                               ),
-                                            onSearchChanged: (values) {
+                                            onSearchChanged: (value) {
                                               setState(() {
-                                                selectedCompanies = [values];
+                                                selectedCompany = value;
                                               });
                                             },
                                           ),
