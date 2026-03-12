@@ -107,24 +107,27 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                       spacing: 8,
                                       children: [
                                         Text('Secteurs :', style: AppTypography.label),
-                                        ShadSelect<String>.multipleWithSearch(
-                                          placeholder: const Text('Sélectionnez des secteurs'),
-                                          searchPlaceholder: const Text('Rechercher des secteurs...'),
-                                          options: sectors.map((sector) => 
-                                            ShadOption(
-                                              value: sector, 
-                                              child: Text(sector)
+                                        SizedBox(
+                                          width: double.infinity,
+                                          child: ShadSelect<String>.multipleWithSearch(
+                                            placeholder: const Text('Sélectionnez des secteurs'),
+                                            searchPlaceholder: const Text('Rechercher des secteurs...'),
+                                            options: sectors.map((sector) =>
+                                              ShadOption(
+                                                value: sector,
+                                                child: Text(sector)
+                                                ),
+                                              ).toList(),
+                                            selectedOptionsBuilder: (context, selectedValues) =>
+                                              Text(selectedValues.join(', '),
+                                              style: AppTypography.bodyMedium
                                               ),
-                                            ).toList(),
-                                          selectedOptionsBuilder: (context, selectedValues) => 
-                                            Text(selectedValues.join(', '), 
-                                            style: AppTypography.bodyMedium
-                                            ),
-                                          onSearchChanged: (values) {
-                                            setState(() {
-                                              selectedSectors = [values];
-                                            });
-                                          },
+                                            onSearchChanged: (values) {
+                                              setState(() {
+                                                selectedSectors = [values];
+                                              });
+                                            },
+                                          ),
                                         ),
                                         const ShadBadge.outline(
                                           backgroundColor: AppColors.backgroundLight,
@@ -138,24 +141,27 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                       spacing: 8,
                                       children: [
                                         Text('Entreprises :', style: AppTypography.label),
-                                        ShadSelect<String>.multipleWithSearch(
-                                          placeholder: const Text('Sélectionnez l\'entreprise'),
-                                          searchPlaceholder: const Text('Rechercher des entreprises...'),
-                                          options: companies.map((company) => 
-                                            ShadOption(
-                                              value: company, 
-                                              child: Text(company)
+                                        SizedBox(
+                                          width: double.infinity,
+                                          child: ShadSelect<String>.multipleWithSearch(
+                                            placeholder: const Text('Sélectionnez l\'entreprise'),
+                                            searchPlaceholder: const Text('Rechercher des entreprises...'),
+                                            options: companies.map((company) =>
+                                              ShadOption(
+                                                value: company,
+                                                child: Text(company)
+                                                ),
+                                              ).toList(),
+                                            selectedOptionsBuilder: (context, selectedValues) =>
+                                              Text(selectedValues.join(', '),
+                                              style: AppTypography.bodyMedium
                                               ),
-                                            ).toList(),
-                                          selectedOptionsBuilder: (context, selectedValues) => 
-                                            Text(selectedValues.join(', '), 
-                                            style: AppTypography.bodyMedium
-                                            ),
-                                          onSearchChanged: (values) {
-                                            setState(() {
-                                              selectedCompanies = [values];
-                                            });
-                                          },
+                                            onSearchChanged: (values) {
+                                              setState(() {
+                                                selectedCompanies = [values];
+                                              });
+                                            },
+                                          ),
                                         ),
                                         const ShadBadge.outline(
                                           backgroundColor: AppColors.backgroundLight,
