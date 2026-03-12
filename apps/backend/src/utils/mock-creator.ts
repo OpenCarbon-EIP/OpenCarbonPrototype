@@ -66,7 +66,7 @@ export const createMockCompany = (overrides?: Partial<company>): company => ({
 export const createMockConsultant = (
   overrides?: Partial<consultant>,
 ): consultant => ({
-  id: 'consultant-uuid',
+  id: 'consul-123',
   id_user: 'user-123',
   last_name: 'Doe',
   first_name: 'John',

@@ -86,7 +86,7 @@ describe('ApplicationService', () => {
       const createSpy = jest.spyOn(prismaService.application, 'create');
       expect(createSpy).toHaveBeenCalledWith({
         data: {
-          id_consultant: 'consultant-uuid',
+          id_consultant: 'consul-123',
           id_offer: 'offer-123',
           content: 'I am interested in this offer.',
         },
