@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_poc/core/auth/auth_provider.dart';
 import 'package:flutter_poc/core/colors/app_colors.dart';
 import 'package:flutter_poc/core/svg/app_svg.dart';
 import 'package:flutter_poc/core/typo/app_typography.dart';
 import 'package:flutter_poc/features/profile/domain/entity/profile_entity.dart';
 import 'package:flutter_poc/ui/widgets/button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_poc/core/auth/auth_provider.dart';
 import 'package:provider/provider.dart';
 
 class SettingView extends StatelessWidget {

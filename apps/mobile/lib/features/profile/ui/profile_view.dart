@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_poc/core/colors/app_colors.dart';
 import 'package:flutter_poc/core/svg/app_svg.dart';
-import 'package:flutter_poc/features/profile/ui/setting_view.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_poc/core/typo/app_typography.dart';
 import 'package:flutter_poc/features/profile/data/repositories/profile_repository.dart';
 import 'package:flutter_poc/features/profile/data/services/profile_api_service.dart';
 import 'package:flutter_poc/features/profile/data/services/profile_auth_service.dart';
+import 'package:flutter_poc/features/profile/ui/setting_view.dart';
 import 'package:flutter_poc/features/profile/viewmodels/profile_viewmodel.dart';
-import 'package:flutter_poc/core/typo/app_typography.dart';
-import 'package:flutter_poc/core/colors/app_colors.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class ProfileView extends StatelessWidget {
@@ -109,7 +108,7 @@ class _ProfileViewBodyState extends State<_ProfileViewBody> {
                   child: Image.network(
                     displayImage ?? '',
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => const ColoredBox(color: Colors.grey),
+                    errorBuilder: (_, _, _) => const ColoredBox(color: Colors.grey),
                   ),
                 ),
               ),

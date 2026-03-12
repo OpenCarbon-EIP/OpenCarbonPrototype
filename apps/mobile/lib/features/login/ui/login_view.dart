@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_poc/core/auth/auth_provider.dart';
+import 'package:flutter_poc/core/colors/app_colors.dart';
 import 'package:flutter_poc/features/login/data/repositories/login_repository.dart';
 import 'package:flutter_poc/features/login/data/services/login_api_service.dart';
 import 'package:flutter_poc/features/login/data/services/login_auth_service.dart';
@@ -8,7 +9,6 @@ import 'package:flutter_poc/ui/widgets/button.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
-import 'package:flutter_poc/core/colors/app_colors.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key, required this.onSwitch});

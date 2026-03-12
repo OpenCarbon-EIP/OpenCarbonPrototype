@@ -1,8 +1,8 @@
-import 'package:flutter_poc/features/profile/domain/entity/profile_entity.dart';
 import 'package:flutter_poc/core/errors/app_errors.dart';
 import 'package:flutter_poc/features/profile/data/models/profile_model.dart';
 import 'package:flutter_poc/features/profile/data/services/profile_api_service.dart';
 import 'package:flutter_poc/features/profile/data/services/profile_auth_service.dart';
+import 'package:flutter_poc/features/profile/domain/entity/profile_entity.dart';
 
 abstract class ProfileRepository {
   Future<Profile> getProfile();

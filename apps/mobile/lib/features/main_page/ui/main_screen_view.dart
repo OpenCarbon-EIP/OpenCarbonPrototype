@@ -5,7 +5,6 @@ import 'package:flutter_poc/features/messages/ui/messages_view.dart';
 import 'package:flutter_poc/features/offers/ui/offers_view.dart';
 import 'package:flutter_poc/features/profile/ui/profile_view.dart';
 import 'package:flutter_poc/ui/widgets/app_navbar.dart';
-import 'package:flutter_poc/features/profile/ui/profile_view.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
