@@ -146,7 +146,6 @@ export const createMockApplicationList = (
       createMockApplication({
         id: `application-${i + 1}`,
         id_offer: `offer-${Math.ceil((i + 1) / 2)}`,
-        id_consultant: `consul-${i + 1}`,
         ...overrides,
       }),
     );
