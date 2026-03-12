@@ -56,7 +56,7 @@ describe('OfferController', () => {
       const createDto = createMockOffer();
 
       await expect(
-        controller.createOffer(null as any, createDto),
+        controller.createOffer(undefined as unknown as Express.User, createDto),
       ).rejects.toThrow(UnauthorizedException);
     });
   });
@@ -95,9 +95,9 @@ describe('OfferController', () => {
           new BadRequestException('User not authenticated'),
         );
 
-      await expect(controller.listOffers(null as any)).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(
+        controller.listOffers(undefined as unknown as Express.User),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 
@@ -125,9 +125,9 @@ describe('OfferController', () => {
           new BadRequestException('User not authenticated'),
         );
 
-      await expect(controller.listMyOffers(null as any)).rejects.toThrow(
-        UnauthorizedException,
-      );
+      await expect(
+        controller.listMyOffers(undefined as unknown as Express.User),
+      ).rejects.toThrow(UnauthorizedException);
     });
   });
 
@@ -152,7 +152,7 @@ describe('OfferController', () => {
       const offerId = 'offer-123';
 
       await expect(
-        controller.getOfferById(null as any, offerId),
+        controller.getOfferById(undefined as unknown as Express.User, offerId),
       ).rejects.toThrow(UnauthorizedException);
     });
   });
@@ -190,7 +190,11 @@ describe('OfferController', () => {
       const updateDto = createMockOffer();
 
       await expect(
-        controller.updateOffer(null as any, offerId, updateDto),
+        controller.updateOffer(
+          undefined as unknown as Express.User,
+          offerId,
+          updateDto,
+        ),
       ).rejects.toThrow(UnauthorizedException);
     });
   });
@@ -215,7 +219,7 @@ describe('OfferController', () => {
       const offerId = 'offer-123';
 
       await expect(
-        controller.deleteOffer(null as any, offerId),
+        controller.deleteOffer(undefined as unknown as Express.User, offerId),
       ).rejects.toThrow(UnauthorizedException);
     });
   });
