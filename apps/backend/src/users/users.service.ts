@@ -1,8 +1,13 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { CreateUserDto } from '@dtos/user.dto';
+import { CreateUserDto, UpdateUserDto } from '@dtos/user.dto';
 import type { user } from 'src/generated/prisma/client';
 import type { SafeUser } from 'src/types/user.types';
+import { ConsultantService } from 'src/consultant/consultant.service';
 
 export const SAFE_USER_OMIT = {
   password: true,
@@ -12,7 +17,10 @@ export const SAFE_USER_OMIT = {
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly consultantService: ConsultantService,
+  ) {}
 
   async getUserById(id: string): Promise<SafeUser | null> {
     if (!id) {
@@ -47,6 +55,38 @@ export class UsersService {
         email,
         password,
         ...(role && { role }),
+      },
+    });
+  }
+
+  async updateUser(id: string, updateData: UpdateUserDto): Promise<SafeUser> {
+    const { email, password, first_name, last_name, photo_url, description } =
+      updateData;
+
+    const user = await this.consultantService.getConsultantByUserId(id);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return await this.prisma.user.update({
+      where: { id },
+      data: {
+        email,
+        password,
+        consultant: {
+          update: {
+            first_name,
+            last_name,
+            photo_url,
+            description,
+          },
+        },
+      },
+      omit: SAFE_USER_OMIT,
+      include: {
+        consultant: true,
+        company: true,
       },
     });
   }
