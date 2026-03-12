@@ -57,7 +57,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
   late final TextEditingController _descriptionController;
   late final TextEditingController _locationController;
   late final TextEditingController _budgetController;
-  final date = DateTime.now();
+  DateTime date = DateTime.now();
 
   @override
   void initState() {
@@ -82,7 +82,6 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
   Widget build(BuildContext context) {
     final vm = context.watch<OffersViewModel>();
     final offers = _currentTab == 1 ? vm.offers : vm.companyOffers;
-    final authProvider = context.read<AuthProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -170,7 +169,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                               _descriptionController.text,
                                               _locationController.text,
                                               double.parse(_budgetController.text),
-                                              date,
+                                              date = DateTime.now(),
                                             );
 
                                             if (context.mounted) {
@@ -184,6 +183,11 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                                 ).showSnackBar(SnackBar(content: Text(vm.error!)));
                                               }
                                             }
+                                            _titleController.clear();
+                                            _descriptionController.clear();
+                                            _locationController.clear();
+                                            _budgetController.clear();
+                                            date = DateTime.now();
                                           },
                                         ),
                                       ],
@@ -277,7 +281,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                                 ],
                                               ),
                                               Text(
-                                                'Date limite: ${selectedOffer.deadline}',
+                                                'Date limite: ${selectedOffer.deadline.toString()}',
                                                 style: AppTypography.bodyMedium,
                                               ),
                                               Text(
@@ -288,30 +292,41 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                           ),
                                         ),
                                       ),
-                                      authProvider.isConsultant ?
-                                      SmallButton(
-                                        text: 'Postuler',
-                                        color: AppColors.primaryLight,
-                                        onPressed: () async {
-                                          await vm.deleteOffer(selectedOffer.id);
-                                          if (context.mounted && vm.error == null) {
-                                            Navigator.pop(context);
-                                            ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(content: Text('Offre supprimée avec succès')),
-                                            );
-                                          }
-                                        },
-                                      )
-                                      : SmallButton(
-                                        text: "Supprimer l'offre",
-                                        color: AppColors.danger,
-                                        onPressed: () async {
-                                          await vm.apply(selectedOffer.id);
-                                          if (context.mounted && vm.error == null) {
-                                            Navigator.pop(context);
-                                          }
-                                        },
-                                      )
+                                      _currentTab == 1
+                                          ? SmallButton(
+                                              text: 'Postuler',
+                                              color: AppColors.primaryLight,
+                                              onPressed: () async {
+                                                await vm.apply(selectedOffer.id);
+                                                if (context.mounted && vm.error == null) {
+                                                  Navigator.pop(context);
+                                                }
+                                              },
+                                            )
+                                          : SmallButton(
+                                              text: "Supprimer l'offre",
+                                              color: AppColors.danger,
+                                              onPressed: () async {
+                                                await vm.deleteOffer(selectedOffer.id);
+                                                if (context.mounted) {
+                                                  Navigator.pop(context);
+                                                  if (vm.error == null) {
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text('Offre supprimée avec succès'),
+                                                        backgroundColor: AppColors.primaryLight,
+                                                      ),
+                                                    );
+                                                    await vm.getCompanyOffers();
+                                                    await vm.loadOffers();
+                                                  } else {
+                                                    ScaffoldMessenger.of(
+                                                      context,
+                                                    ).showSnackBar(SnackBar(content: Text(vm.error!), backgroundColor: AppColors.danger));
+                                                  }
+                                                }
+                                              },
+                                            ),
                                     ],
                                   ),
                                 ),

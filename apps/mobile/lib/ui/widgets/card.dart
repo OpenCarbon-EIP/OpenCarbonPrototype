@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_poc/core/colors/app_colors.dart';
 import 'package:flutter_poc/core/typo/app_typography.dart';
+import 'package:intl/intl.dart';
 
 class CustomCard extends StatelessWidget {
   const CustomCard({
@@ -15,7 +16,7 @@ class CustomCard extends StatelessWidget {
 
   final int index;
   final String title;
-  final String deadline;
+  final DateTime deadline;
   final String description;
   final String? companyName;
   final ValueChanged<int> onCardSelected;
@@ -43,7 +44,7 @@ class CustomCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title, style: AppTypography.bodyMedium),
-                  Text(deadline, style: AppTypography.bodySmall.copyWith(color: AppColors.textDark)),
+                  Text(DateFormat('dd/MM/yyyy').format(deadline), style: AppTypography.bodySmall.copyWith(color: AppColors.textDark)),
                 ],
               ),
               CircleAvatar(

@@ -120,8 +120,9 @@ class OfferApiService {
     if (dbPath == null) {
       throw EnvironmentFailure();
     }
+
     final uri = Uri.http(dbPath, '/offers/$idOffer/delete');
-    final response = await _httpClient.post(
+    final response = await _httpClient.delete(
         uri,
         headers: {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'}
     );
