@@ -15,7 +15,7 @@ class OfferEntity {
   final String title;
   final String description;
   final double budget;
-  final String deadline;
+  final DateTime deadline;
   final String status;
   final String location;
   final String idCompany;

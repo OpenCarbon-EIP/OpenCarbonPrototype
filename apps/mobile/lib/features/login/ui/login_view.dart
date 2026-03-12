@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_poc/core/auth/auth_provider.dart';
+import 'package:flutter_poc/core/colors/app_colors.dart';
 import 'package:flutter_poc/features/login/data/repositories/login_repository.dart';
 import 'package:flutter_poc/features/login/data/services/login_api_service.dart';
 import 'package:flutter_poc/features/login/data/services/login_auth_service.dart';
@@ -93,6 +94,7 @@ class _LoginViewBodyState extends State<_LoginViewBody> {
                       ? const CircularProgressIndicator()
                       : SmallButton(
                           text: 'Se connecter',
+                          color: AppColors.primaryLight,
                           onPressed: () async {
                             await vm.login(_emailController.text, _passwordController.text);
                             if (vm.error == null && context.mounted) {

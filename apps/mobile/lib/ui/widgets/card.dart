@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_poc/core/colors/app_colors.dart';
 import 'package:flutter_poc/core/typo/app_typography.dart';
+import 'package:intl/intl.dart';
 
 class CustomCard extends StatelessWidget {
   const CustomCard({
@@ -9,13 +10,15 @@ class CustomCard extends StatelessWidget {
     required this.title,
     required this.deadline,
     required this.description,
+    this.companyName,
     required this.onCardSelected,
   });
 
   final int index;
   final String title;
-  final String deadline;
+  final DateTime deadline;
   final String description;
+  final String? companyName;
   final ValueChanged<int> onCardSelected;
 
   @override
@@ -42,71 +45,24 @@ class CustomCard extends StatelessWidget {
                 children: [
                   Text(title, style: AppTypography.bodyMedium),
                   Text(
-                    deadline,
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.textDark,
-                    ),
+                    DateFormat('dd/MM/yyyy').format(deadline),
+                    style: AppTypography.bodySmall.copyWith(color: AppColors.textDark),
                   ),
                 ],
               ),
-              SizedBox(
-                width: 65,
-                height: 30,
-                child: Stack(
-                  children: [
-                    Positioned(
-                      left: 34,
-                      child: CircleAvatar(
-                        radius: 15,
-                        backgroundColor: AppColors.primaryLight,
-                        child: Text(
-                          'AG',
-                          style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.textLight,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 17,
-                      child: CircleAvatar(
-                        radius: 15,
-                        backgroundColor: AppColors.primaryLight,
-                        child: Text(
-                          'EL',
-                          style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.textLight,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 0,
-                      child: CircleAvatar(
-                        radius: 15,
-                        backgroundColor: AppColors.primaryLight,
-                        child: Text(
-                          'QL',
-                          style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.textLight,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+              CircleAvatar(
+                radius: 15,
+                backgroundColor: AppColors.primaryLight,
+                child: Text(
+                  companyName != null && companyName!.length >= 2
+                      ? companyName!.substring(0, 2).toUpperCase()
+                      : companyName?.toUpperCase() ?? 'N/A',
+                  style: AppTypography.bodySmall.copyWith(color: AppColors.textLight, fontWeight: FontWeight.bold),
                 ),
               ),
             ],
           ),
-          Text(
-            description,
-            style: AppTypography.bodySmall,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
+          Text(description, style: AppTypography.bodySmall, maxLines: 2, overflow: TextOverflow.ellipsis),
         ],
       ),
     ),
