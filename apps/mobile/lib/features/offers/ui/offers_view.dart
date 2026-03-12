@@ -11,6 +11,7 @@ import 'package:flutter_poc/ui/widgets/card.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 class OffersView extends StatelessWidget {
   const OffersView({super.key});
@@ -33,13 +34,30 @@ class OffersView extends StatelessWidget {
   );
 }
 
-class _OffersViewBody extends StatelessWidget {
+class _OffersViewBody extends StatefulWidget {
   const _OffersViewBody();
+
+  @override
+  State<_OffersViewBody> createState() => _OffersViewBodyState();
+}
+
+class _OffersViewBodyState extends State<_OffersViewBody> {
+  final TextEditingController _searchController = TextEditingController();
+  List<String> selectedSectors = [];
+  List<String> selectedCompanies = [];
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<OffersViewModel>();
     final offers = vm.offers;
+    const sectors = ['Tech', 'Finance', 'Marketing', 'Santé', 'Éducation'];
+    const companies = ['Google', 'Apple', 'Microsoft', 'Amazon', 'Facebook'];
 
     return Scaffold(
       appBar: AppBar(
@@ -78,30 +96,9 @@ class _OffersViewBody extends StatelessWidget {
                                       spacing: 8,
                                       children: [
                                         Text('Recherche :', style: AppTypography.label),
-                                        TextField(
-                                          decoration: InputDecoration(
-                                            hintText: 'Rechercher...',
-                                            hintStyle: AppTypography.bodyMedium.copyWith(
-                                              color: const Color.fromARGB(255, 157, 157, 157),
-                                            ),
-                                            contentPadding: const EdgeInsets.symmetric(
-                                              horizontal: 12,
-                                              vertical: 10,
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(8),
-                                              borderSide: const BorderSide(
-                                                color: Color.fromARGB(255, 200, 200, 200),
-                                              ),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.circular(8),
-                                              borderSide: const BorderSide(
-                                                color: Color.fromARGB(255, 100, 100, 100),
-                                                width: 1.5,
-                                              ),
-                                            ),
-                                          ),
+                                        ShadInput(
+                                          placeholder: const Text('Rechercher...'),
+                                          controller: _searchController,
                                         ),
                                       ],
                                     ),
@@ -110,7 +107,24 @@ class _OffersViewBody extends StatelessWidget {
                                       spacing: 8,
                                       children: [
                                         Text('Secteurs :', style: AppTypography.label),
-                                        Text('WIDGET DROPDOWN', style: AppTypography.label)
+                                        ShadSelect<String>.multipleWithSearch(
+                                          placeholder: const Text('Sélectionnez des secteurs'),
+                                          options: sectors.map((sector) => 
+                                            ShadOption(
+                                              value: sector, 
+                                              child: Text(sector)
+                                              ),
+                                            ).toList(),
+                                          selectedOptionsBuilder: (context, selectedValues) => 
+                                            Text(selectedValues.join(', '), 
+                                            style: AppTypography.bodyMedium
+                                            ),
+                                          onSearchChanged: (values) {
+                                            setState(() {
+                                              selectedSectors = [values];
+                                            });
+                                          },
+                                        )
                                       ]
                                     ),
                                     Column(
@@ -118,7 +132,24 @@ class _OffersViewBody extends StatelessWidget {
                                       spacing: 8,
                                       children: [
                                         Text('Entreprises :', style: AppTypography.label),
-                                        Text('WIDGET DROPDOWN', style: AppTypography.label)
+                                        ShadSelect<String>.multipleWithSearch(
+                                          placeholder: const Text('Sélectionnez l\'entreprise'),
+                                          options: companies.map((company) => 
+                                            ShadOption(
+                                              value: company, 
+                                              child: Text(company)
+                                              ),
+                                            ).toList(),
+                                          selectedOptionsBuilder: (context, selectedValues) => 
+                                            Text(selectedValues.join(', '), 
+                                            style: AppTypography.bodyMedium
+                                            ),
+                                          onSearchChanged: (values) {
+                                            setState(() {
+                                              selectedCompanies = [values];
+                                            });
+                                          },
+                                        )
                                       ]
                                     ),
                                   ],
