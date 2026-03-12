@@ -11,6 +11,7 @@ import 'package:flutter_poc/ui/widgets/card.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:shadcn_ui/shadcn_ui.dart';
 
 class OffersView extends StatelessWidget {
   const OffersView({super.key});
@@ -33,8 +34,39 @@ class OffersView extends StatelessWidget {
   );
 }
 
-class _OffersViewBody extends StatelessWidget {
+class _OffersViewBody extends StatefulWidget {
   const _OffersViewBody();
+
+  @override
+  State<_OffersViewBody> createState() => _OffersViewBodyState();
+}
+
+class _OffersViewBodyState extends State<_OffersViewBody> {
+  int _currentTab = 1;
+  late final TextEditingController _titleController;
+  late final TextEditingController _descriptionController;
+  late final TextEditingController _locationController;
+  late final TextEditingController _budgetController;
+  final date = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+    _titleController = TextEditingController();
+    _descriptionController = TextEditingController();
+    _locationController = TextEditingController();
+    _budgetController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    _locationController.dispose();
+    _budgetController.dispose();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,13 +82,91 @@ class _OffersViewBody extends StatelessWidget {
         actions: [
           Container(
             padding: const EdgeInsets.only(right: 16.0),
-            child: SmallButtonWithIcon(
-              text: 'Filtrer',
-              svgIcon: AppSvg.svgFilter,
-              onPressed: () {
-                // TODO : Utilise le ViewModel pour filtrer plus tard
-              },
-            ),
+            child: _currentTab == 1
+                ? SmallButtonWithIcon(
+                    text: 'Filtrer',
+                    svgIcon: AppSvg.svgFilter,
+                    onPressed: () {
+                      // TODO : Utilise le ViewModel pour filtrer plus tard
+                    },
+                  )
+                : SmallButtonWithIcon(
+                    text: 'Créer une offre',
+                    svgIcon: AppSvg.plus,
+                    onPressed: () {
+                      showModalBottomSheet<Widget>(
+                        context: context,
+                        isScrollControlled: true,
+                        useSafeArea: true,
+                        builder: (context) {
+                          final mediaQuery = MediaQuery.of(context);
+                          return Container(
+                            constraints: BoxConstraints(maxHeight: mediaQuery.size.height * 0.9),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8, bottom: 8),
+                                  child: Container(
+                                    width: 40,
+                                    height: 4,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[400],
+                                      borderRadius: BorderRadius.circular(2),
+                                    ),
+                                  ),
+                                ),
+                                const Divider(height: 1),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    padding: const EdgeInsets.all(32.0),
+                                    child: Column(
+                                      spacing: 16,
+                                      children: [
+                                        Text(
+                                          'Créer une nouvelle mission',
+                                          style: AppTypography.headingLarge.copyWith(color: AppColors.primaryLight),
+                                        ),
+                                        const Divider(),
+                                        ShadInput(
+                                          placeholder: const Text('Titre de la mission'),
+                                          controller: _titleController,
+                                        ),
+                                        ShadTextarea(
+                                          placeholder: const Text('Description de la mission'),
+                                          controller: _descriptionController,
+                                        ),
+                                        ShadInput(
+                                          placeholder: const Text('Localisation'),
+                                          controller: _locationController,
+                                        ),
+                                        ShadInput(placeholder: const Text('Budget'), controller: _budgetController),
+                                        ShadCalendar(
+                                          selected: date,
+                                          fromMonth: DateTime(date.year - 1),
+                                          toMonth: DateTime(date.year, 12),
+                                        ),
+                                        SmallButton(
+                                          text: "Publier l'offre",
+                                          onPressed: () {
+                                            // vm.createOffer();
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
           ),
         ],
       ),
@@ -69,6 +179,14 @@ class _OffersViewBody extends StatelessWidget {
               padding: const EdgeInsets.all(8.0),
               child: Text(vm.error!, style: const TextStyle(color: Colors.red)),
             ),
+          ShadTabs(
+            value: _currentTab,
+            onChanged: (int value) => setState(() => _currentTab = value),
+            tabs: const [
+              ShadTab(value: 1, child: Text('Consultant')),
+              ShadTab(value: 2, child: Text('Entreprise')),
+            ],
+          ),
           Expanded(
             child: CustomScrollView(
               slivers: [
