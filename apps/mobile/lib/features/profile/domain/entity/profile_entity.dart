@@ -29,7 +29,17 @@ class ConsultantData {
 }
 
 class CompanyData {
-  CompanyData({required this.name});
+  CompanyData({
+    required this.companyName,
+    required this.industrySector,
+    required this.companySize,
+    required this.description,
+    this.logoUrl,
+  });
 
-  final String name;
+  final String companyName;
+  final String industrySector;
+  final int companySize;
+  final String description;
+  final String? logoUrl;
 }

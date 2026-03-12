@@ -44,7 +44,12 @@ class ProfileRepositoryImpl implements ProfileRepository {
           : null
         ),
         companyData: profileData.companyData != null
-            ? CompanyData(name: profileData.companyData!.name)
+            ? CompanyData(companyName: profileData.companyData!.companyName,
+                industrySector: profileData.companyData?.industrySector ?? '',
+                companySize: profileData.companyData!.companySize,
+                description: profileData.companyData!.description,
+                logoUrl: profileData.companyData!.logoUrl,
+              )
             : null,
       );
     } on UnauthorizedFailure catch (_) {

@@ -7,12 +7,11 @@ class ProfileModel {
     message: json['message'] as String,
     statusCode: json['statusCode'] as int?,
   );
-  
+
   final bool? success;
   final ProfileDataModel? data;
   final String message;
   final int? statusCode;
-
 }
 
 class ProfileDataModel {
@@ -22,16 +21,17 @@ class ProfileDataModel {
     id: json['id'] as String,
     email: json['email'] as String,
     role: json['role'] as String,
-    consultantData: json['consultant'] != null ? ConsultantDataModel.fromJson(json['consultant'] as Map<String, dynamic>) : null,
+    consultantData: json['consultant'] != null
+        ? ConsultantDataModel.fromJson(json['consultant'] as Map<String, dynamic>)
+        : null,
     companyData: json['company'] != null ? CompanyDataModel.fromJson(json['company'] as Map<String, dynamic>) : null,
   );
-  
+
   final String id;
   final String email;
   final String role;
   final ConsultantDataModel? consultantData;
   final CompanyDataModel? companyData;
-
 }
 
 class ConsultantDataModel {
@@ -54,7 +54,7 @@ class ConsultantDataModel {
     ratingScore: json['rating_score'] as int,
     isVerified: json['is_verified'] as bool,
   );
-  
+
   final String firstName;
   final String lastName;
   final String professionalTitle;
@@ -65,9 +65,25 @@ class ConsultantDataModel {
 }
 
 class CompanyDataModel {
-  CompanyDataModel({required this.name});
+  CompanyDataModel({
+    required this.companyName,
+    required this.industrySector,
+    required this.companySize,
+    required this.description,
+    this.logoUrl,
+  });
 
-  factory CompanyDataModel.fromJson(Map<String, dynamic> json) => CompanyDataModel(name: json['name'] as String);
-  
-  final String name;
+  factory CompanyDataModel.fromJson(Map<String, dynamic> json) => CompanyDataModel(
+    companyName: json['company_name'] as String,
+    industrySector: json['industry_sector'] as String?,
+    companySize: json['company_size'] as int,
+    description: json['description'] as String,
+    logoUrl: json['logo_url'] as String?,
+  );
+
+  final String companyName;
+  final String? industrySector;
+  final int companySize;
+  final String description;
+  final String? logoUrl;
 }

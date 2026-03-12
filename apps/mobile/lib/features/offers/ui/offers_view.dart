@@ -222,6 +222,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                         title: offer.title,
                         deadline: offer.deadline,
                         description: offer.description,
+                        companyName: offer.company?.companyName ?? '',
                         onCardSelected: (selectedIndex) {
                           final selectedOffer = offers[selectedIndex];
                           showModalBottomSheet<Widget>(
@@ -257,7 +258,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                                           radius: 15,
                                                           backgroundColor: AppColors.primaryLight,
                                                           child: Text(
-                                                            selectedOffer.company?.companyName.substring(0, 2) ?? 'Nom',
+                                                            selectedOffer.company?.companyName.substring(0, 2) ?? 'N/A',
                                                             style: AppTypography.bodySmall.copyWith(
                                                               color: AppColors.textLight,
                                                               fontWeight: FontWeight.bold,

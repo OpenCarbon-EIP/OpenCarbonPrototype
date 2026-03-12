@@ -53,6 +53,15 @@ class _ProfileViewBodyState extends State<_ProfileViewBody> {
       return const LinearProgressIndicator();
     }
 
+    final isConsultant = profile?.consultantData != null;
+
+    final displayName = isConsultant
+        ? '${profile!.consultantData!.firstName} ${profile.consultantData!.lastName}'
+        : profile?.companyData?.companyName ?? 'Utilisateur';
+
+    final displayImage = isConsultant ? profile?.consultantData?.photoUrl : profile?.companyData?.logoUrl;
+    final displayDescription = isConsultant ? profile?.consultantData?.description : profile?.companyData?.description;
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 46),
@@ -63,13 +72,19 @@ class _ProfileViewBodyState extends State<_ProfileViewBody> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  '${profile!.consultantData!.firstName} ${profile.consultantData!.lastName}'.toUpperCase(),
-                  style: AppTypography.headingLarge.copyWith(color: AppColors.primaryLight),
+                Flexible(
+                  child: Text(
+                    displayName.toUpperCase(),
+                    style: AppTypography.headingLarge.copyWith(color: AppColors.primaryLight),
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute<void>(builder: (context) => SettingView(profile: profile)));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(builder: (context) => SettingView(profile: profile!)),
+                    );
                   },
                   child: Container(
                     padding: const EdgeInsets.all(8),
@@ -91,7 +106,11 @@ class _ProfileViewBodyState extends State<_ProfileViewBody> {
                 width: 300,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(24),
-                  child: Image.network(profile.consultantData?.photoUrl ?? '', fit: BoxFit.cover),
+                  child: Image.network(
+                    displayImage ?? '',
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, __, ___) => const ColoredBox(color: Colors.grey),
+                  ),
                 ),
               ),
             ),
@@ -102,7 +121,7 @@ class _ProfileViewBodyState extends State<_ProfileViewBody> {
               children: [
                 Text('Description', style: AppTypography.subheadingMedium.copyWith(color: AppColors.primaryLight)),
                 Text(
-                  profile.consultantData!.description ?? 'Aucune description.',
+                  displayDescription ?? 'Aucune description.',
                   style: AppTypography.bodySmall.copyWith(color: AppColors.primaryLight),
                 ),
               ],

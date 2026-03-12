@@ -9,6 +9,7 @@ class CustomCard extends StatelessWidget {
     required this.title,
     required this.deadline,
     required this.description,
+    this.companyName,
     required this.onCardSelected,
   });
 
@@ -16,6 +17,7 @@ class CustomCard extends StatelessWidget {
   final String title;
   final String deadline;
   final String description;
+  final String? companyName;
   final ValueChanged<int> onCardSelected;
 
   @override
@@ -41,72 +43,20 @@ class CustomCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title, style: AppTypography.bodyMedium),
-                  Text(
-                    deadline,
-                    style: AppTypography.bodySmall.copyWith(
-                      color: AppColors.textDark,
-                    ),
-                  ),
+                  Text(deadline, style: AppTypography.bodySmall.copyWith(color: AppColors.textDark)),
                 ],
               ),
-              SizedBox(
-                width: 65,
-                height: 30,
-                child: Stack(
-                  children: [
-                    Positioned(
-                      left: 34,
-                      child: CircleAvatar(
-                        radius: 15,
-                        backgroundColor: AppColors.primaryLight,
-                        child: Text(
-                          'AG',
-                          style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.textLight,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 17,
-                      child: CircleAvatar(
-                        radius: 15,
-                        backgroundColor: AppColors.primaryLight,
-                        child: Text(
-                          'EL',
-                          style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.textLight,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      left: 0,
-                      child: CircleAvatar(
-                        radius: 15,
-                        backgroundColor: AppColors.primaryLight,
-                        child: Text(
-                          'QL',
-                          style: AppTypography.bodySmall.copyWith(
-                            color: AppColors.textLight,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+              CircleAvatar(
+                radius: 15,
+                backgroundColor: AppColors.primaryLight,
+                child: Text(
+                  companyName?.substring(0, 2) ?? 'N/A',
+                  style: AppTypography.bodySmall.copyWith(color: AppColors.textLight, fontWeight: FontWeight.bold),
                 ),
               ),
             ],
           ),
-          Text(
-            description,
-            style: AppTypography.bodySmall,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
+          Text(description, style: AppTypography.bodySmall, maxLines: 2, overflow: TextOverflow.ellipsis),
         ],
       ),
     ),
