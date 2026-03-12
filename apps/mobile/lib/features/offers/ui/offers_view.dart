@@ -125,6 +125,11 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                               selectedSectors = [values];
                                             });
                                           },
+                                        ),
+                                        const ShadBadge.outline(
+                                          backgroundColor: AppColors.backgroundLight,
+                                          foregroundColor: AppColors.primaryLight,
+                                          child: Text('Primary'),
                                         )
                                       ]
                                     ),
@@ -135,6 +140,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                         Text('Entreprises :', style: AppTypography.label),
                                         ShadSelect<String>.multipleWithSearch(
                                           placeholder: const Text('Sélectionnez l\'entreprise'),
+                                          searchPlaceholder: const Text('Rechercher des entreprises...'),
                                           options: companies.map((company) => 
                                             ShadOption(
                                               value: company, 
@@ -150,6 +156,11 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                               selectedCompanies = [values];
                                             });
                                           },
+                                        ),
+                                        const ShadBadge.outline(
+                                          backgroundColor: AppColors.backgroundLight,
+                                          foregroundColor: AppColors.primaryLight,
+                                          child: Text('Secondary'),
                                         )
                                       ]
                                     ),
