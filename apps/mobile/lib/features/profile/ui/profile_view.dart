@@ -80,9 +80,10 @@ class _ProfileViewBodyState extends State<_ProfileViewBody> {
                 ),
                 GestureDetector(
                   onTap: () {
+                    if (profile == null) return;
                     Navigator.push(
                       context,
-                      MaterialPageRoute<void>(builder: (context) => SettingView(profile: profile!)),
+                      MaterialPageRoute<void>(builder: (context) => SettingView(profile: profile)),
                     );
                   },
                   child: Container(
@@ -113,7 +114,6 @@ class _ProfileViewBodyState extends State<_ProfileViewBody> {
                 ),
               ),
             ),
-            const ShadBadge(backgroundColor: AppColors.primaryLight, child: Text('A réalisé 7 missions')),
             Column(
               spacing: 10,
               crossAxisAlignment: CrossAxisAlignment.start,

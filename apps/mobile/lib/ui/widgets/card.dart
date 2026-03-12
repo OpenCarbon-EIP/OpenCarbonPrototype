@@ -44,14 +44,19 @@ class CustomCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(title, style: AppTypography.bodyMedium),
-                  Text(DateFormat('dd/MM/yyyy').format(deadline), style: AppTypography.bodySmall.copyWith(color: AppColors.textDark)),
+                  Text(
+                    DateFormat('dd/MM/yyyy').format(deadline),
+                    style: AppTypography.bodySmall.copyWith(color: AppColors.textDark),
+                  ),
                 ],
               ),
               CircleAvatar(
                 radius: 15,
                 backgroundColor: AppColors.primaryLight,
                 child: Text(
-                  companyName?.substring(0, 2) ?? 'N/A',
+                  companyName != null && companyName!.length >= 2
+                      ? companyName!.substring(0, 2).toUpperCase()
+                      : companyName?.toUpperCase() ?? 'N/A',
                   style: AppTypography.bodySmall.copyWith(color: AppColors.textLight, fontWeight: FontWeight.bold),
                 ),
               ),

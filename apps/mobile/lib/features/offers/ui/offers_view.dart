@@ -57,7 +57,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
   late final TextEditingController _descriptionController;
   late final TextEditingController _locationController;
   late final TextEditingController _budgetController;
-  DateTime date = DateTime.now();
+  DateTime _selectedDate = DateTime.now();
 
   @override
   void initState() {
@@ -156,9 +156,14 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                         ),
                                         ShadInput(placeholder: const Text('Budget'), controller: _budgetController),
                                         ShadCalendar(
-                                          selected: date,
-                                          fromMonth: DateTime(date.year - 1),
-                                          toMonth: DateTime(date.year, 12),
+                                          selected: _selectedDate,
+                                          fromMonth: DateTime(_selectedDate.year - 1),
+                                          toMonth: DateTime(_selectedDate.year, 12),
+                                          onChanged: (value) {
+                                            if (value != null) {
+                                              setState(() => _selectedDate = value);
+                                            }
+                                          },
                                         ),
                                         SmallButton(
                                           text: "Publier l'offre",
@@ -169,7 +174,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                               _descriptionController.text,
                                               _locationController.text,
                                               double.parse(_budgetController.text),
-                                              date = DateTime.now(),
+                                              _selectedDate = DateTime.now(),
                                             );
 
                                             if (context.mounted) {
@@ -177,17 +182,17 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                                 Navigator.pop(context);
                                                 await vm.getCompanyOffers();
                                                 await vm.loadOffers();
+                                                _titleController.clear();
+                                                _descriptionController.clear();
+                                                _locationController.clear();
+                                                _budgetController.clear();
+                                                _selectedDate = DateTime.now();
                                               } else {
                                                 ScaffoldMessenger.of(
                                                   context,
                                                 ).showSnackBar(SnackBar(content: Text(vm.error!)));
                                               }
                                             }
-                                            _titleController.clear();
-                                            _descriptionController.clear();
-                                            _locationController.clear();
-                                            _budgetController.clear();
-                                            date = DateTime.now();
                                           },
                                         ),
                                       ],
@@ -271,7 +276,11 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                                     radius: 15,
                                                     backgroundColor: AppColors.primaryLight,
                                                     child: Text(
-                                                      selectedOffer.company?.companyName.substring(0, 2) ?? 'N/A',
+                                                      (selectedOffer.company?.companyName ?? 'N/A').length >= 2
+                                                          ? selectedOffer.company!.companyName
+                                                                .substring(0, 2)
+                                                                .toUpperCase()
+                                                          : (selectedOffer.company?.companyName ?? 'N/A').toUpperCase(),
                                                       style: AppTypography.bodySmall.copyWith(
                                                         color: AppColors.textLight,
                                                         fontWeight: FontWeight.bold,
@@ -320,9 +329,12 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                                     await vm.getCompanyOffers();
                                                     await vm.loadOffers();
                                                   } else {
-                                                    ScaffoldMessenger.of(
-                                                      context,
-                                                    ).showSnackBar(SnackBar(content: Text(vm.error!), backgroundColor: AppColors.danger));
+                                                    ScaffoldMessenger.of(context).showSnackBar(
+                                                      SnackBar(
+                                                        content: Text(vm.error!),
+                                                        backgroundColor: AppColors.danger,
+                                                      ),
+                                                    );
                                                   }
                                                 }
                                               },

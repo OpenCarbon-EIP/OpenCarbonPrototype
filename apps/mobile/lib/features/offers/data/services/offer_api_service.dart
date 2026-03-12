@@ -110,7 +110,7 @@ class OfferApiService {
         case 403:
           throw UnauthorizedFailure('Seulement les entreprises peuvent créer une offer.');
         default:
-          throw Exception('Erreur pendant le chargement des opportunités');
+          throw Exception('Erreur pendant la création de l\'offre');
       }
     }
   }
@@ -130,13 +130,13 @@ class OfferApiService {
     if (response.statusCode != 200) {
       switch (response.statusCode) {
         case 401:
-          throw UnauthorizedFailure("Vous n'êtes pas autorisé(e) à créer une offre.");
+          throw UnauthorizedFailure("Vous n'êtes pas autorisé(e) à supprimer une offre.");
         case 403:
-          throw UnauthorizedFailure('Seulement les entreprises peuvent créer une offre.');
+          throw UnauthorizedFailure('Seulement les entreprises peuvent supprimer une offre.');
         case 404:
           throw NotFoundFailure("L'offre n'existe pas, impossible de supprimer.");
         default:
-          throw Exception('Erreur pendant le chargement des opportunités');
+          throw Exception('Erreur pendant la suppression de l\'offre.');
       }
     }
   }
