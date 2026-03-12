@@ -27,6 +27,7 @@ class OffersView extends StatelessWidget {
         final repository = OfferRepositoryImpl(service, authService);
         final vm = OffersViewModel(repository);
         vm.loadOffers();
+        vm.getCompanyOffers();
         return vm;
       },
       child: const _OffersViewBody(),
@@ -71,7 +72,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<OffersViewModel>();
-    final offers = vm.offers;
+    final offers = _currentTab == 1 ? vm.offers : vm.companyOffers;
 
     return Scaffold(
       appBar: AppBar(
@@ -152,8 +153,26 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                         ),
                                         SmallButton(
                                           text: "Publier l'offre",
-                                          onPressed: () {
-                                            // vm.createOffer();
+                                          onPressed: () async {
+                                            await vm.createOffer(
+                                              _titleController.text,
+                                              _descriptionController.text,
+                                              _locationController.text,
+                                              double.parse(_budgetController.text),
+                                              date,
+                                            );
+
+                                            if (context.mounted) {
+                                              if (vm.error == null) {
+                                                Navigator.pop(context);
+                                                await vm.getCompanyOffers();
+                                                await vm.loadOffers();
+                                              } else {
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(SnackBar(content: Text(vm.error!)));
+                                              }
+                                            }
                                           },
                                         ),
                                       ],

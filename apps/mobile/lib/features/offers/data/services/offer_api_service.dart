@@ -62,4 +62,56 @@ class OfferApiService {
         throw Exception('Une erreur inattendue est survenue lors de la candidature.');
     }
   }
+
+  Future<OfferModel> getCompanyOffers(String token) async {
+    final String? dbPath = dotenv.env[AppConstants.dbPath];
+    if (dbPath == null) {
+      throw EnvironmentFailure();
+    }
+    final uri = Uri.http(dbPath, '/offers/my-offers');
+    final response = await _httpClient.get(
+      uri,
+      headers: {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode != 200) {
+      switch (response.statusCode) {
+        case 401:
+          throw AuthFailure("Vous n'êtes pas autorisé(e) à voir les offres.");
+        case 404:
+          throw NotFoundFailure("L'entreprise n'a pas été trouvée. Merci de vous reconnecter.");
+        default:
+          throw Exception('Erreur pendant le chargement des opportunités');
+      }
+    }
+
+    final decoded = json.decode(response.body) as Map<String, dynamic>;
+
+    return OfferModel.fromJson(decoded);
+  }
+
+  Future<void> createOffer(String token, String title, String description, String location, double budget, DateTime deadline) async {
+    final String? dbPath = dotenv.env[AppConstants.dbPath];
+    if (dbPath == null) {
+      throw EnvironmentFailure();
+    }
+    final uri = Uri.http(dbPath, '/offers/create');
+    final bodyEncoded = jsonEncode({'title': title, 'description': description, 'location': location, 'budget': budget, 'deadline': deadline.toIso8601String()});
+    final response = await _httpClient.post(
+      uri,
+      headers: {'Authorization': 'Bearer $token', 'Content-Type': 'application/json'},
+      body: bodyEncoded
+    );
+
+    if (response.statusCode != 201) {
+      switch (response.statusCode) {
+        case 401:
+          throw UnauthorizedFailure("Vous n'êtes pas autorisé(e) à créer une offre.");
+        case 403:
+          throw UnauthorizedFailure('Seulement les entreprises peuvent créer une offer.');
+        default:
+          throw Exception('Erreur pendant le chargement des opportunités');
+      }
+    }
+  }
 }
