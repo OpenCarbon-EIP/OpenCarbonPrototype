@@ -27,9 +27,11 @@ interface OnboardingState {
   prevStep: () => void
   setLoading: (loading: boolean) => void
   setHydrated: () => void
+  setSkipped: (skipped: boolean) => void
   resetStore: () => void
   validateStep: (step: OnboardingStep) => boolean
   clearErrors: () => void
+  isSkipped: boolean
 }
 
 const initialValues: OnboardingValues = {
@@ -47,6 +49,7 @@ export const useOnboardingStore = create<OnboardingState>()(
       currentStep: OnboardingStep.PROFILE,
       isLoading: false,
       isHydrated: false,
+      isSkipped: false,
 
       setField: (field, value) => {
         set((state) => ({
@@ -177,8 +180,10 @@ export const useOnboardingStore = create<OnboardingState>()(
       
       setHydrated: () => set({ isHydrated: true }),
 
+      setSkipped: (skipped) => set({ isSkipped: skipped }),
+
       resetStore: () => {
-        set({ values: initialValues, errors: {}, currentStep: OnboardingStep.PROFILE, isLoading: false })
+        set({ values: initialValues, errors: {}, currentStep: OnboardingStep.PROFILE, isLoading: false, isSkipped: false })
         sessionStorage.removeItem("onboarding-storage")
       },
     }),

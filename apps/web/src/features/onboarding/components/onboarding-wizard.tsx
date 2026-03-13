@@ -4,6 +4,8 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { useOnboardingStore, OnboardingStep } from "../stores/use-onboarding-store"
+import { useRegisterStore } from "@/features/auth/stores/use-register-store"
+import { Role } from "@/features/auth/schemas/register-schema"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { OnboardingHeader } from "./onboarding-header"
@@ -20,12 +22,24 @@ export function OnboardingWizard() {
     currentStep,
     isLoading,
     isHydrated,
+    isSkipped,
+    setSkipped,
     nextStep,
     prevStep,
     setLoading,
     resetStore,
     validateStep,
   } = useOnboardingStore()
+
+  useEffect(() => {
+    if (isHydrated) {
+      const { role } = useRegisterStore.getState().values
+      
+      if (isSkipped || role !== Role.CONSULTANT) {
+        router.replace("/dashboard")
+      }
+    }
+  }, [isHydrated, isSkipped, router])
 
   if (!isHydrated) {
     return (
@@ -138,6 +152,20 @@ export function OnboardingWizard() {
             )}
           </div>
         </form>
+
+        <div className="mt-8 flex justify-center">
+          <Button
+            type="button"
+            variant="ghost"
+            onClick={() => {
+              setSkipped(true)
+              router.push("/dashboard")
+            }}
+            className="text-zinc-400 hover:text-[#2d4f44] text-[12px] font-bold uppercase tracking-[0.2em] transition-all h-auto py-2"
+          >
+            Passer l&apos;onboarding pour le moment
+          </Button>
+        </div>
       </div>
       
       <p className="mt-8 text-center text-zinc-400 text-[10px] font-bold uppercase tracking-widest">
