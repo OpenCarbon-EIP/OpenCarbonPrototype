@@ -138,7 +138,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                                   options: [
                                                     if (filteredSectors.isEmpty)
                                                       const Padding(
-                                                        padding: EdgeInsets.symmetric(vertical: 24),
+                                                        padding: EdgeInsets.symmetric(vertical: 10),
                                                         child: Text('Aucun secteur trouvé'),
                                                       ),
                                                     ...filteredSectors.map((sector) => ShadOption(
@@ -184,7 +184,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                                   options: [
                                                     if (filteredCompanies.isEmpty)
                                                       const Padding(
-                                                        padding: EdgeInsets.symmetric(vertical: 24),
+                                                        padding: EdgeInsets.symmetric(vertical: 10),
                                                         child: Text('Aucune entreprise trouvée'),
                                                       ),
                                                     ...filteredCompanies.map((company) => ShadOption(
@@ -219,25 +219,6 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                               Row(
                                 spacing: 8,
                                 children: [
-                                  SmallButton(
-                                    text: 'Réinitialiser',
-                                    onPressed: () {
-                                      modalSetState(() {
-                                        modalSelectedSector = null;
-                                        modalSelectedCompany = null;
-                                        modalSectorSearchQuery = '';
-                                        modalCompanySearchQuery = '';
-                                        _searchController.clear();
-                                      });
-                                      setState(() {
-                                        selectedSector = null;
-                                        selectedCompany = null;
-                                        sectorSearchQuery = '';
-                                        companySearchQuery = '';
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                  ),
                                   SmallButton(
                                     text: 'Appliquer',
                                     onPressed: () {
