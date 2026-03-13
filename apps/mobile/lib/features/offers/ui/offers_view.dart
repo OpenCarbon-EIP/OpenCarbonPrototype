@@ -11,7 +11,6 @@ import 'package:flutter_poc/ui/widgets/button.dart';
 import 'package:flutter_poc/ui/widgets/card.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -59,6 +58,12 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
   late final TextEditingController _locationController;
   late final TextEditingController _budgetController;
   DateTime _selectedDate = DateTime.now();
+  String? selectedSector;
+  String? selectedCompany;
+  String sectorSearchQuery = '';
+  String companySearchQuery = '';
+  String searchQuery = '';
+  int _selectKey = 0;
 
   @override
   void initState() {
@@ -81,7 +86,18 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<OffersViewModel>();
-    final offers = _currentTab == 1 ? vm.offers : vm.companyOffers;
+    final offers = vm.offers;
+    final sectors = vm.sectors;
+    final companies = vm.companies;
+
+    final query = searchQuery.toLowerCase().trim();
+    final filteredOffers = offers.where((off) {
+      final matchesSector = selectedSector == null || off.company?.industrySector == selectedSector;
+      final matchesCompany = selectedCompany == null || off.company?.companyName == selectedCompany;
+      final matchesSearch =
+          query.isEmpty || off.title.toLowerCase().contains(query) || off.description.toLowerCase().contains(query);
+      return matchesSector && matchesCompany && matchesSearch;
+    }).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -96,8 +112,190 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                 ? SmallButtonWithIcon(
                     text: 'Filtrer',
                     svgIcon: AppSvg.svgFilter,
-                    onPressed: () {
-                      // TODO : Utilise le ViewModel pour filtrer plus tard
+                    onPressed: () async {
+                      final modalSearchController = TextEditingController(text: searchQuery);
+                      String? modalSelectedSector = selectedSector;
+                      String? modalSelectedCompany = selectedCompany;
+                      String modalSectorSearchQuery = sectorSearchQuery;
+                      String modalCompanySearchQuery = companySearchQuery;
+                      await showModalBottomSheet<Widget>(
+                        context: context,
+                        isScrollControlled: true,
+                        builder: (context) => StatefulBuilder(
+                          builder: (context, modalSetState) => SafeArea(
+                            child: SizedBox(
+                              height: MediaQuery.of(context).size.height * 0.55,
+                              width: double.infinity,
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                      child: SingleChildScrollView(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          spacing: 13,
+                                          children: [
+                                            Text('FILTRES', style: AppTypography.headingMedium),
+                                            const Divider(),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              spacing: 8,
+                                              children: [
+                                                Text('Recherche :', style: AppTypography.label),
+                                                ShadInput(
+                                                  placeholder: const Text('Rechercher...'),
+                                                  controller: modalSearchController,
+                                                ),
+                                              ],
+                                            ),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              spacing: 8,
+                                              children: [
+                                                Text('Secteurs :', style: AppTypography.label),
+                                                SizedBox(
+                                                  width: double.infinity,
+                                                  child: Builder(
+                                                    builder: (context) {
+                                                      final filteredSectors = sectors
+                                                          .where(
+                                                            (s) => s.toLowerCase().contains(
+                                                              modalSectorSearchQuery.toLowerCase(),
+                                                            ),
+                                                          )
+                                                          .toList();
+                                                      return ShadSelect<String>.withSearch(
+                                                        key: ValueKey('sector_$_selectKey'),
+                                                        placeholder: const Text('Sélectionnez un secteur'),
+                                                        searchPlaceholder: const Text('Rechercher des secteurs...'),
+                                                        options: [
+                                                          if (filteredSectors.isEmpty)
+                                                            const Padding(
+                                                              padding: EdgeInsets.symmetric(vertical: 10),
+                                                              child: Text('Aucun secteur trouvé'),
+                                                            ),
+                                                          ...filteredSectors.map(
+                                                            (sector) => ShadOption(value: sector, child: Text(sector)),
+                                                          ),
+                                                        ],
+                                                        selectedOptionBuilder: (context, value) =>
+                                                            Text(value, style: AppTypography.bodyMedium),
+                                                        onSearchChanged: (value) {
+                                                          modalSetState(() => modalSectorSearchQuery = value);
+                                                        },
+                                                        onChanged: (value) {
+                                                          modalSetState(() => modalSelectedSector = value);
+                                                        },
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                                if (modalSelectedSector != null)
+                                                  ShadBadge.outline(
+                                                    backgroundColor: AppColors.backgroundLight,
+                                                    foregroundColor: AppColors.primaryLight,
+                                                    child: Text(modalSelectedSector!),
+                                                  ),
+                                              ],
+                                            ),
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              spacing: 8,
+                                              children: [
+                                                Text('Entreprises :', style: AppTypography.label),
+                                                SizedBox(
+                                                  width: double.infinity,
+                                                  child: Builder(
+                                                    builder: (context) {
+                                                      final filteredCompanies = companies
+                                                          .where(
+                                                            (c) => c.toLowerCase().contains(
+                                                              modalCompanySearchQuery.toLowerCase(),
+                                                            ),
+                                                          )
+                                                          .toList();
+                                                      return ShadSelect<String>.withSearch(
+                                                        key: ValueKey('company_$_selectKey'),
+                                                        placeholder: const Text('Sélectionnez une entreprise'),
+                                                        searchPlaceholder: const Text('Rechercher des entreprises...'),
+                                                        options: [
+                                                          if (filteredCompanies.isEmpty)
+                                                            const Padding(
+                                                              padding: EdgeInsets.symmetric(vertical: 10),
+                                                              child: Text('Aucune entreprise trouvée'),
+                                                            ),
+                                                          ...filteredCompanies.map(
+                                                            (company) =>
+                                                                ShadOption(value: company, child: Text(company)),
+                                                          ),
+                                                        ],
+                                                        selectedOptionBuilder: (context, value) =>
+                                                            Text(value, style: AppTypography.bodyMedium),
+                                                        onSearchChanged: (value) {
+                                                          modalSetState(() => modalCompanySearchQuery = value);
+                                                        },
+                                                        onChanged: (value) {
+                                                          modalSetState(() => modalSelectedCompany = value);
+                                                        },
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                                if (modalSelectedCompany != null)
+                                                  ShadBadge.outline(
+                                                    backgroundColor: AppColors.backgroundLight,
+                                                    foregroundColor: AppColors.primaryLight,
+                                                    child: Text(modalSelectedCompany!),
+                                                  ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Row(
+                                      spacing: 12,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        SmallButton(
+                                          text: 'Réinitialiser',
+                                          color: AppColors.primaryLight,
+                                          onPressed: () {
+                                            modalSetState(() {
+                                              modalSelectedCompany = null;
+                                              modalSelectedSector = null;
+                                              modalSectorSearchQuery = '';
+                                              modalCompanySearchQuery = '';
+                                              modalSearchController.clear();
+                                              _selectKey++;
+                                            });
+                                          },
+                                        ),
+                                        SmallButton(
+                                          text: 'Appliquer',
+                                          color: AppColors.primaryLight,
+                                          onPressed: () {
+                                            setState(() {
+                                              searchQuery = modalSearchController.text;
+                                              selectedSector = modalSelectedSector;
+                                              selectedCompany = modalSelectedCompany;
+                                              sectorSearchQuery = modalSectorSearchQuery;
+                                              companySearchQuery = modalCompanySearchQuery;
+                                            });
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                      modalSearchController.dispose();
                     },
                   )
                 : SmallButtonWithIcon(
@@ -231,10 +429,10 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
               slivers: [
                 SliverList(
                   delegate: SliverChildBuilderDelegate((context, index) {
-                    if (index == offers.length) {
+                    if (index == filteredOffers.length) {
                       return const SizedBox(height: 110);
                     }
-                    final offer = offers[index];
+                    final offer = filteredOffers[index];
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       child: CustomCard(
@@ -244,7 +442,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                         description: offer.description,
                         companyName: offer.company?.companyName ?? '',
                         onCardSelected: (selectedIndex) {
-                          final selectedOffer = offers[selectedIndex];
+                          final selectedOffer = filteredOffers[selectedIndex];
                           showModalBottomSheet<Widget>(
                             context: context,
                             isScrollControlled: true,
@@ -384,7 +582,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                         },
                       ),
                     );
-                  }, childCount: offers.length + 1),
+                  }, childCount: filteredOffers.length + 1),
                 ),
               ],
             ),
