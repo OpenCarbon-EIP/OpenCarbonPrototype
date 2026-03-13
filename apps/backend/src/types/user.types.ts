@@ -8,6 +8,7 @@ export type SafeUser = Omit<user, 'password' | 'createdAt' | 'updatedAt'> & {
 export type AuthenticatedUser = {
   id: string;
   email: string;
+  role: string;
 };
 
 export interface JwtPayload {

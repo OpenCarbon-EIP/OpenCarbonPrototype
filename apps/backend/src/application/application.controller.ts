@@ -22,6 +22,8 @@ import type { application } from 'src/generated/prisma/client';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { CreateApplicationDto } from '@dtos/application.dto';
 import { CurrentUser } from 'src/decorators/current-user';
+import { RoleGuard } from 'src/auth/guards/role.guard';
+import { Role } from 'src/decorators/role';
 
 @ApiTags('Applications')
 @Controller('applications')
@@ -100,7 +102,8 @@ export class ApplicationController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Role('CONSULTANT')
   @ApiBearerAuth('JWT')
   @ApiOperation({ summary: 'Create a new application (consultant only)' })
   @SwaggerResponse({
@@ -134,7 +137,8 @@ export class ApplicationController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Role('CONSULTANT')
   @ApiBearerAuth('JWT')
   @ApiOperation({ summary: 'Delete an application by ID' })
   @ApiParam({ name: 'id', description: 'Application UUID to delete' })

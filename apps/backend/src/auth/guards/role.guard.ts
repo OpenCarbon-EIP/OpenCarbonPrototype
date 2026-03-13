@@ -7,33 +7,27 @@ import {
 import { Reflector } from '@nestjs/core';
 import { ROLES_KEY } from 'src/decorators/role';
 import { Request } from 'express';
-import { PrismaService } from '@prisma/prisma.service';
 
 @Injectable()
 export class RoleGuard implements CanActivate {
-  constructor(
-    private reflector: Reflector,
-    private readonly prisma: PrismaService,
-  ) {}
+  constructor(private reflector: Reflector) {}
 
-  async canActivate(context: ExecutionContext): Promise<boolean> {
+  canActivate(context: ExecutionContext): boolean {
     const requiredRoles = this.reflector.getAllAndOverride<string[]>(
       ROLES_KEY,
       [context.getHandler(), context.getClass()],
     );
 
     if (!requiredRoles) {
-      return true;
+      throw new ForbiddenException(
+        'No roles defined for this resource. Access denied.',
+      );
     }
 
     const request: Request = context.switchToHttp().getRequest();
-    const userId = request.user?.id;
+    const user = request.user?.role;
 
-    const user = await this.prisma.user.findUnique({
-      where: { id: userId },
-    });
-
-    if (!user || !requiredRoles.includes(user.role)) {
+    if (!user || !requiredRoles.includes(user)) {
       throw new ForbiddenException(
         'You do not have permission to access this resource',
       );
