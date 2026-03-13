@@ -57,12 +57,12 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
   late final TextEditingController _descriptionController;
   late final TextEditingController _locationController;
   late final TextEditingController _budgetController;
-  late final TextEditingController _searchController;
   DateTime _selectedDate = DateTime.now();
   String? selectedSector;
   String? selectedCompany;
   String sectorSearchQuery = '';
   String companySearchQuery = '';
+  String searchQuery = '';
   int _selectKey = 0;
 
   @override
@@ -72,7 +72,6 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
     _descriptionController = TextEditingController();
     _locationController = TextEditingController();
     _budgetController = TextEditingController();
-    _searchController = TextEditingController();
   }
 
   @override
@@ -81,7 +80,6 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
     _descriptionController.dispose();
     _locationController.dispose();
     _budgetController.dispose();
-    _searchController.dispose();
     super.dispose();
   }
 
@@ -92,13 +90,12 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
     final sectors = vm.sectors;
     final companies = vm.companies;
 
+    final query = searchQuery.toLowerCase().trim();
     final filteredOffers = offers.where((off) {
       final matchesSector = selectedSector == null || off.company?.industrySector == selectedSector;
       final matchesCompany = selectedCompany == null || off.company?.companyName == selectedCompany;
       final matchesSearch =
-          _searchController.text.isEmpty ||
-          off.title.toLowerCase().contains(_searchController.text.toLowerCase()) ||
-          off.description.toLowerCase().contains(_searchController.text.toLowerCase());
+          query.isEmpty || off.title.toLowerCase().contains(query) || off.description.toLowerCase().contains(query);
       return matchesSector && matchesCompany && matchesSearch;
     }).toList();
 
@@ -115,12 +112,13 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                 ? SmallButtonWithIcon(
                     text: 'Filtrer',
                     svgIcon: AppSvg.svgFilter,
-                    onPressed: () {
+                    onPressed: () async {
+                      final modalSearchController = TextEditingController(text: searchQuery);
                       String? modalSelectedSector = selectedSector;
                       String? modalSelectedCompany = selectedCompany;
                       String modalSectorSearchQuery = sectorSearchQuery;
                       String modalCompanySearchQuery = companySearchQuery;
-                      showModalBottomSheet<Widget>(
+                      await showModalBottomSheet<Widget>(
                         context: context,
                         isScrollControlled: true,
                         builder: (context) => StatefulBuilder(
@@ -147,7 +145,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                                 Text('Recherche :', style: AppTypography.label),
                                                 ShadInput(
                                                   placeholder: const Text('Rechercher...'),
-                                                  controller: _searchController,
+                                                  controller: modalSearchController,
                                                 ),
                                               ],
                                             ),
@@ -269,7 +267,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                               modalSelectedSector = null;
                                               modalSectorSearchQuery = '';
                                               modalCompanySearchQuery = '';
-                                              _searchController.clear();
+                                              modalSearchController.clear();
                                               _selectKey++;
                                             });
                                           },
@@ -279,6 +277,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                           color: AppColors.primaryLight,
                                           onPressed: () {
                                             setState(() {
+                                              searchQuery = modalSearchController.text;
                                               selectedSector = modalSelectedSector;
                                               selectedCompany = modalSelectedCompany;
                                               sectorSearchQuery = modalSectorSearchQuery;
@@ -296,6 +295,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                           ),
                         ),
                       );
+                      modalSearchController.dispose();
                     },
                   )
                 : SmallButtonWithIcon(
