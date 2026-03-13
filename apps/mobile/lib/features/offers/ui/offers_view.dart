@@ -11,6 +11,7 @@ import 'package:flutter_poc/ui/widgets/button.dart';
 import 'package:flutter_poc/ui/widgets/card.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
@@ -74,7 +75,6 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
     _descriptionController.dispose();
     _locationController.dispose();
     _budgetController.dispose();
-
     super.dispose();
   }
 
@@ -174,7 +174,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                               _descriptionController.text,
                                               _locationController.text,
                                               double.parse(_budgetController.text),
-                                              _selectedDate = DateTime.now(),
+                                              _selectedDate,
                                             );
 
                                             if (context.mounted) {
@@ -248,102 +248,138 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                           showModalBottomSheet<Widget>(
                             context: context,
                             isScrollControlled: true,
-                            builder: (context) => SafeArea(
-                              child: SizedBox(
-                                height: MediaQuery.of(context).size.height * 0.4,
-                                width: double.infinity,
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Column(
-                                    children: [
-                                      Expanded(
-                                        child: SingleChildScrollView(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            spacing: 13,
-                                            children: [
-                                              Text(selectedOffer.title, style: AppTypography.headingLarge),
-                                              const Divider(),
-                                              Row(
-                                                spacing: 16,
-                                                children: [
-                                                  Text(
-                                                    selectedOffer.company?.companyName ??
-                                                        "Nom de l'entreprise non spécifié",
-                                                    style: AppTypography.headingMedium,
-                                                  ),
-                                                  CircleAvatar(
-                                                    radius: 15,
-                                                    backgroundColor: AppColors.primaryLight,
-                                                    child: Text(
-                                                      (selectedOffer.company?.companyName ?? 'N/A').length >= 2
-                                                          ? selectedOffer.company!.companyName
-                                                                .substring(0, 2)
-                                                                .toUpperCase()
-                                                          : (selectedOffer.company?.companyName ?? 'N/A').toUpperCase(),
-                                                      style: AppTypography.bodySmall.copyWith(
-                                                        color: AppColors.textLight,
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Text(
-                                                'Date limite: ${DateFormat('dd/MM/yyyy').format(selectedOffer.deadline)}',
-                                                style: AppTypography.bodyMedium,
-                                              ),
-                                              Text(
-                                                'Description: ${selectedOffer.description}',
-                                                style: AppTypography.bodyMedium,
-                                              ),
-                                            ],
-                                          ),
+                            useSafeArea: true,
+                            builder: (context) {
+                              final mediaQuery = MediaQuery.of(context);
+                              return Container(
+                                constraints: BoxConstraints(maxHeight: mediaQuery.size.height * 0.9),
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+                                ),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    // Petite barre "drag handle"
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8, bottom: 8),
+                                      child: Container(
+                                        width: 40,
+                                        height: 4,
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[400],
+                                          borderRadius: BorderRadius.circular(2),
                                         ),
                                       ),
-                                      _currentTab == 1
-                                          ? SmallButton(
-                                              text: 'Postuler',
-                                              color: AppColors.primaryLight,
-                                              onPressed: () async {
-                                                await vm.apply(selectedOffer.id);
-                                                if (context.mounted && vm.error == null) {
-                                                  Navigator.pop(context);
-                                                }
-                                              },
-                                            )
-                                          : SmallButton(
-                                              text: "Supprimer l'offre",
-                                              color: AppColors.danger,
-                                              onPressed: () async {
-                                                await vm.deleteOffer(selectedOffer.id);
-                                                if (context.mounted) {
-                                                  Navigator.pop(context);
-                                                  if (vm.error == null) {
-                                                    ScaffoldMessenger.of(context).showSnackBar(
-                                                      const SnackBar(
-                                                        content: Text('Offre supprimée avec succès'),
-                                                        backgroundColor: AppColors.primaryLight,
-                                                      ),
-                                                    );
-                                                    await vm.getCompanyOffers();
-                                                    await vm.loadOffers();
-                                                  } else {
-                                                    ScaffoldMessenger.of(context).showSnackBar(
-                                                      SnackBar(
-                                                        content: Text(vm.error!),
-                                                        backgroundColor: AppColors.danger,
-                                                      ),
-                                                    );
-                                                  }
-                                                }
-                                              },
+                                    ),
+                                    const Divider(height: 1),
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(32),
+                                        child: Column(
+                                          children: [
+                                            Expanded(
+                                              child: SingleChildScrollView(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  spacing: 13,
+                                                  children: [
+                                                    Text(selectedOffer.title, style: AppTypography.headingLarge),
+                                                    const Divider(),
+                                                    Row(
+                                                      spacing: 16,
+                                                      children: [
+                                                        Text(
+                                                          selectedOffer.company?.companyName ??
+                                                              "Nom de l'entreprise non spécifié",
+                                                          style: AppTypography.headingMedium,
+                                                        ),
+                                                        CircleAvatar(
+                                                          radius: 15,
+                                                          backgroundColor: AppColors.primaryLight,
+                                                          child: Text(
+                                                            (selectedOffer.company?.companyName ?? 'N/A').length >= 2
+                                                                ? selectedOffer.company!.companyName
+                                                                      .substring(0, 2)
+                                                                      .toUpperCase()
+                                                                : (selectedOffer.company?.companyName ?? 'N/A')
+                                                                      .toUpperCase(),
+                                                            style: AppTypography.bodySmall.copyWith(
+                                                              color: AppColors.textLight,
+                                                              fontWeight: FontWeight.bold,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Text(
+                                                      'Date limite: ${DateFormat('dd/MM/yyyy').format(selectedOffer.deadline)}',
+                                                      style: AppTypography.bodyMedium,
+                                                    ),
+                                                    Text(
+                                                      'Description: ${selectedOffer.description}',
+                                                      style: AppTypography.bodyMedium,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
                                             ),
-                                    ],
-                                  ),
+                                            const SizedBox(height: 16),
+                                            _currentTab == 1
+                                                ? SmallButton(
+                                                    text: 'Postuler',
+                                                    color: AppColors.primaryLight,
+                                                    onPressed: () async {
+                                                      await vm.apply(selectedOffer.id);
+                                                      if (context.mounted) {
+                                                        if (vm.error == null) {
+                                                          Navigator.pop(context);
+                                                        } else {
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            SnackBar(
+                                                              content: Text(vm.error!),
+                                                              backgroundColor: AppColors.danger,
+                                                            ),
+                                                          );
+                                                        }
+                                                      }
+                                                    },
+                                                  )
+                                                : SmallButton(
+                                                    text: "Supprimer l'offre",
+                                                    color: AppColors.danger,
+                                                    onPressed: () async {
+                                                      await vm.deleteOffer(selectedOffer.id);
+                                                      if (context.mounted) {
+                                                        Navigator.pop(context);
+                                                        if (vm.error == null) {
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            const SnackBar(
+                                                              content: Text('Offre supprimée avec succès'),
+                                                              backgroundColor: AppColors.primaryLight,
+                                                            ),
+                                                          );
+                                                          await vm.getCompanyOffers();
+                                                          await vm.loadOffers();
+                                                        } else {
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            SnackBar(
+                                                              content: Text(vm.error!),
+                                                              backgroundColor: AppColors.danger,
+                                                            ),
+                                                          );
+                                                        }
+                                                      }
+                                                    },
+                                                  ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ),
+                              );
+                            },
                           );
                         },
                       ),

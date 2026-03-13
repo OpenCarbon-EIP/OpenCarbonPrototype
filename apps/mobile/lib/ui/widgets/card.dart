@@ -40,16 +40,19 @@ class CustomCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: AppTypography.bodyMedium),
-                  Text(
-                    DateFormat('dd/MM/yyyy').format(deadline),
-                    style: AppTypography.bodySmall.copyWith(color: AppColors.textDark),
-                  ),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: AppTypography.bodyMedium, maxLines: 1, overflow: TextOverflow.ellipsis),
+                    Text(
+                      DateFormat('dd/MM/yyyy').format(deadline),
+                      style: AppTypography.bodySmall.copyWith(color: AppColors.textDark),
+                    ),
+                  ],
+                ),
               ),
+              const SizedBox(width: 16),
               CircleAvatar(
                 radius: 15,
                 backgroundColor: AppColors.primaryLight,
@@ -62,6 +65,7 @@ class CustomCard extends StatelessWidget {
               ),
             ],
           ),
+
           Text(description, style: AppTypography.bodySmall, maxLines: 2, overflow: TextOverflow.ellipsis),
         ],
       ),

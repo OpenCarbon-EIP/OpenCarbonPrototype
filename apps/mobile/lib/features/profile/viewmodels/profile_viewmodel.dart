@@ -33,4 +33,55 @@ class ProfileViewModel extends ChangeNotifier {
     }
   }
 
+  Future<void> updatePassword(String userId, String password) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _repository.updatePassword(userId, password);
+    } on UnauthorizedFailure catch (e) {
+      _error = e.toString();
+    } on Exception catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> updateEmail(String userId, String email) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _repository.updateEmail(userId, email);
+    } on UnauthorizedFailure catch (e) {
+      _error = e.toString();
+    } on Exception catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> updateFirstAndLastName(String userId, String firstName, String lastName) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _repository.updateFirstAndLastName(userId, firstName, lastName);
+    } on UnauthorizedFailure catch (e) {
+      _error = e.toString();
+    } on Exception catch (e) {
+      _error = e.toString();
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
 }
