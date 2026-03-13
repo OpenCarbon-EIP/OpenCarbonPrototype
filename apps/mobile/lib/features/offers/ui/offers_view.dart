@@ -85,155 +85,175 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
               text: 'Filtrer',
               svgIcon: AppSvg.svgFilter,
               onPressed: () {
+                String? modalSelectedSector = selectedSector;
+                String? modalSelectedCompany = selectedCompany;
+                String modalSectorSearchQuery = sectorSearchQuery;
+                String modalCompanySearchQuery = companySearchQuery;
                 showModalBottomSheet<Widget>(
                   context: context,
                   isScrollControlled: true,
-                  builder: (context) => SafeArea(
-                    child: SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.7,
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  spacing: 13,
-                                  children: [
-                                    Text('FILTRES', style: AppTypography.headingMedium),
-                                    const Divider(),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      spacing: 8,
-                                      children: [
-                                        Text('Recherche :', style: AppTypography.label),
-                                        ShadInput(
-                                          placeholder: const Text('Rechercher...'),
-                                          controller: _searchController,
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      spacing: 8,
-                                      children: [
-                                        Text('Secteurs :', style: AppTypography.label),
-                                        SizedBox(
-                                          width: double.infinity,
-                                          child: Builder(
-                                            builder: (context) {
-                                              final filteredSectors = sectors
-                                                .where((s) => s.toLowerCase().contains(sectorSearchQuery.toLowerCase()))
-                                                .toList();
-                                              return ShadSelect<String>.withSearch(
-                                                placeholder: const Text('Sélectionnez un secteur'),
-                                                searchPlaceholder: const Text('Rechercher des secteurs...'),
-                                                options: [
-                                                  if (filteredSectors.isEmpty)
-                                                    const Padding(
-                                                      padding: EdgeInsets.symmetric(vertical: 24),
-                                                      child: Text('Aucun secteur trouvé'),
-                                                    ),
-                                                  ...filteredSectors.map((sector) => ShadOption(
-                                                    value: sector,
-                                                    child: Text(sector),
-                                                  )),
-                                                ],
-                                                selectedOptionBuilder: (context, value) =>
-                                                  Text(value, style: AppTypography.bodyMedium),
-                                                onSearchChanged: (value) {
-                                                  setState(() => sectorSearchQuery = value);
-                                                },
-                                                onChanged: (value) {
-                                                  setState(() => selectedSector = value);
-                                                },
-                                              );
-                                            },
+                  builder: (context) => StatefulBuilder(
+                    builder: (context, modalSetState) => SafeArea(
+                      child: SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.7,
+                        width: double.infinity,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: SingleChildScrollView(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    spacing: 13,
+                                    children: [
+                                      Text('FILTRES', style: AppTypography.headingMedium),
+                                      const Divider(),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        spacing: 8,
+                                        children: [
+                                          Text('Recherche :', style: AppTypography.label),
+                                          ShadInput(
+                                            placeholder: const Text('Rechercher...'),
+                                            controller: _searchController,
                                           ),
-                                        ),
-                                        if (selectedSector != null)
-                                          ShadBadge.outline(
-                                            backgroundColor: AppColors.backgroundLight,
-                                            foregroundColor: AppColors.primaryLight,
-                                            child: Text(selectedSector!),
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        spacing: 8,
+                                        children: [
+                                          Text('Secteurs :', style: AppTypography.label),
+                                          SizedBox(
+                                            width: double.infinity,
+                                            child: Builder(
+                                              builder: (context) {
+                                                final filteredSectors = sectors
+                                                  .where((s) => s.toLowerCase().contains(modalSectorSearchQuery.toLowerCase()))
+                                                  .toList();
+                                                return ShadSelect<String>.withSearch(
+                                                  placeholder: const Text('Sélectionnez un secteur'),
+                                                  searchPlaceholder: const Text('Rechercher des secteurs...'),
+                                                  options: [
+                                                    if (filteredSectors.isEmpty)
+                                                      const Padding(
+                                                        padding: EdgeInsets.symmetric(vertical: 24),
+                                                        child: Text('Aucun secteur trouvé'),
+                                                      ),
+                                                    ...filteredSectors.map((sector) => ShadOption(
+                                                      value: sector,
+                                                      child: Text(sector),
+                                                    )),
+                                                  ],
+                                                  selectedOptionBuilder: (context, value) =>
+                                                    Text(value, style: AppTypography.bodyMedium),
+                                                  onSearchChanged: (value) {
+                                                    modalSetState(() => modalSectorSearchQuery = value);
+                                                  },
+                                                  onChanged: (value) {
+                                                    modalSetState(() => modalSelectedSector = value);
+                                                  },
+                                                );
+                                              },
+                                            ),
                                           ),
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      spacing: 8,
-                                      children: [
-                                        Text('Entreprises :', style: AppTypography.label),
-                                        SizedBox(
-                                          width: double.infinity,
-                                          child: Builder(
-                                            builder: (context) {
-                                              final filteredCompanies = companies
-                                                .where((c) => c.toLowerCase().contains(companySearchQuery.toLowerCase()))
-                                                .toList();
-                                              return ShadSelect<String>.withSearch(
-                                                placeholder: const Text('Sélectionnez une entreprise'),
-                                                searchPlaceholder: const Text('Rechercher des entreprises...'),
-                                                options: [
-                                                  if (filteredCompanies.isEmpty)
-                                                    const Padding(
-                                                      padding: EdgeInsets.symmetric(vertical: 24),
-                                                      child: Text('Aucune entreprise trouvée'),
-                                                    ),
-                                                  ...filteredCompanies.map((company) => ShadOption(
-                                                    value: company,
-                                                    child: Text(company),
-                                                  )),
-                                                ],
-                                                selectedOptionBuilder: (context, value) =>
-                                                  Text(value, style: AppTypography.bodyMedium),
-                                                onSearchChanged: (value) {
-                                                  setState(() => companySearchQuery = value);
-                                                },
-                                                onChanged: (value) {
-                                                  setState(() => selectedCompany = value);
-                                                },
-                                              );
-                                            },
+                                          if (modalSelectedSector != null)
+                                            ShadBadge.outline(
+                                              backgroundColor: AppColors.backgroundLight,
+                                              foregroundColor: AppColors.primaryLight,
+                                              child: Text(modalSelectedSector!),
+                                            ),
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        spacing: 8,
+                                        children: [
+                                          Text('Entreprises :', style: AppTypography.label),
+                                          SizedBox(
+                                            width: double.infinity,
+                                            child: Builder(
+                                              builder: (context) {
+                                                final filteredCompanies = companies
+                                                  .where((c) => c.toLowerCase().contains(modalCompanySearchQuery.toLowerCase()))
+                                                  .toList();
+                                                return ShadSelect<String>.withSearch(
+                                                  placeholder: const Text('Sélectionnez une entreprise'),
+                                                  searchPlaceholder: const Text('Rechercher des entreprises...'),
+                                                  options: [
+                                                    if (filteredCompanies.isEmpty)
+                                                      const Padding(
+                                                        padding: EdgeInsets.symmetric(vertical: 24),
+                                                        child: Text('Aucune entreprise trouvée'),
+                                                      ),
+                                                    ...filteredCompanies.map((company) => ShadOption(
+                                                      value: company,
+                                                      child: Text(company),
+                                                    )),
+                                                  ],
+                                                  selectedOptionBuilder: (context, value) =>
+                                                    Text(value, style: AppTypography.bodyMedium),
+                                                  onSearchChanged: (value) {
+                                                    modalSetState(() => modalCompanySearchQuery = value);
+                                                  },
+                                                  onChanged: (value) {
+                                                    modalSetState(() => modalSelectedCompany = value);
+                                                  },
+                                                );
+                                              },
+                                            ),
                                           ),
-                                        ),
-                                        if (selectedCompany != null)
-                                          ShadBadge.outline(
-                                            backgroundColor: AppColors.backgroundLight,
-                                            foregroundColor: AppColors.primaryLight,
-                                            child: Text(selectedCompany!),
-                                          ),
-                                      ],
-                                    ),
-                                  ],
+                                          if (modalSelectedCompany != null)
+                                            ShadBadge.outline(
+                                              backgroundColor: AppColors.backgroundLight,
+                                              foregroundColor: AppColors.primaryLight,
+                                              child: Text(modalSelectedCompany!),
+                                            ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                            Row(
-                              spacing: 8,
-                              children: [
-                                SmallButton(
-                                  text: 'Réinitialiser',
-                                  onPressed: () {
-                                    setState(() {
-                                      selectedSector = null;
-                                      selectedCompany = null;
-                                      sectorSearchQuery = '';
-                                      companySearchQuery = '';
-                                      _searchController.clear();
-                                    });
-                                    Navigator.pop(context);
-                                  },
-                                ),
-                                SmallButton(
-                                  text: 'Appliquer',
-                                  onPressed: () => Navigator.pop(context),
-                                ),
-                              ],
-                            ),
-                          ],
+                              Row(
+                                spacing: 8,
+                                children: [
+                                  SmallButton(
+                                    text: 'Réinitialiser',
+                                    onPressed: () {
+                                      modalSetState(() {
+                                        modalSelectedSector = null;
+                                        modalSelectedCompany = null;
+                                        modalSectorSearchQuery = '';
+                                        modalCompanySearchQuery = '';
+                                        _searchController.clear();
+                                      });
+                                      setState(() {
+                                        selectedSector = null;
+                                        selectedCompany = null;
+                                        sectorSearchQuery = '';
+                                        companySearchQuery = '';
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                  SmallButton(
+                                    text: 'Appliquer',
+                                    onPressed: () {
+                                      setState(() {
+                                        selectedSector = modalSelectedSector;
+                                        selectedCompany = modalSelectedCompany;
+                                        sectorSearchQuery = modalSectorSearchQuery;
+                                        companySearchQuery = modalCompanySearchQuery;
+                                      });
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
