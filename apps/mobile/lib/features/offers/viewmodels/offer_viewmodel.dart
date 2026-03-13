@@ -15,7 +15,9 @@ class OffersViewModel extends ChangeNotifier {
   List<String> _companies = [];
 
   List<OfferEntity> get offers => _offers;
+
   List<String> get sectors => _sectors;
+
   List<String> get companies => _companies;
 
   bool get isLoading => _isLoading;
@@ -29,20 +31,22 @@ class OffersViewModel extends ChangeNotifier {
 
     try {
       _offers = await _repository.getOffers();
-      _sectors = _offers
-        .map((o) => o.company?.industrySector?.trim())
-        .whereType<String>()
-        .where((value) => value.isNotEmpty)
-        .toSet()
-        .toList()
-        ..sort();
-      _companies = _offers
-        .map((o) => o.company?.companyName?.trim())
-        .whereType<String>()
-        .where((value) => value.isNotEmpty)
-        .toSet()
-        .toList()
-        ..sort();
+      _sectors =
+          _offers
+              .map((o) => o.company?.industrySector?.trim())
+              .whereType<String>()
+              .where((value) => value.isNotEmpty)
+              .toSet()
+              .toList()
+            ..sort();
+      _companies =
+          _offers
+              .map((o) => o.company?.companyName.trim())
+              .whereType<String>()
+              .where((value) => value.isNotEmpty)
+              .toSet()
+              .toList()
+            ..sort();
     } on AuthFailure catch (e) {
       _error = e.toString();
     } on Exception catch (_) {

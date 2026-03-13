@@ -65,8 +65,10 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
     final filteredOffers = offers.where((off) {
       final matchesSector = selectedSector == null || off.company?.industrySector == selectedSector;
       final matchesCompany = selectedCompany == null || off.company?.companyName == selectedCompany;
-      final matchesSearch = _searchController.text.isEmpty || off.title.toLowerCase().contains(_searchController.text.toLowerCase()) ||
-            off.description.toLowerCase().contains(_searchController.text.toLowerCase());
+      final matchesSearch =
+          _searchController.text.isEmpty ||
+          off.title.toLowerCase().contains(_searchController.text.toLowerCase()) ||
+          off.description.toLowerCase().contains(_searchController.text.toLowerCase());
       return matchesSector && matchesCompany && matchesSearch;
     }).toList();
 
@@ -128,8 +130,12 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                             child: Builder(
                                               builder: (context) {
                                                 final filteredSectors = sectors
-                                                  .where((s) => s.toLowerCase().contains(modalSectorSearchQuery.toLowerCase()))
-                                                  .toList();
+                                                    .where(
+                                                      (s) => s.toLowerCase().contains(
+                                                        modalSectorSearchQuery.toLowerCase(),
+                                                      ),
+                                                    )
+                                                    .toList();
                                                 return ShadSelect<String>.withSearch(
                                                   key: ValueKey('sector_$_selectKey'),
                                                   placeholder: const Text('Sélectionnez un secteur'),
@@ -140,13 +146,12 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                                         padding: EdgeInsets.symmetric(vertical: 10),
                                                         child: Text('Aucun secteur trouvé'),
                                                       ),
-                                                    ...filteredSectors.map((sector) => ShadOption(
-                                                      value: sector,
-                                                      child: Text(sector),
-                                                    )),
+                                                    ...filteredSectors.map(
+                                                      (sector) => ShadOption(value: sector, child: Text(sector)),
+                                                    ),
                                                   ],
                                                   selectedOptionBuilder: (context, value) =>
-                                                    Text(value, style: AppTypography.bodyMedium),
+                                                      Text(value, style: AppTypography.bodyMedium),
                                                   onSearchChanged: (value) {
                                                     modalSetState(() => modalSectorSearchQuery = value);
                                                   },
@@ -175,8 +180,12 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                             child: Builder(
                                               builder: (context) {
                                                 final filteredCompanies = companies
-                                                  .where((c) => c.toLowerCase().contains(modalCompanySearchQuery.toLowerCase()))
-                                                  .toList();
+                                                    .where(
+                                                      (c) => c.toLowerCase().contains(
+                                                        modalCompanySearchQuery.toLowerCase(),
+                                                      ),
+                                                    )
+                                                    .toList();
                                                 return ShadSelect<String>.withSearch(
                                                   key: ValueKey('company_$_selectKey'),
                                                   placeholder: const Text('Sélectionnez une entreprise'),
@@ -187,13 +196,12 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                                         padding: EdgeInsets.symmetric(vertical: 10),
                                                         child: Text('Aucune entreprise trouvée'),
                                                       ),
-                                                    ...filteredCompanies.map((company) => ShadOption(
-                                                      value: company,
-                                                      child: Text(company),
-                                                    )),
+                                                    ...filteredCompanies.map(
+                                                      (company) => ShadOption(value: company, child: Text(company)),
+                                                    ),
                                                   ],
                                                   selectedOptionBuilder: (context, value) =>
-                                                    Text(value, style: AppTypography.bodyMedium),
+                                                      Text(value, style: AppTypography.bodyMedium),
                                                   onSearchChanged: (value) {
                                                     modalSetState(() => modalCompanySearchQuery = value);
                                                   },
@@ -217,7 +225,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                 ),
                               ),
                               Row(
-                                spacing:12, 
+                                spacing: 12,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   SmallButton(
@@ -235,7 +243,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                         _searchController.clear();
                                         _selectKey++;
                                       });
-                                    }
+                                    },
                                   ),
                                   SmallButton(
                                     text: 'Appliquer',
