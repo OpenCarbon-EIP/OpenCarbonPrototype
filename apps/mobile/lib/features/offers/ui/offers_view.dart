@@ -61,16 +61,13 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
     final sectors = vm.sectors;
     final companies = vm.companies;
 
-    // final filteredOffers = offers.where((o) {
-    //   final matchesSector = selectedSector == null ||
-    //       o.company?.industrySector == selectedSector;
-    //   final matchesCompany = selectedCompany == null ||
-    //       o.company?.companyName == selectedCompany;
-    //   final matchesSearch = _searchController.text.isEmpty ||
-    //       o.title.toLowerCase().contains(_searchController.text.toLowerCase()) ||
-    //       o.description.toLowerCase().contains(_searchController.text.toLowerCase());
-    //   return matchesSector && matchesCompany && matchesSearch;
-    // }).toList();
+    final filteredOffers = offers.where((off) {
+      final matchesSector = selectedSector == null || off.company?.industrySector == selectedSector;
+      final matchesCompany = selectedCompany == null || off.company?.companyName == selectedCompany;
+      final matchesSearch = _searchController.text.isEmpty || off.title.toLowerCase().contains(_searchController.text.toLowerCase()) ||
+            off.description.toLowerCase().contains(_searchController.text.toLowerCase());
+      return matchesSector && matchesCompany && matchesSearch;
+    }).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -217,7 +214,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                 ),
                               ),
                               Row(
-                                spacing: 8,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   SmallButton(
                                     text: 'Appliquer',
@@ -259,10 +256,10 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
               slivers: [
                 SliverList(
                   delegate: SliverChildBuilderDelegate((context, index) {
-                    if (index == offers.length) {
+                    if (index == filteredOffers.length) {
                       return const SizedBox(height: 110);
                     }
-                    final offer = offers[index];
+                    final offer = filteredOffers[index];
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       child: CustomCard(
@@ -271,7 +268,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                         deadline: offer.deadline,
                         description: offer.description,
                         onCardSelected: (selectedIndex) {
-                          final selectedOffer = offers[selectedIndex];
+                          final selectedOffer = filteredOffers[selectedIndex];
                           showModalBottomSheet<Widget>(
                             context: context,
                             isScrollControlled: true,
@@ -349,7 +346,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                         },
                       ),
                     );
-                  }, childCount: offers.length + 1),
+                  }, childCount: filteredOffers.length + 1),
                 ),
               ],
             ),
