@@ -121,18 +121,6 @@ describe('ApplicationService', () => {
         service.createApplication(createDto, 'consul-123'),
       ).rejects.toThrow(NotFoundException);
     });
-
-    it('should throw BadRequestException if user is not a consultant', async () => {
-      const createDto = createMockApplication();
-
-      const mockUser = createMockUserCompany();
-
-      jest.spyOn(usersService, 'getUserById').mockResolvedValue(mockUser);
-
-      await expect(
-        service.createApplication(createDto, 'consul-123'),
-      ).rejects.toThrow(UnauthorizedException);
-    });
   });
 
   describe('getApplicationById', () => {

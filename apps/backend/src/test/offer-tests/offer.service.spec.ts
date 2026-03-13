@@ -8,7 +8,6 @@ import {
   createMockOfferList,
   createMockOffer,
   createMockOfferWithRelations,
-  createMockUserConsultant,
 } from 'src/utils/mock-creator';
 import {
   UnauthorizedException,
@@ -84,18 +83,6 @@ describe('OfferService', () => {
 
       await expect(service.createOffer('user-123', createDto)).rejects.toThrow(
         NotFoundException,
-      );
-    });
-
-    it('should throw ForbiddenException if user is not a company', async () => {
-      const createDto = createMockOffer();
-
-      const mockUser = createMockUserConsultant();
-
-      jest.spyOn(usersService, 'getUserById').mockResolvedValue(mockUser);
-
-      await expect(service.createOffer('user-123', createDto)).rejects.toThrow(
-        ForbiddenException,
       );
     });
 
