@@ -45,6 +45,8 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
   final TextEditingController _searchController = TextEditingController();
   String? selectedSector;
   String? selectedCompany;
+  String sectorSearchQuery = '';
+  String companySearchQuery = '';
 
   @override
   void dispose() {
@@ -120,19 +122,34 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                         Text('Secteurs :', style: AppTypography.label),
                                         SizedBox(
                                           width: double.infinity,
-                                          child: ShadSelect<String>.withSearch(
-                                            placeholder: const Text('Sélectionnez un secteur'),
-                                            searchPlaceholder: const Text('Rechercher des secteurs...'),
-                                            options: sectors.map((sector) =>
-                                              ShadOption(
-                                                value: sector,
-                                                child: Text(sector),
-                                              ),
-                                            ).toList(),
-                                            selectedOptionBuilder: (context, value) =>
-                                              Text(value, style: AppTypography.bodyMedium),
-                                            onSearchChanged: (value) {
-                                              setState(() => selectedSector = value);
+                                          child: Builder(
+                                            builder: (context) {
+                                              final filteredSectors = sectors
+                                                .where((s) => s.toLowerCase().contains(sectorSearchQuery.toLowerCase()))
+                                                .toList();
+                                              return ShadSelect<String>.withSearch(
+                                                placeholder: const Text('Sélectionnez un secteur'),
+                                                searchPlaceholder: const Text('Rechercher des secteurs...'),
+                                                options: [
+                                                  if (filteredSectors.isEmpty)
+                                                    const Padding(
+                                                      padding: EdgeInsets.symmetric(vertical: 24),
+                                                      child: Text('Aucun secteur trouvé'),
+                                                    ),
+                                                  ...filteredSectors.map((sector) => ShadOption(
+                                                    value: sector,
+                                                    child: Text(sector),
+                                                  )),
+                                                ],
+                                                selectedOptionBuilder: (context, value) =>
+                                                  Text(value, style: AppTypography.bodyMedium),
+                                                onSearchChanged: (value) {
+                                                  setState(() => sectorSearchQuery = value);
+                                                },
+                                                onChanged: (value) {
+                                                  setState(() => selectedSector = value);
+                                                },
+                                              );
                                             },
                                           ),
                                         ),
@@ -151,19 +168,34 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                         Text('Entreprises :', style: AppTypography.label),
                                         SizedBox(
                                           width: double.infinity,
-                                          child: ShadSelect<String>.withSearch(
-                                            placeholder: const Text('Sélectionnez une entreprise'),
-                                            searchPlaceholder: const Text('Rechercher des entreprises...'),
-                                            options: companies.map((company) =>
-                                              ShadOption(
-                                                value: company,
-                                                child: Text(company),
-                                              ),
-                                            ).toList(),
-                                            selectedOptionBuilder: (context, value) =>
-                                              Text(value, style: AppTypography.bodyMedium),
-                                            onSearchChanged: (value) {
-                                              setState(() => selectedCompany = value);
+                                          child: Builder(
+                                            builder: (context) {
+                                              final filteredCompanies = companies
+                                                .where((c) => c.toLowerCase().contains(companySearchQuery.toLowerCase()))
+                                                .toList();
+                                              return ShadSelect<String>.withSearch(
+                                                placeholder: const Text('Sélectionnez une entreprise'),
+                                                searchPlaceholder: const Text('Rechercher des entreprises...'),
+                                                options: [
+                                                  if (filteredCompanies.isEmpty)
+                                                    const Padding(
+                                                      padding: EdgeInsets.symmetric(vertical: 24),
+                                                      child: Text('Aucune entreprise trouvée'),
+                                                    ),
+                                                  ...filteredCompanies.map((company) => ShadOption(
+                                                    value: company,
+                                                    child: Text(company),
+                                                  )),
+                                                ],
+                                                selectedOptionBuilder: (context, value) =>
+                                                  Text(value, style: AppTypography.bodyMedium),
+                                                onSearchChanged: (value) {
+                                                  setState(() => companySearchQuery = value);
+                                                },
+                                                onChanged: (value) {
+                                                  setState(() => selectedCompany = value);
+                                                },
+                                              );
                                             },
                                           ),
                                         ),
@@ -188,6 +220,8 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                     setState(() {
                                       selectedSector = null;
                                       selectedCompany = null;
+                                      sectorSearchQuery = '';
+                                      companySearchQuery = '';
                                       _searchController.clear();
                                     });
                                     Navigator.pop(context);
