@@ -23,6 +23,7 @@ interface RegisterState {
   setLoading: (loading: boolean) => void
   setHydrated: () => void
   reset: () => void
+  purgeSensitiveData: () => void
   validateStep: (step: RegisterStep) => boolean
   clearErrors: () => void
 }
@@ -130,6 +131,17 @@ export const useRegisterStore = create<RegisterState>()(
       reset: () => {
         set({ values: initialValues, errors: {}, currentStep: RegisterStep.ROLE, isLoading: false })
         sessionStorage.removeItem("register-storage")
+      },
+
+      purgeSensitiveData: () => {
+        set((state) => ({
+          values: {
+            ...state.values,
+            email: "",
+            password: "",
+            confirmPassword: "",
+          }
+        }))
       },
     }),
     {
