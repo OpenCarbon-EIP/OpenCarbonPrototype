@@ -2,14 +2,17 @@
 
 import { useEffect } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { useRegisterStore, RegisterStep } from "../stores/use-register-store"
+import { Role } from "../schemas/register-schema"
 import { Button } from "@/components/ui/button"
 import { StepRole } from "./steps/step-role"
 import { StepIdentity } from "./steps/step-identity"
 import { StepCredentials } from "./steps/step-credentials"
 
 export function RegisterForm() {
+  const router = useRouter()
   const {
     values,
     currentStep,
@@ -18,7 +21,7 @@ export function RegisterForm() {
     nextStep,
     prevStep,
     setLoading,
-    reset,
+    purgeSensitiveData,
     validateStep,
     clearErrors,
   } = useRegisterStore()
@@ -45,7 +48,13 @@ export function RegisterForm() {
         description: `Bienvenue, ${values.firstName} !`,
       })
       
-      reset()
+      purgeSensitiveData()
+      
+      if (values.role === Role.CONSULTANT) {
+        router.push("/register/onboarding")
+      } else {
+        router.push("/dashboard")
+      }
     } catch (error) {
       toast.error("Erreur lors de l'inscription")
     } finally {
