@@ -68,4 +68,9 @@ export class UpdateUserDto {
   @IsString()
   @IsOptional()
   description?: string;
+
+  @ApiPropertyOptional({ example: 'My Company' })
+  @IsString()
+  @IsOptional()
+  company_name?: string;
 }
