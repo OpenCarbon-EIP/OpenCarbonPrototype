@@ -22,7 +22,7 @@ class RegisterUsecase {
   /// @param professionalTitle Titre professionnel.
   /// @param companyName Nom de l'entreprise (optionnel).
   /// @param companySize Taille de l'entreprise (optionnel).
-  /// @return `Future<void> Indique la fin de l'opération.
+  /// @return `Future<void>` Indique la fin de l'opération.
   /// @exception AuthFailure En cas d'erreur d'authentification identifiée.
   /// @exception Exception En cas d'erreur serveur générique.
   Future<void> call(
@@ -52,7 +52,7 @@ class RegisterUsecase {
       rethrow;
     } on ValidationFailure catch (_) {
       rethrow;
-    } on Exception catch (e) {
+    } on Exception catch (_) {
       rethrow;
     }
   }

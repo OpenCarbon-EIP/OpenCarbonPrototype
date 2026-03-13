@@ -9,12 +9,15 @@ class OffersViewModel extends ChangeNotifier {
   final OfferRepository _repository;
 
   List<OfferEntity> _offers = [];
+  List<OfferEntity> _companyOffers = [];
   bool _isLoading = false;
   String? _error;
   List<String> _sectors = [];
   List<String> _companies = [];
 
   List<OfferEntity> get offers => _offers;
+
+  List<OfferEntity> get companyOffers => _companyOffers;
 
   List<String> get sectors => _sectors;
 
@@ -72,6 +75,63 @@ class OffersViewModel extends ChangeNotifier {
       _error = e.toString();
     } on Exception catch (_) {
       _error = 'Une erreur est survenue.';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> getCompanyOffers() async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _companyOffers = await _repository.getCompanyOffers();
+    } on AuthFailure catch (e) {
+      _error = e.toString();
+    } on NotFoundFailure catch (e) {
+      _error = e.toString();
+    } on Exception catch (_) {
+      _error = 'Une erreur est survenue';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> createOffer(String title, String description, String location, double budget, DateTime deadline) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _repository.createOffer(title, description, location, budget, deadline);
+    } on AuthFailure catch (e) {
+      _error = e.toString();
+    } on NotFoundFailure catch (e) {
+      _error = e.toString();
+    } on Exception catch (_) {
+      _error = 'Une erreur est survenue';
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> deleteOffer(String idOffer) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _repository.deleteOffer(idOffer);
+    } on AuthFailure catch (e) {
+      _error = e.toString();
+    } on NotFoundFailure catch (e) {
+      _error = e.toString();
+    } on Exception catch (_) {
+      _error = 'Une erreur est survenue';
     } finally {
       _isLoading = false;
       notifyListeners();

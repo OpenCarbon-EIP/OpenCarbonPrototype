@@ -3,6 +3,10 @@ import { ApplicationService } from '../application/application.service';
 import { ApplicationController } from '../application/application.controller';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import type { application } from 'src/generated/prisma/browser';
+import {
+  createMockApplication,
+  createMockApplicationList,
+} from 'src/utils/mock-creator';
 
 describe('ApplicationController', () => {
   let controller: ApplicationController;
@@ -30,22 +34,11 @@ describe('ApplicationController', () => {
 
   describe('createApplication', () => {
     it('should return success response when creating application', async () => {
-      const createDto = {
-        id_offer: 'offre-456',
-        content: 'I am interested in this job.',
-      };
+      const createDto = createMockApplication();
 
-      const mockApp: Partial<application> = {
-        id: 'app-uuid',
-        id_consultant: 'consul-123',
-        id_offer: 'offre-456',
-        content: 'I am interested in this job.',
-        status: 'PENDING',
-      };
+      const mockApp = createMockApplication();
 
-      jest
-        .spyOn(service, 'createApplication')
-        .mockResolvedValue(mockApp as application);
+      jest.spyOn(service, 'createApplication').mockResolvedValue(mockApp);
 
       const result = await controller.createApplication(createDto, {
         id: 'consul-123',
@@ -57,10 +50,7 @@ describe('ApplicationController', () => {
     });
 
     it('should throw ForbiddenException when user is not authenticated', async () => {
-      const createDto = {
-        id_offer: 'offre-456',
-        content: 'I am interested in this job.',
-      };
+      const createDto = createMockApplication();
 
       await expect(
         controller.createApplication(
@@ -73,19 +63,11 @@ describe('ApplicationController', () => {
 
   describe('getApplicationById', () => {
     it('should return application when found', async () => {
-      const mockApp: Partial<application> = {
-        id: 'app-uuid',
-        id_consultant: 'consul-123',
-        id_offer: 'offre-456',
-        content: 'I am interested in this job.',
-        status: 'PENDING',
-      };
+      const mockApp = createMockApplication();
 
-      jest
-        .spyOn(service, 'getApplicationById')
-        .mockResolvedValue(mockApp as application);
+      jest.spyOn(service, 'getApplicationById').mockResolvedValue(mockApp);
 
-      const result = await controller.getApplicationById('app-uuid', {
+      const result = await controller.getApplicationById('application-123', {
         id: 'consul-123',
       } as Express.User);
 
@@ -105,20 +87,12 @@ describe('ApplicationController', () => {
     });
 
     it('should throw ForbiddenException when user does not own the application', async () => {
-      const mockApp: Partial<application> = {
-        id: 'app-uuid',
-        id_consultant: 'consul-123',
-        id_offer: 'offre-456',
-        content: 'I am interested in this job.',
-        status: 'PENDING',
-      };
+      const mockApp = createMockApplication();
 
-      jest
-        .spyOn(service, 'getApplicationById')
-        .mockResolvedValue(mockApp as application);
+      jest.spyOn(service, 'getApplicationById').mockResolvedValue(mockApp);
 
       await expect(
-        controller.getApplicationById('app-uuid', {
+        controller.getApplicationById('application-123', {
           id: 'other-user',
         } as Express.User),
       ).rejects.toThrow(
@@ -129,7 +103,7 @@ describe('ApplicationController', () => {
     it('should throw ForbiddenException when user is not authenticated', async () => {
       await expect(
         controller.getApplicationById(
-          'app-uuid',
+          'application-123',
           undefined as unknown as Express.User,
         ),
       ).rejects.toThrow('User not authenticated');
@@ -138,26 +112,11 @@ describe('ApplicationController', () => {
 
   describe('getAllApplicationsByUserId', () => {
     it('should return applications for a user', async () => {
-      const mockApps: Partial<application>[] = [
-        {
-          id: 'app-1',
-          id_consultant: 'consul-123',
-          id_offer: 'offre-456',
-          content: 'I am interested in this job.',
-          status: 'PENDING',
-        },
-        {
-          id: 'app-2',
-          id_consultant: 'consul-123',
-          id_offer: 'offre-789',
-          content: 'I am also interested in this job.',
-          status: 'PENDING',
-        },
-      ];
+      const mockApps = createMockApplicationList(2);
 
       jest
         .spyOn(service, 'getAllApplicationsByUserId')
-        .mockResolvedValue(mockApps as application[]);
+        .mockResolvedValue(mockApps);
 
       const result = await controller.getAllApplicationsByUserId({
         id: 'consul-123',
@@ -191,19 +150,11 @@ describe('ApplicationController', () => {
 
   describe('deleteApplication', () => {
     it('should return deleted application', async () => {
-      const mockApp: Partial<application> = {
-        id: 'app-uuid',
-        id_consultant: 'consul-123',
-        id_offer: 'offre-456',
-        content: 'I am interested in this job.',
-        status: 'PENDING',
-      };
+      const mockApp = createMockApplicationList(1);
 
-      jest
-        .spyOn(service, 'deleteApplication')
-        .mockResolvedValue(mockApp as application[]);
+      jest.spyOn(service, 'deleteApplication').mockResolvedValue(mockApp);
 
-      const result = await controller.deleteApplication('app-uuid', {
+      const result = await controller.deleteApplication('application-123', {
         id: 'consul-123',
       } as Express.User);
 

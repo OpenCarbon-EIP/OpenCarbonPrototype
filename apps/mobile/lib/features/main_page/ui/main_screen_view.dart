@@ -3,6 +3,7 @@ import 'package:flutter_poc/core/colors/app_colors.dart';
 import 'package:flutter_poc/features/dashboard/ui/dashboard.dart';
 import 'package:flutter_poc/features/messages/ui/messages_view.dart';
 import 'package:flutter_poc/features/offers/ui/offers_view.dart';
+import 'package:flutter_poc/features/profile/ui/profile_view.dart';
 import 'package:flutter_poc/ui/widgets/app_navbar.dart';
 
 class MainScreen extends StatefulWidget {
@@ -19,7 +20,7 @@ class _MainScreenState extends State<MainScreen> {
     const Dashboard(),
     const OffersView(),
     const MessagesView(),
-    const Center(child: Text('Profile')),
+    const ProfileView(),
   ];
 
   @override

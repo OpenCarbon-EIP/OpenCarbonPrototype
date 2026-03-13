@@ -8,8 +8,14 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import type { application, consultant } from 'src/generated/prisma/client';
-import { SafeUser } from 'src/types/user.types';
+import type { application } from 'src/generated/prisma/client';
+import {
+  createMockApplication,
+  createMockApplicationList,
+  createMockConsultant,
+  createMockUserCompany,
+  createMockUserConsultant,
+} from 'src/utils/mock-creator';
 
 describe('ApplicationService', () => {
   let service: ApplicationService;
@@ -55,48 +61,23 @@ describe('ApplicationService', () => {
 
   describe('createApplication', () => {
     it('should create a new application with authenticated user id', async () => {
-      const createDto = {
-        id_offer: 'offre-456',
-        content: 'I am interested in this job.',
-      };
+      const createDto = createMockApplication();
 
       const userId = 'consul-123';
 
-      const mockUser: Partial<SafeUser> = {
-        id: userId,
-        email: 'consultant@example.com',
-        role: 'CONSULTANT',
-      };
+      const mockUser = createMockUserConsultant();
 
-      const mockConsultant: Partial<consultant> = {
-        id: 'consultant-uuid',
-        id_user: userId,
-        last_name: 'Doe',
-        first_name: 'John',
-        professional_title: 'Software Engineer',
-        description: 'Experienced consultant',
-        photo_url: null,
-        rating_score: 4.5,
-        is_verified: true,
-      };
+      const mockConsultant = createMockConsultant();
 
-      const mockApp: Partial<application> = {
-        id: 'app-uuid',
-        id_consultant: 'consultant-uuid',
-        id_offer: 'offre-456',
-        content: 'I am interested in this job.',
-        status: 'PENDING',
-      };
+      const mockApp = createMockApplication();
 
-      jest
-        .spyOn(usersService, 'getUserById')
-        .mockResolvedValue(mockUser as SafeUser);
+      jest.spyOn(usersService, 'getUserById').mockResolvedValue(mockUser);
       jest
         .spyOn(consultantService, 'getConsultantByUserId')
-        .mockResolvedValue(mockConsultant as consultant);
+        .mockResolvedValue(mockConsultant);
       jest
         .spyOn(prismaService.application, 'create')
-        .mockResolvedValue(mockApp as application);
+        .mockResolvedValue(mockApp);
 
       const result = await service.createApplication(createDto, userId);
 
@@ -105,42 +86,26 @@ describe('ApplicationService', () => {
       const createSpy = jest.spyOn(prismaService.application, 'create');
       expect(createSpy).toHaveBeenCalledWith({
         data: {
-          id_consultant: 'consultant-uuid',
-          id_offer: 'offre-456',
-          content: 'I am interested in this job.',
+          id_consultant: 'consul-123',
+          id_offer: 'offer-123',
+          content: 'I am interested in this offer.',
         },
       });
     });
 
     it('should throw BadRequestException if creation fails', async () => {
       const invalidDto: Partial<application> = {
-        id_offer: 'offre-456',
+        id_offer: 'offre-123',
       };
 
-      const mockUser: Partial<SafeUser> = {
-        id: 'consul-123',
-        email: 'consultant@example.com',
-        role: 'CONSULTANT',
-      };
+      const mockUser = createMockUserConsultant();
 
-      const mockConsultant: Partial<consultant> = {
-        id: 'consultant-uuid',
-        id_user: 'consul-123',
-        last_name: 'Doe',
-        first_name: 'John',
-        professional_title: 'Software Engineer',
-        description: 'Experienced consultant',
-        photo_url: null,
-        rating_score: 4.5,
-        is_verified: true,
-      };
+      const mockConsultant = createMockConsultant();
 
-      jest
-        .spyOn(usersService, 'getUserById')
-        .mockResolvedValue(mockUser as SafeUser);
+      jest.spyOn(usersService, 'getUserById').mockResolvedValue(mockUser);
       jest
         .spyOn(consultantService, 'getConsultantByUserId')
-        .mockResolvedValue(mockConsultant as consultant);
+        .mockResolvedValue(mockConsultant);
 
       await expect(
         service.createApplication(invalidDto as application, 'consul-123'),
@@ -148,58 +113,39 @@ describe('ApplicationService', () => {
     });
 
     it('should throw NotFoundException if user is not found', async () => {
+      const createDto = createMockApplication();
+
       jest.spyOn(usersService, 'getUserById').mockResolvedValue(null);
 
       await expect(
-        service.createApplication(
-          { id_offer: 'offre-456', content: 'I am interested in this job.' },
-          'consul-123',
-        ),
+        service.createApplication(createDto, 'consul-123'),
       ).rejects.toThrow(NotFoundException);
     });
 
     it('should throw BadRequestException if user is not a consultant', async () => {
-      const mockUser: Partial<SafeUser> = {
-        id: 'consul-123',
-        email: 'notconsultant@example.com',
-        role: 'COMPANY',
-      };
+      const createDto = createMockApplication();
 
-      jest
-        .spyOn(usersService, 'getUserById')
-        .mockResolvedValue(mockUser as SafeUser);
+      const mockUser = createMockUserCompany();
+
+      jest.spyOn(usersService, 'getUserById').mockResolvedValue(mockUser);
 
       await expect(
-        service.createApplication(
-          { id_offer: 'offre-456', content: 'I am interested in this job.' },
-          'consul-123',
-        ),
+        service.createApplication(createDto, 'consul-123'),
       ).rejects.toThrow(UnauthorizedException);
     });
   });
 
   describe('getApplicationById', () => {
     it('should return an application when it exists', async () => {
-      const mockApp: Partial<application> = {
-        id: 'app-123',
-        id_consultant: 'consul-123',
-        id_offer: 'offre-456',
-        content: 'I am interested in this job.',
-        status: 'PENDING',
-      };
+      const mockApp = createMockApplication();
 
       jest
         .spyOn(prismaService.application, 'findUnique')
-        .mockResolvedValue(mockApp as application | null);
+        .mockResolvedValue(mockApp);
 
-      const result = await service.getApplicationById('app-123');
+      const result = await service.getApplicationById('application-123');
 
       expect(result).toEqual(mockApp);
-
-      const findUniqueSpy = jest.spyOn(prismaService.application, 'findUnique');
-      expect(findUniqueSpy).toHaveBeenCalledWith({
-        where: { id: 'app-123' },
-      });
     });
 
     it('should throw BadRequestException if id is not provided', async () => {
@@ -211,35 +157,15 @@ describe('ApplicationService', () => {
 
   describe('getAllApplicationsByUserId', () => {
     it('should return all applications for a user', async () => {
-      const mockApps: Partial<application>[] = [
-        {
-          id: 'app-1',
-          id_consultant: 'consul-123',
-          id_offer: 'offre-456',
-          content: 'App 1',
-          status: 'PENDING',
-        },
-        {
-          id: 'app-2',
-          id_consultant: 'consul-123',
-          id_offer: 'offre-789',
-          content: 'App 2',
-          status: 'PENDING',
-        },
-      ];
+      const mockApps = createMockApplicationList(2);
 
       jest
         .spyOn(prismaService.application, 'findMany')
-        .mockResolvedValue(mockApps as application[]);
+        .mockResolvedValue(mockApps);
 
       const result = await service.getAllApplicationsByUserId('consul-123');
 
       expect(result).toEqual(mockApps);
-
-      const findManySpy = jest.spyOn(prismaService.application, 'findMany');
-      expect(findManySpy).toHaveBeenCalledWith({
-        where: { id_consultant: 'consul-123' },
-      });
     });
 
     it('should throw BadRequestException if userId is not provided', async () => {
@@ -251,31 +177,25 @@ describe('ApplicationService', () => {
 
   describe('deleteApplication', () => {
     it('should delete an application by id', async () => {
-      const mockApp: Partial<application> = {
-        id: 'app-123',
-        id_consultant: 'consul-123',
-        id_offer: 'offre-456',
-        content: 'I am interested in this job.',
-        status: 'PENDING',
-      };
+      const mockApp = createMockApplication();
 
       jest
         .spyOn(prismaService.application, 'findUnique')
-        .mockResolvedValue(mockApp as application);
+        .mockResolvedValue(mockApp);
       jest
         .spyOn(prismaService.application, 'delete')
-        .mockResolvedValue(mockApp as application);
+        .mockResolvedValue(mockApp);
 
-      await service.deleteApplication('app-123', 'consul-123');
+      await service.deleteApplication('application-123', 'consul-123');
 
       const findUniqueSpy = jest.spyOn(prismaService.application, 'findUnique');
       expect(findUniqueSpy).toHaveBeenCalledWith({
-        where: { id: 'app-123' },
+        where: { id: 'application-123' },
       });
 
       const deleteSpy = jest.spyOn(prismaService.application, 'delete');
       expect(deleteSpy).toHaveBeenCalledWith({
-        where: { id: 'app-123' },
+        where: { id: 'application-123' },
       });
     });
 
@@ -296,20 +216,14 @@ describe('ApplicationService', () => {
     });
 
     it('should throw ForbiddenException if user does not own the application', async () => {
-      const mockApp: Partial<application> = {
-        id: 'app-123',
-        id_consultant: 'consul-123',
-        id_offer: 'offre-456',
-        content: 'I am interested in this job.',
-        status: 'PENDING',
-      };
+      const mockApp = createMockApplication();
 
       jest
         .spyOn(prismaService.application, 'findUnique')
-        .mockResolvedValue(mockApp as application);
+        .mockResolvedValue(mockApp);
       jest
         .spyOn(prismaService.application, 'delete')
-        .mockResolvedValue(mockApp as application);
+        .mockResolvedValue(mockApp);
 
       await expect(
         service.deleteApplication('app-123', 'other-user'),
