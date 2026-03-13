@@ -11,9 +11,7 @@ import 'package:flutter_poc/ui/widgets/button.dart';
 import 'package:flutter_poc/ui/widgets/card.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_poc/ui/widgets/button.dart';
 import 'package:shadcn_ui/shadcn_ui.dart';
 
 class OffersView extends StatelessWidget {
