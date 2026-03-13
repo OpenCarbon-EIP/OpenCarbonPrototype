@@ -7,7 +7,7 @@ import { ArrowLeft } from "iconsax-react";
 
 export default function LoginPage() {
   return (
-    <div className="rounded-[24px] border-[1.5px] border-zinc-200 bg-white p-12 shadow-none text-center space-y-8">
+    <div className="rounded-lg border-[1.5px] border-zinc-200 bg-white p-12 shadow-none text-center space-y-8">
       <h1 className="text-3xl font-bold tracking-tight text-[#2d4f44]">Connexion</h1>
       <p className="text-muted-foreground font-medium uppercase tracking-widest text-[11px]">
         Cette fonctionnalité sera bientôt disponible.
