@@ -47,6 +47,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
   String? selectedCompany;
   String sectorSearchQuery = '';
   String companySearchQuery = '';
+  int _selectKey = 0;
 
   @override
   void dispose() {
@@ -92,7 +93,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                   builder: (context) => StatefulBuilder(
                     builder: (context, modalSetState) => SafeArea(
                       child: SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.7,
+                        height: MediaQuery.of(context).size.height * 0.55,
                         width: double.infinity,
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
@@ -130,6 +131,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                                   .where((s) => s.toLowerCase().contains(modalSectorSearchQuery.toLowerCase()))
                                                   .toList();
                                                 return ShadSelect<String>.withSearch(
+                                                  key: ValueKey('sector_$_selectKey'),
                                                   placeholder: const Text('Sélectionnez un secteur'),
                                                   searchPlaceholder: const Text('Rechercher des secteurs...'),
                                                   options: [
@@ -176,6 +178,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                                   .where((c) => c.toLowerCase().contains(modalCompanySearchQuery.toLowerCase()))
                                                   .toList();
                                                 return ShadSelect<String>.withSearch(
+                                                  key: ValueKey('company_$_selectKey'),
                                                   placeholder: const Text('Sélectionnez une entreprise'),
                                                   searchPlaceholder: const Text('Rechercher des entreprises...'),
                                                   options: [
@@ -214,8 +217,24 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                 ),
                               ),
                               Row(
+                                spacing:12, 
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                  SmallButton(
+                                    text: 'Réinitialiser',
+                                    onPressed: () {
+                                      modalSetState(() {
+                                        modalSelectedCompany = null;
+                                        modalSelectedSector = null;
+                                        selectedSector = null;
+                                        selectedCompany = null;
+                                        sectorSearchQuery = '';
+                                        companySearchQuery = '';
+                                        _searchController.clear();
+                                        _selectKey++;
+                                      });
+                                    }
+                                  ),
                                   SmallButton(
                                     text: 'Appliquer',
                                     onPressed: () {
