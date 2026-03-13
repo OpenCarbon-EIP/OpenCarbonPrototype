@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { useForm } from "react-hook-form"
+import { useForm, useWatch } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { toast } from "sonner"
 import { registerSchema, type RegisterValues, Role } from "../schemas/register-schema"
@@ -20,7 +20,7 @@ export function RegisterForm() {
     formState: { errors },
     reset,
     setValue,
-    watch,
+    control,
   } = useForm<RegisterValues>({
     resolver: zodResolver(registerSchema),
     shouldUnregister: true,
@@ -29,7 +29,7 @@ export function RegisterForm() {
     },
   })
 
-  const selectedRole = watch("role")
+  const selectedRole = useWatch({ control, name: "role" })
 
   const onSubmit = async (data: RegisterValues) => {
     setIsLoading(true)
