@@ -115,7 +115,7 @@ export class UsersService {
           company: true,
         },
       });
-    } else if (user.role === 'COMPANY') {
+    } else {
       return await this.prisma.user.update({
         where: { id },
         data: {
@@ -132,12 +132,6 @@ export class UsersService {
           consultant: true,
           company: true,
         },
-      });
-    } else {
-      return await this.prisma.user.update({
-        where: { id },
-        data: updateUserData,
-        omit: SAFE_USER_OMIT,
       });
     }
   }
