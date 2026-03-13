@@ -8,6 +8,7 @@ import { CreateUserDto, UpdateUserDto } from '@dtos/user.dto';
 import type { user } from 'src/generated/prisma/client';
 import type { SafeUser } from 'src/types/user.types';
 import { ConsultantService } from 'src/consultant/consultant.service';
+import { CompanyService } from 'src/company/company.service';
 import { hash } from 'bcrypt';
 
 export const SAFE_USER_OMIT = {
@@ -21,6 +22,7 @@ export class UsersService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly consultantService: ConsultantService,
+    private readonly companyService: CompanyService,
   ) {}
 
   async getUserById(id: string): Promise<SafeUser | null> {
@@ -61,10 +63,17 @@ export class UsersService {
   }
 
   async updateUser(id: string, updateData: UpdateUserDto): Promise<SafeUser> {
-    const { email, password, first_name, last_name, photo_url, description } =
-      updateData;
+    const {
+      email,
+      password,
+      first_name,
+      last_name,
+      photo_url,
+      description,
+      company_name,
+    } = updateData;
 
-    const user = await this.consultantService.getConsultantByUserId(id);
+    const user = await this.getUserById(id);
 
     if (!user) {
       throw new NotFoundException('User not found');
@@ -86,24 +95,50 @@ export class UsersService {
       updateUserData.password = await hash(password, saltRounds);
     }
 
-    return await this.prisma.user.update({
-      where: { id },
-      data: {
-        ...updateUserData,
-        consultant: {
-          update: {
-            first_name,
-            last_name,
-            photo_url,
-            description,
+    if (user.role === 'CONSULTANT') {
+      return await this.prisma.user.update({
+        where: { id },
+        data: {
+          ...updateUserData,
+          consultant: {
+            update: {
+              first_name,
+              last_name,
+              photo_url,
+              description,
+            },
           },
         },
-      },
-      omit: SAFE_USER_OMIT,
-      include: {
-        consultant: true,
-        company: true,
-      },
-    });
+        omit: SAFE_USER_OMIT,
+        include: {
+          consultant: true,
+          company: true,
+        },
+      });
+    } else if (user.role === 'COMPANY') {
+      return await this.prisma.user.update({
+        where: { id },
+        data: {
+          ...updateUserData,
+          company: {
+            update: {
+              company_name,
+              description,
+            },
+          },
+        },
+        omit: SAFE_USER_OMIT,
+        include: {
+          consultant: true,
+          company: true,
+        },
+      });
+    } else {
+      return await this.prisma.user.update({
+        where: { id },
+        data: updateUserData,
+        omit: SAFE_USER_OMIT,
+      });
+    }
   }
 }
