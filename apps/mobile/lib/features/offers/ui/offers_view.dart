@@ -228,6 +228,8 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                         modalSelectedSector = null;
                                         selectedSector = null;
                                         selectedCompany = null;
+                                        modalSectorSearchQuery = '';
+                                        modalCompanySearchQuery = '';
                                         sectorSearchQuery = '';
                                         companySearchQuery = '';
                                         _searchController.clear();
