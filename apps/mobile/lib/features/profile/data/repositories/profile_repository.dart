@@ -6,6 +6,12 @@ import 'package:flutter_poc/features/profile/domain/entity/profile_entity.dart';
 
 abstract class ProfileRepository {
   Future<Profile> getProfile();
+
+  Future<void> updatePassword(String userId, String password);
+
+  Future<void> updateEmail(String userId, String email);
+
+  Future<void> updateFirstAndLastName(String userId, String firstName, String lastName);
 }
 
 class ProfileRepositoryImpl implements ProfileRepository {
@@ -31,20 +37,20 @@ class ProfileRepositoryImpl implements ProfileRepository {
         id: profileData.id,
         email: profileData.email,
         role: profileData.role,
-        consultantData: (
-          profileData.consultantData != null
-          ? ConsultantData(firstName: profileData.consultantData!.firstName,
-            lastName: profileData.consultantData!.lastName,
-            professionalTitle: profileData.consultantData!.professionalTitle,
-            description: profileData.consultantData!.description,
-            photoUrl: profileData.consultantData!.photoUrl,
-            ratingScore: profileData.consultantData!.ratingScore,
-            isVerified: profileData.consultantData!.isVerified,
-          )
-          : null
-        ),
+        consultantData: (profileData.consultantData != null
+            ? ConsultantData(
+                firstName: profileData.consultantData!.firstName,
+                lastName: profileData.consultantData!.lastName,
+                professionalTitle: profileData.consultantData!.professionalTitle,
+                description: profileData.consultantData!.description,
+                photoUrl: profileData.consultantData!.photoUrl,
+                ratingScore: profileData.consultantData!.ratingScore,
+                isVerified: profileData.consultantData!.isVerified,
+              )
+            : null),
         companyData: profileData.companyData != null
-            ? CompanyData(companyName: profileData.companyData!.companyName,
+            ? CompanyData(
+                companyName: profileData.companyData!.companyName,
                 industrySector: profileData.companyData?.industrySector ?? '',
                 companySize: profileData.companyData!.companySize,
                 description: profileData.companyData!.description,
@@ -52,6 +58,51 @@ class ProfileRepositoryImpl implements ProfileRepository {
               )
             : null,
       );
+    } on UnauthorizedFailure catch (_) {
+      rethrow;
+    } on Exception catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updatePassword(String userId, String password) async {
+    try {
+      final token = await _authService.getToken();
+      if (token == null) {
+        throw AuthFailure("Le token n'est pas valable");
+      }
+      await _api.updatePassword(token, userId, password);
+    } on UnauthorizedFailure catch (_) {
+      rethrow;
+    } on Exception catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateEmail(String userId, String email) async {
+    try {
+      final token = await _authService.getToken();
+      if (token == null) {
+        throw AuthFailure("Le token n'est pas valable");
+      }
+      await _api.updateEmail(token, userId, email);
+    } on UnauthorizedFailure catch (_) {
+      rethrow;
+    } on Exception catch (_) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateFirstAndLastName(String userId, String firstName, String lastName) async {
+    try {
+      final token = await _authService.getToken();
+      if (token == null) {
+        throw AuthFailure("Le token n'est pas valable");
+      }
+      await _api.updateFirstAndLastName(token, userId, firstName, lastName);
     } on UnauthorizedFailure catch (_) {
       rethrow;
     } on Exception catch (_) {

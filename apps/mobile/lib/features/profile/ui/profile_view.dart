@@ -83,7 +83,7 @@ class _ProfileViewBodyState extends State<_ProfileViewBody> {
                     if (profile == null) return;
                     Navigator.push(
                       context,
-                      MaterialPageRoute<void>(builder: (context) => SettingView(profile: profile)),
+                      MaterialPageRoute<void>(builder: (context) => SettingView(profile: profile, viewModel: vm)),
                     );
                   },
                   child: Container(
