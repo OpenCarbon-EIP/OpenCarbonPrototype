@@ -117,6 +117,7 @@ class _SettingViewState extends State<SettingView> {
                       buttonText: 'Sauvegarder',
                       onSave: (newEmail) async {
                         await widget.viewModel.updateEmail(widget.profile.id, newEmail);
+                        await widget.viewModel.fetchProfile();
                       },
                     ),
                   ),

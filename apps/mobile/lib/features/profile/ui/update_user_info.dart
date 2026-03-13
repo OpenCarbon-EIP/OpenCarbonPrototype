@@ -68,6 +68,10 @@ class _UpdateUserInfoState extends State<UpdateUserInfo> {
         await widget.onSave!(_controller.text);
       }
       if (mounted) Navigator.pop(context);
+    } on Exception catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erreur lors de la sauvegarde: $e')));
+      }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -82,10 +86,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo> {
           children: [
             Row(
               children: [
-                GestureDetector(
-                  onTap: () => Navigator.pop(context),
-                  child: SvgPicture.string(AppSvg.arrowLeft),
-                ),
+                GestureDetector(onTap: () => Navigator.pop(context), child: SvgPicture.string(AppSvg.arrowLeft)),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Text(
@@ -116,11 +117,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo> {
               const SizedBox(height: 32),
             ],
 
-            ShadInput(
-              controller: _controller,
-              placeholder: Text(widget.inputHint),
-              obscureText: widget.isPassword,
-            ),
+            ShadInput(controller: _controller, placeholder: Text(widget.inputHint), obscureText: widget.isPassword),
 
             if (widget.secondInputHint != null) ...[
               const SizedBox(height: 16),
@@ -136,11 +133,7 @@ class _UpdateUserInfoState extends State<UpdateUserInfo> {
             Center(
               child: _isLoading
                   ? const CircularProgressIndicator()
-                  : SmallButton(
-                text: widget.buttonText,
-                onPressed: _handleSave,
-                color: AppColors.primaryLight,
-              ),
+                  : SmallButton(text: widget.buttonText, onPressed: _handleSave, color: AppColors.primaryLight),
             ),
           ],
         ),

@@ -94,134 +94,118 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
             padding: const EdgeInsets.only(right: 16.0),
             child: _currentTab == 1
                 ? SmallButtonWithIcon(
-              text: 'Filtrer',
-              svgIcon: AppSvg.svgFilter,
-              onPressed: () {
-                // TODO : Utilise le ViewModel pour filtrer plus tard
-              },
-            )
+                    text: 'Filtrer',
+                    svgIcon: AppSvg.svgFilter,
+                    onPressed: () {
+                      // TODO : Utilise le ViewModel pour filtrer plus tard
+                    },
+                  )
                 : SmallButtonWithIcon(
-              text: 'Créer une offre',
-              svgIcon: AppSvg.plus,
-              onPressed: () {
-                showModalBottomSheet<Widget>(
-                  context: context,
-                  isScrollControlled: true,
-                  useSafeArea: true,
-                  builder: (context) {
-                    final mediaQuery = MediaQuery.of(context);
-                    return Container(
-                      constraints: BoxConstraints(
-                          maxHeight: mediaQuery.size.height * 0.9),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(16)),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Padding(
-                            padding:
-                            const EdgeInsets.only(top: 8, bottom: 8),
-                            child: Container(
-                              width: 40,
-                              height: 4,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[400],
-                                borderRadius: BorderRadius.circular(2),
-                              ),
+                    text: 'Créer une offre',
+                    svgIcon: AppSvg.plus,
+                    onPressed: () {
+                      showModalBottomSheet<Widget>(
+                        context: context,
+                        isScrollControlled: true,
+                        useSafeArea: true,
+                        builder: (context) {
+                          final mediaQuery = MediaQuery.of(context);
+                          return Container(
+                            constraints: BoxConstraints(maxHeight: mediaQuery.size.height * 0.9),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                             ),
-                          ),
-                          const Divider(height: 1),
-                          Expanded(
-                            child: SingleChildScrollView(
-                              padding: const EdgeInsets.all(32.0),
-                              child: Column(
-                                spacing: 16,
-                                children: [
-                                  Text(
-                                    'Créer une nouvelle mission',
-                                    style: AppTypography.headingLarge
-                                        .copyWith(
-                                        color: AppColors.primaryLight),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 8, bottom: 8),
+                                  child: Container(
+                                    width: 40,
+                                    height: 4,
+                                    decoration: BoxDecoration(
+                                      color: Colors.grey[400],
+                                      borderRadius: BorderRadius.circular(2),
+                                    ),
                                   ),
-                                  const Divider(),
-                                  ShadInput(
-                                    placeholder:
-                                    const Text('Titre de la mission'),
-                                    controller: _titleController,
-                                  ),
-                                  ShadTextarea(
-                                    placeholder: const Text(
-                                        'Description de la mission'),
-                                    controller: _descriptionController,
-                                  ),
-                                  ShadInput(
-                                    placeholder:
-                                    const Text('Localisation'),
-                                    controller: _locationController,
-                                  ),
-                                  ShadInput(
-                                    placeholder: const Text('Budget'),
-                                    controller: _budgetController,
-                                  ),
-                                  ShadCalendar(
-                                    selected: _selectedDate,
-                                    fromMonth: DateTime(
-                                        _selectedDate.year - 1),
-                                    toMonth:
-                                    DateTime(_selectedDate.year, 12),
-                                    onChanged: (value) {
-                                      if (value != null) {
-                                        setState(
-                                                () => _selectedDate = value);
-                                      }
-                                    },
-                                  ),
-                                  SmallButton(
-                                    text: "Publier l'offre",
-                                    color: AppColors.primaryLight,
-                                    onPressed: () async {
-                                      await vm.createOffer(
-                                        _titleController.text,
-                                        _descriptionController.text,
-                                        _locationController.text,
-                                        double.parse(
-                                            _budgetController.text),
-                                        _selectedDate,
-                                      );
+                                ),
+                                const Divider(height: 1),
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    padding: const EdgeInsets.all(32.0),
+                                    child: Column(
+                                      spacing: 16,
+                                      children: [
+                                        Text(
+                                          'Créer une nouvelle mission',
+                                          style: AppTypography.headingLarge.copyWith(color: AppColors.primaryLight),
+                                        ),
+                                        const Divider(),
+                                        ShadInput(
+                                          placeholder: const Text('Titre de la mission'),
+                                          controller: _titleController,
+                                        ),
+                                        ShadTextarea(
+                                          placeholder: const Text('Description de la mission'),
+                                          controller: _descriptionController,
+                                        ),
+                                        ShadInput(
+                                          placeholder: const Text('Localisation'),
+                                          controller: _locationController,
+                                        ),
+                                        ShadInput(placeholder: const Text('Budget'), controller: _budgetController),
+                                        ShadCalendar(
+                                          selected: _selectedDate,
+                                          fromMonth: DateTime(_selectedDate.year - 1),
+                                          toMonth: DateTime(_selectedDate.year, 12),
+                                          onChanged: (value) {
+                                            if (value != null) {
+                                              setState(() => _selectedDate = value);
+                                            }
+                                          },
+                                        ),
+                                        SmallButton(
+                                          text: "Publier l'offre",
+                                          color: AppColors.primaryLight,
+                                          onPressed: () async {
+                                            await vm.createOffer(
+                                              _titleController.text,
+                                              _descriptionController.text,
+                                              _locationController.text,
+                                              double.parse(_budgetController.text),
+                                              _selectedDate,
+                                            );
 
-                                      if (context.mounted) {
-                                        if (vm.error == null) {
-                                          Navigator.pop(context);
-                                          await vm.getCompanyOffers();
-                                          await vm.loadOffers();
-                                          _titleController.clear();
-                                          _descriptionController.clear();
-                                          _locationController.clear();
-                                          _budgetController.clear();
-                                          _selectedDate = DateTime.now();
-                                        } else {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(SnackBar(
-                                              content: Text(
-                                                  vm.error!)));
-                                        }
-                                      }
-                                    },
+                                            if (context.mounted) {
+                                              if (vm.error == null) {
+                                                Navigator.pop(context);
+                                                await vm.getCompanyOffers();
+                                                await vm.loadOffers();
+                                                _titleController.clear();
+                                                _descriptionController.clear();
+                                                _locationController.clear();
+                                                _budgetController.clear();
+                                                _selectedDate = DateTime.now();
+                                              } else {
+                                                ScaffoldMessenger.of(
+                                                  context,
+                                                ).showSnackBar(SnackBar(content: Text(vm.error!)));
+                                              }
+                                            }
+                                          },
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
           ),
         ],
       ),
@@ -252,8 +236,7 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                     }
                     final offer = offers[index];
                     return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0, vertical: 8.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       child: CustomCard(
                         index: index,
                         title: offer.title,
@@ -269,27 +252,23 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                             builder: (context) {
                               final mediaQuery = MediaQuery.of(context);
                               return Container(
-                                constraints: BoxConstraints(
-                                    maxHeight: mediaQuery.size.height * 0.9),
+                                constraints: BoxConstraints(maxHeight: mediaQuery.size.height * 0.9),
                                 decoration: const BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(16)),
+                                  borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
                                 ),
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: <Widget>[
                                     // Petite barre "drag handle"
                                     Padding(
-                                      padding: const EdgeInsets.only(
-                                          top: 8, bottom: 8),
+                                      padding: const EdgeInsets.only(top: 8, bottom: 8),
                                       child: Container(
                                         width: 40,
                                         height: 4,
                                         decoration: BoxDecoration(
                                           color: Colors.grey[400],
-                                          borderRadius:
-                                          BorderRadius.circular(2),
+                                          borderRadius: BorderRadius.circular(2),
                                         ),
                                       ),
                                     ),
@@ -302,13 +281,10 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                             Expanded(
                                               child: SingleChildScrollView(
                                                 child: Column(
-                                                  crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                   spacing: 13,
                                                   children: [
-                                                    Text(selectedOffer.title,
-                                                        style: AppTypography
-                                                            .headingLarge),
+                                                    Text(selectedOffer.title, style: AppTypography.headingLarge),
                                                     const Divider(),
                                                     Row(
                                                       spacing: 16,
@@ -316,26 +292,21 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                                         Text(
                                                           selectedOffer.company?.companyName ??
                                                               "Nom de l'entreprise non spécifié",
-                                                          style: AppTypography
-                                                              .headingMedium,
+                                                          style: AppTypography.headingMedium,
                                                         ),
                                                         CircleAvatar(
                                                           radius: 15,
-                                                          backgroundColor:
-                                                          AppColors
-                                                              .primaryLight,
+                                                          backgroundColor: AppColors.primaryLight,
                                                           child: Text(
                                                             (selectedOffer.company?.companyName ?? 'N/A').length >= 2
-                                                                ? selectedOffer.company!.companyName.substring(0, 2).toUpperCase()
-                                                                : (selectedOffer.company?.companyName ?? 'N/A').toUpperCase(),
-                                                            style: AppTypography
-                                                                .bodySmall
-                                                                .copyWith(
-                                                              color: AppColors
-                                                                  .textLight,
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .bold,
+                                                                ? selectedOffer.company!.companyName
+                                                                      .substring(0, 2)
+                                                                      .toUpperCase()
+                                                                : (selectedOffer.company?.companyName ?? 'N/A')
+                                                                      .toUpperCase(),
+                                                            style: AppTypography.bodySmall.copyWith(
+                                                              color: AppColors.textLight,
+                                                              fontWeight: FontWeight.bold,
                                                             ),
                                                           ),
                                                         ),
@@ -343,13 +314,11 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                                     ),
                                                     Text(
                                                       'Date limite: ${DateFormat('dd/MM/yyyy').format(selectedOffer.deadline)}',
-                                                      style: AppTypography
-                                                          .bodyMedium,
+                                                      style: AppTypography.bodyMedium,
                                                     ),
                                                     Text(
                                                       'Description: ${selectedOffer.description}',
-                                                      style: AppTypography
-                                                          .bodyMedium,
+                                                      style: AppTypography.bodyMedium,
                                                     ),
                                                   ],
                                                 ),
@@ -358,46 +327,51 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                             const SizedBox(height: 16),
                                             _currentTab == 1
                                                 ? SmallButton(
-                                              text: 'Postuler',
-                                              color: AppColors
-                                                  .primaryLight,
-                                              onPressed: () async {
-                                                await vm.apply(
-                                                    selectedOffer.id);
-                                                if (context.mounted &&
-                                                    vm.error == null) {
-                                                  Navigator.pop(context);
-                                                }
-                                              },
-                                            )
+                                                    text: 'Postuler',
+                                                    color: AppColors.primaryLight,
+                                                    onPressed: () async {
+                                                      await vm.apply(selectedOffer.id);
+                                                      if (context.mounted) {
+                                                        if (vm.error == null) {
+                                                          Navigator.pop(context);
+                                                        } else {
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            SnackBar(
+                                                              content: Text(vm.error!),
+                                                              backgroundColor: AppColors.danger,
+                                                            ),
+                                                          );
+                                                        }
+                                                      }
+                                                    },
+                                                  )
                                                 : SmallButton(
-                                              text: "Supprimer l'offre",
-                                              color: AppColors.danger,
-                                              onPressed: () async {
-                                                await vm.deleteOffer(
-                                                    selectedOffer.id);
-                                                if (context.mounted) {
-                                                  Navigator.pop(context);
-                                                  if (vm.error == null) {
-                                                    ScaffoldMessenger.of(context).showSnackBar(
-                                                      const SnackBar(
-                                                        content: Text('Offre supprimée avec succès'),
-                                                        backgroundColor: AppColors.primaryLight,
-                                                      ),
-                                                    );
-                                                    await vm.getCompanyOffers();
-                                                    await vm.loadOffers();
-                                                  } else {
-                                                    ScaffoldMessenger.of(context).showSnackBar(
-                                                      SnackBar(
-                                                        content: Text(vm.error!),
-                                                        backgroundColor: AppColors.danger,
-                                                      ),
-                                                    );
-                                                  }
-                                                }
-                                              },
-                                            ),
+                                                    text: "Supprimer l'offre",
+                                                    color: AppColors.danger,
+                                                    onPressed: () async {
+                                                      await vm.deleteOffer(selectedOffer.id);
+                                                      if (context.mounted) {
+                                                        Navigator.pop(context);
+                                                        if (vm.error == null) {
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            const SnackBar(
+                                                              content: Text('Offre supprimée avec succès'),
+                                                              backgroundColor: AppColors.primaryLight,
+                                                            ),
+                                                          );
+                                                          await vm.getCompanyOffers();
+                                                          await vm.loadOffers();
+                                                        } else {
+                                                          ScaffoldMessenger.of(context).showSnackBar(
+                                                            SnackBar(
+                                                              content: Text(vm.error!),
+                                                              backgroundColor: AppColors.danger,
+                                                            ),
+                                                          );
+                                                        }
+                                                      }
+                                                    },
+                                                  ),
                                           ],
                                         ),
                                       ),

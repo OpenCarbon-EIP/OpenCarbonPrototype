@@ -63,7 +63,7 @@ class ProfileApiService {
         case 404:
           throw NotFoundFailure("Le profil que vous essayez de modifier n'existe pas.");
         default:
-          throw Exception('Erreur pendant le chargement des opportunités');
+          throw Exception('Erreur pendant la mise à jour du mot de passe.');
       }
     }
   }
