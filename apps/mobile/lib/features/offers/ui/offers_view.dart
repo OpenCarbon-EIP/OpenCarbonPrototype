@@ -56,8 +56,19 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
   Widget build(BuildContext context) {
     final vm = context.watch<OffersViewModel>();
     final offers = vm.offers;
-    const sectors = ['Tech', 'Finance', 'Marketing', 'Santé', 'Éducation'];
-    const companies = ['Google', 'Apple', 'Microsoft', 'Amazon', 'Facebook'];
+    final sectors = vm.sectors;
+    final companies = vm.companies;
+
+    // final filteredOffers = offers.where((o) {
+    //   final matchesSector = selectedSector == null ||
+    //       o.company?.industrySector == selectedSector;
+    //   final matchesCompany = selectedCompany == null ||
+    //       o.company?.companyName == selectedCompany;
+    //   final matchesSearch = _searchController.text.isEmpty ||
+    //       o.title.toLowerCase().contains(_searchController.text.toLowerCase()) ||
+    //       o.description.toLowerCase().contains(_searchController.text.toLowerCase());
+    //   return matchesSector && matchesCompany && matchesSearch;
+    // }).toList();
 
     return Scaffold(
       appBar: AppBar(
@@ -115,26 +126,23 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                             options: sectors.map((sector) =>
                                               ShadOption(
                                                 value: sector,
-                                                child: Text(sector)
-                                                ),
-                                              ).toList(),
-                                            selectedOptionBuilder: (context, value) =>
-                                              Text(value,
-                                              style: AppTypography.bodyMedium
+                                                child: Text(sector),
                                               ),
+                                            ).toList(),
+                                            selectedOptionBuilder: (context, value) =>
+                                              Text(value, style: AppTypography.bodyMedium),
                                             onSearchChanged: (value) {
-                                              setState(() {
-                                                selectedSector = value;
-                                              });
+                                              setState(() => selectedSector = value);
                                             },
                                           ),
                                         ),
-                                        const ShadBadge.outline(
-                                          backgroundColor: AppColors.backgroundLight,
-                                          foregroundColor: AppColors.primaryLight,
-                                          child: Text('Primary'),
-                                        )
-                                      ]
+                                        if (selectedSector != null)
+                                          ShadBadge.outline(
+                                            backgroundColor: AppColors.backgroundLight,
+                                            foregroundColor: AppColors.primaryLight,
+                                            child: Text(selectedSector!),
+                                          ),
+                                      ],
                                     ),
                                     Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,36 +157,47 @@ class _OffersViewBodyState extends State<_OffersViewBody> {
                                             options: companies.map((company) =>
                                               ShadOption(
                                                 value: company,
-                                                child: Text(company)
-                                                ),
-                                              ).toList(),
-                                            selectedOptionBuilder: (context, value) =>
-                                              Text(value,
-                                              style: AppTypography.bodyMedium
+                                                child: Text(company),
                                               ),
+                                            ).toList(),
+                                            selectedOptionBuilder: (context, value) =>
+                                              Text(value, style: AppTypography.bodyMedium),
                                             onSearchChanged: (value) {
-                                              setState(() {
-                                                selectedCompany = value;
-                                              });
+                                              setState(() => selectedCompany = value);
                                             },
                                           ),
                                         ),
-                                        const ShadBadge.outline(
-                                          backgroundColor: AppColors.backgroundLight,
-                                          foregroundColor: AppColors.primaryLight,
-                                          child: Text('Secondary'),
-                                        )
-                                      ]
+                                        if (selectedCompany != null)
+                                          ShadBadge.outline(
+                                            backgroundColor: AppColors.backgroundLight,
+                                            foregroundColor: AppColors.primaryLight,
+                                            child: Text(selectedCompany!),
+                                          ),
+                                      ],
                                     ),
                                   ],
                                 ),
                               ),
                             ),
-                            SmallButton(
-                              text: 'Appliquer',
-                              onPressed: () async {
-                                  Navigator.pop(context);
-                              },
+                            Row(
+                              spacing: 8,
+                              children: [
+                                SmallButton(
+                                  text: 'Réinitialiser',
+                                  onPressed: () {
+                                    setState(() {
+                                      selectedSector = null;
+                                      selectedCompany = null;
+                                      _searchController.clear();
+                                    });
+                                    Navigator.pop(context);
+                                  },
+                                ),
+                                SmallButton(
+                                  text: 'Appliquer',
+                                  onPressed: () => Navigator.pop(context),
+                                ),
+                              ],
                             ),
                           ],
                         ),
