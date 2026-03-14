@@ -22,6 +22,8 @@ import { CreateOfferDto, UpdateOfferDto } from '@dtos/offer.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ApiResponse } from 'src/types/global';
 import { offer } from 'src/generated/prisma/client';
+import { RoleGuard } from 'src/auth/guards/role.guard';
+import { Role } from 'src/decorators/role';
 
 @ApiTags('Offers')
 @ApiBearerAuth('JWT')
@@ -38,6 +40,8 @@ export class OfferController {
     status: 403,
     description: 'Only companies can create offers',
   })
+  @UseGuards(RoleGuard)
+  @Role('COMPANY')
   async createOffer(
     @CurrentUser() user: Express.User,
     @Body() body: CreateOfferDto,
@@ -151,6 +155,8 @@ export class OfferController {
   @SwaggerResponse({ status: 401, description: 'Unauthorized' })
   @SwaggerResponse({ status: 403, description: 'Not the offer owner' })
   @SwaggerResponse({ status: 404, description: 'Offer not found' })
+  @UseGuards(RoleGuard)
+  @Role('COMPANY')
   async deleteOffer(
     @CurrentUser() user: Express.User,
     @Param('id') id: string,

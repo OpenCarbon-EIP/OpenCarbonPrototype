@@ -7,11 +7,14 @@ import { JwtStrategy } from './strategy/jwt.strategy';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { UsersModule } from '../users/users.module';
 import { PassportModule } from '@nestjs/passport';
+import { RoleGuard } from './guards/role.guard';
+import { PrismaModule } from '@prisma/prisma.module';
 
 @Module({
   imports: [
     forwardRef(() => UsersModule),
     PassportModule,
+    PrismaModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -22,7 +25,7 @@ import { PassportModule } from '@nestjs/passport';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy, JwtAuthGuard],
-  exports: [AuthService, JwtAuthGuard],
+  providers: [AuthService, JwtStrategy, JwtAuthGuard, RoleGuard],
+  exports: [AuthService, JwtAuthGuard, RoleGuard],
 })
 export class AuthModule {}

@@ -14,7 +14,6 @@ CREATE TYPE "ApplicationStatus" AS ENUM ('PENDING', 'ACCEPTED', 'REJECTED');
 CREATE TABLE "user" (
     "id" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "name" TEXT,
     "password" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -72,6 +71,7 @@ CREATE TABLE "offer" (
     "budget" INTEGER NOT NULL,
     "deadline" TIMESTAMP(3) NOT NULL,
     "status" "OfferStatus" NOT NULL DEFAULT 'OPEN',
+    "location" TEXT NOT NULL,
     "id_company" TEXT NOT NULL,
 
     CONSTRAINT "offer_pkey" PRIMARY KEY ("id")

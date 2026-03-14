@@ -3,17 +3,12 @@ import { ApplicationService } from '../application/application.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { UsersService } from '../users/users.service';
 import { ConsultantService } from '../consultant/consultant.service';
-import {
-  BadRequestException,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import type { application } from 'src/generated/prisma/client';
 import {
   createMockApplication,
   createMockApplicationList,
   createMockConsultant,
-  createMockUserCompany,
   createMockUserConsultant,
 } from 'src/utils/mock-creator';
 
@@ -120,18 +115,6 @@ describe('ApplicationService', () => {
       await expect(
         service.createApplication(createDto, 'consul-123'),
       ).rejects.toThrow(NotFoundException);
-    });
-
-    it('should throw BadRequestException if user is not a consultant', async () => {
-      const createDto = createMockApplication();
-
-      const mockUser = createMockUserCompany();
-
-      jest.spyOn(usersService, 'getUserById').mockResolvedValue(mockUser);
-
-      await expect(
-        service.createApplication(createDto, 'consul-123'),
-      ).rejects.toThrow(UnauthorizedException);
     });
   });
 

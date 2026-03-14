@@ -14,7 +14,7 @@ import { AuthResponse } from 'src/types/auth.types';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('register')
+  @Post('register/email')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Register a new user (consultant or company)' })
   @SwaggerResponse({ status: 201, description: 'User registered successfully' })
@@ -31,7 +31,7 @@ export class AuthController {
     };
   }
 
-  @Post('login')
+  @Post('login/email')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Log in with email and password' })
   @SwaggerResponse({ status: 200, description: 'Login successful' })

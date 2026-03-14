@@ -3,7 +3,6 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateApplicationDto } from '@dtos/application.dto';
@@ -53,12 +52,6 @@ export class ApplicationService {
 
     if (!user) {
       throw new NotFoundException('User not found');
-    }
-
-    if (user.role !== 'CONSULTANT') {
-      throw new UnauthorizedException(
-        'Only consultants can create applications',
-      );
     }
 
     const consultant =
